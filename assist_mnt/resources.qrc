@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/assist_mnt" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
