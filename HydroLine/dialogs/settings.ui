@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>700</width>
+    <height>354</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Paramètres</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="font">
+      <font>
+       <italic>false</italic>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
+      </font>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="tabShape">
+      <enum>QTabWidget::Triangular</enum>
+     </property>
+     <property name="currentIndex">
+      <number>2</number>
+     </property>
+     <property name="elideMode">
+      <enum>Qt::ElideNone</enum>
+     </property>
+     <property name="usesScrollButtons">
+      <bool>true</bool>
+     </property>
+     <property name="documentMode">
+      <bool>false</bool>
+     </property>
+     <property name="tabsClosable">
+      <bool>false</bool>
+     </property>
+     <property name="movable">
+      <bool>true</bool>
+     </property>
+     <property name="tabBarAutoHide">
+      <bool>false</bool>
+     </property>
+     <widget class="QWidget" name="tabCrete">
+      <attribute name="title">
+       <string>Options de tracé</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QCheckBox" name="graphique3D">
+         <property name="text">
+          <string>Graphique topographique 3D</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="ModeTrace">
+         <property name="placeholderText">
+          <string>Choix du mode de tracés</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabRupture">
+      <attribute name="title">
+       <string>Table attributaire</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayoutRupture">
+       <item>
+        <widget class="QLabel" name="labelRupture">
+         <property name="text">
+          <string>Quels champs pour les polylignes</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_OBJECTID">
+         <property name="title">
+          <string>OBJECTID</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_OBJECTID">
+          <item>
+           <widget class="QRadioButton" name="radioButton_OBJECTID_Oui">
+            <property name="text">
+             <string>Oui</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButton_OBJECTID_Non">
+            <property name="text">
+             <string>Non</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_SHAPE_LENGTH">
+         <property name="title">
+          <string>SHAPE_LENGTH</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_SHAPE_LENGTH">
+          <item>
+           <widget class="QRadioButton" name="radioButton_SHAPE_LENGTH_Oui">
+            <property name="text">
+             <string>Oui</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButton_SHAPE_LENGTH_Non">
+            <property name="text">
+             <string>Non</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_HORADATEUR">
+         <property name="title">
+          <string>HORADATEUR (JJ/MM/AA)</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_HORADATEUR">
+          <item>
+           <widget class="QRadioButton" name="radioButton_HORADATEUR_Oui">
+            <property name="text">
+             <string>Oui</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButton_HORADATEUR_Non">
+            <property name="text">
+             <string>Non</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_Denomination">
+         <property name="title">
+          <string>DENOMINATION</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_Denomination">
+          <item>
+           <widget class="QRadioButton" name="radioButton_Denomination_Oui">
+            <property name="text">
+             <string>Oui</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButton_Denomination_Non">
+            <property name="text">
+             <string>Non</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabAide">
+      <attribute name="title">
+       <string>À propos</string>
+      </attribute>
+      <widget class="QLabel" name="logoLabel">
+       <property name="geometry">
+        <rect>
+         <x>490</x>
+         <y>10</y>
+         <width>181</width>
+         <height>80</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButtonOpenPDF">
+       <property name="geometry">
+        <rect>
+         <x>490</x>
+         <y>100</y>
+         <width>181</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Open Help (PDF)</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="Infolabel">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>10</y>
+         <width>481</width>
+         <height>271</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
