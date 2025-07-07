@@ -128,7 +128,7 @@ class AssistMnt(QObject):
 
     def initGui(self):
         """Configure le menu initial."""
-        chemin_icones = self.chemin_plugin
+        chemin_icones = os.path.join(self.chemin_plugin, "icon")
 
         # Créer le menu "Hydroline"
         self.menu_hydroline = QMenu("Hydroline", self.interface_qgis.mainWindow())
@@ -152,8 +152,8 @@ class AssistMnt(QObject):
         self.menu_hydroline.addAction(self.action_assistance_trace)
 
         # Ajouter les autres actions
-        chemin_icon_prolongement = os.path.join(self.chemin_plugin, "icon_prolongement.png")
-        chemin_icon_profilgraph = os.path.join(self.chemin_plugin, "icon_profilgraph.png")
+        chemin_icon_prolongement = os.path.join(self.chemin_plugin, "icon", "icon_prolongement.png")
+        chemin_icon_profilgraph = os.path.join(self.chemin_plugin, "icon", "icon_profilgraph.png")
 
         self.action_prolongement = QAction(
             QIcon(chemin_icon_prolongement),
@@ -176,12 +176,12 @@ class AssistMnt(QObject):
 
     def setup_toolbar_actions(self):
         """Configure les actions de la barre d'outils."""
-        chemin_icones = self.chemin_plugin
+        chemin_icones = os.path.join(self.chemin_plugin, "icon")
 
         # Créer le bouton MNTvisu et l'ajouter à la barre d'outils
         self.action_mntvisu = QAction(
             QIcon(os.path.join(chemin_icones, "icon_2dm.png")),
-            self.traduire(u'MNTvisu'),
+            self.traduire(u'Data Preparation'),
             self.interface_qgis.mainWindow()
         )
         self.action_mntvisu.triggered.connect(self.afficher_mnt)
@@ -191,15 +191,27 @@ class AssistMnt(QObject):
         self.menu_configuration = QMenu()
         self.menu_configuration.setTitle("Configuration MNT")
 
-        self.action_tracer_seuils = QAction("Tracé de seuils", self.interface_qgis.mainWindow())
+        self.action_tracer_seuils = QAction(
+            QIcon(os.path.join(chemin_icones, "icon_option1.png")),
+            "Tracé de seuils",
+            self.interface_qgis.mainWindow()
+        )
         self.action_tracer_seuils.triggered.connect(self.afficher_outils_seuils)
         self.menu_configuration.addAction(self.action_tracer_seuils)
 
-        self.action_tracer_rupture = QAction("Tracé de rupture de pente", self.interface_qgis.mainWindow())
+        # Ajouter une icône pour l'action "Tracé de rupture de pente"
+        self.action_tracer_rupture = QAction(
+            QIcon(os.path.join(chemin_icones, "icon_option2.png")),
+            "Tracé de rupture de pente",
+            self.interface_qgis.mainWindow()
+        )
         self.action_tracer_rupture.triggered.connect(self.afficher_outil_rupture_pente)
         self.menu_configuration.addAction(self.action_tracer_rupture)
 
-        self.action_reinitialiser = QAction("Réinitialiser", self.interface_qgis.mainWindow())
+        self.action_reinitialiser = QAction(
+            QIcon(os.path.join(chemin_icones, "icon_option3.png")),
+            "Réinitialiser",
+            self.interface_qgis.mainWindow())
         self.action_reinitialiser.triggered.connect(self.reinitialiser_barre_outils)
         self.menu_configuration.addAction(self.action_reinitialiser)
 
@@ -378,10 +390,10 @@ class AssistMnt(QObject):
         # Effacer les actions existantes sauf MNTvisu et le menu
         self.effacer_actions_barre_outils()
 
-        chemin_icones = self.chemin_plugin
+        chemin_icones = os.path.join(self.chemin_plugin, "icon")
 
         # Bouton pour démarrer le MNT
-        self.action_demarrer_mnt = QAction(QIcon(os.path.join(chemin_icones, "icon_seuil.png")), self.traduire(u'Démarrer MNT'),
+        self.action_demarrer_mnt = QAction(QIcon(os.path.join(chemin_icones, "icon_seuil.png")), self.traduire(u'Lancer outil'),
                                            self.interface_qgis.mainWindow())
         self.action_demarrer_mnt.triggered.connect(self.demarrer_mnt)
         self.barre_outils.insertAction(self.action_bouton_menu, self.action_demarrer_mnt)
@@ -407,7 +419,7 @@ class AssistMnt(QObject):
         # Bouton pour "lignes de crêtes suivante"
         self.action_ligne_crete_suivante = QAction(
             QIcon(os.path.join(chemin_icones, "icon_next.png")),
-            self.traduire(u'Lignes de crêtes suivante'),
+            self.traduire(u'Ajouter la polyligne active à la couche / Démarrer une autre'),
             self.interface_qgis.mainWindow()
         )
         self.action_ligne_crete_suivante.triggered.connect(self.ligne_crete_suivante)
@@ -415,7 +427,7 @@ class AssistMnt(QObject):
         self.actions.append(self.action_ligne_crete_suivante)
 
         # Bouton pour arrêter le MNT
-        self.action_arreter_mnt = QAction(QIcon(os.path.join(chemin_icones, "icon_stop.png")), self.traduire(u'Arrêter MNT'),
+        self.action_arreter_mnt = QAction(QIcon(os.path.join(chemin_icones, "icon_stop.png")), self.traduire(u'Terminer et enregistrer la couche temporairement'),
                                           self.interface_qgis.mainWindow())
         self.action_arreter_mnt.triggered.connect(self.arreter_mnt)
         self.barre_outils.insertAction(self.action_bouton_menu, self.action_arreter_mnt)
@@ -426,11 +438,11 @@ class AssistMnt(QObject):
         # Effacer les actions existantes sauf MNTvisu et le menu
         self.effacer_actions_barre_outils()
 
-        chemin_icones = self.chemin_plugin
+        chemin_icones = os.path.join(self.chemin_plugin, "icon")
 
         # Bouton pour démarrer la rupture de pente
         self.action_demarrer_rupture = QAction(QIcon(os.path.join(chemin_icones, "icon_rupture.png")),
-                                               self.traduire(u'Démarrer rupture de pente'),
+                                               self.traduire(u'Lancer outil'),
                                                self.interface_qgis.mainWindow())
         self.action_demarrer_rupture.triggered.connect(self.demarrer_rupture_pente)
         # Insérer l'action avant le bouton du menu
@@ -447,10 +459,22 @@ class AssistMnt(QObject):
                                                                            self.bouton_simplification_pente)
         self.actions.append(self.action_bouton_simplification)
 
+        # Bouton pour le mode "tracé libre"
+        self.action_tracer_libre_rupture = QAction(
+            QIcon(os.path.join(chemin_icones, "icon_toggle.png")),
+            self.traduire(u'Tracé Libre'),
+            self.interface_qgis.mainWindow()
+        )
+        self.action_tracer_libre_rupture.setCheckable(True)
+        self.action_tracer_libre_rupture.toggled.connect(self.basculer_tracer_libre_rupture)
+        # Insérer l'action avant le bouton du menu
+        self.barre_outils.insertAction(self.action_bouton_menu, self.action_tracer_libre_rupture)
+        self.actions.append(self.action_tracer_libre_rupture)
+
         # Bouton pour "ligne de rupture suivante"
         self.action_ligne_rupture_suivante = QAction(
             QIcon(os.path.join(chemin_icones, "icon_next.png")),
-            self.traduire(u'Ligne de rupture suivante'),
+            self.traduire(u'Ajouter la polyligne active à la couche / Démarrer une autre'),
             self.interface_qgis.mainWindow()
         )
         self.action_ligne_rupture_suivante.triggered.connect(self.ligne_rupture_suivante)
@@ -459,7 +483,7 @@ class AssistMnt(QObject):
 
         # Bouton pour arrêter la rupture de pente
         self.action_arreter_rupture = QAction(QIcon(os.path.join(chemin_icones, "icon_stop.png")),
-                                              self.traduire(u'Stop rupture'),
+                                              self.traduire(u'Terminer et enregistrer la couche temporairement'),
                                               self.interface_qgis.mainWindow())
         self.action_arreter_rupture.triggered.connect(self.arreter_rupture)
         # Insérer l'action avant le bouton du menu
@@ -475,6 +499,16 @@ class AssistMnt(QObject):
         # Insérer le widget avant le bouton du menu
         self.action_mode_combobox = self.barre_outils.insertWidget(self.action_bouton_menu, self.mode_combobox)
         self.actions.append(self.action_mode_combobox)
+
+    def basculer_tracer_libre_rupture(self, coche):
+        """Active ou désactive le mode de tracé libre pour rupture de pente."""
+        if hasattr(self, 'outil_rupture_pente') and self.outil_rupture_pente:
+            self.outil_rupture_pente.definir_mode_trace_libre(coche)
+        else:
+            QMessageBox.warning(None, "Avertissement",
+                                "Veuillez d'abord activer l'outil avec le bouton Démarrer rupture de pente.")
+            # Désactiver le bouton si l'outil n'est pas actif
+            self.action_tracer_libre_rupture.setChecked(False)
 
     def basculer_simplification_rupture_pente(self, coche):
         """Active ou désactive la simplification pour l'outil de rupture de pente."""
@@ -984,6 +1018,11 @@ class AssistMnt(QObject):
             QMessageBox.warning(None, "Avertissement", "Aucun tracé en cours.")
             return
 
+        # Sortir du mode tracé libre si actif
+        if self.outil_rupture_pente.mode_trace_libre:
+            self.outil_rupture_pente.definir_mode_trace_libre(False)
+            self.action_tracer_libre_rupture.setChecked(False)
+
         # Confirmer la dernière polyligne si elle n'a pas été déjà confirmée
         if self.outil_rupture_pente.polyligne_confirmee is not None:
             self.outil_rupture_pente.confirmer_polyligne()
@@ -994,7 +1033,7 @@ class AssistMnt(QObject):
         points_avec_z = []
 
         for point in points_originaux:
-            z = self.outil_rupture_pente.obtenir_elevation_au_point(point)
+            z = self.outil_rupture_pente.obtenir_elevation_au_point_unique(point)
             if z is not None:
                 point_z = QgsPoint(point.x(), point.y(), z)
             else:
@@ -1129,7 +1168,7 @@ class AssistMnt(QObject):
             # Construire la polyligne en 3D avec les valeurs Z du MNT
             points_avec_z = []
             for point in self.outil_trace_crete.liste_points:
-                z = self.outil_trace_crete.obtenir_elevation_au_point(point)
+                z = self.outil_trace_crete.obtenir_elevation_au_point_unique(point)
                 if z is not None:
                     point_z = QgsPoint(point.x(), point.y(), z)
                     points_avec_z.append(point_z)
@@ -1245,19 +1284,78 @@ class OutilTraceCrete(QgsMapTool):
     def confirmer_polyligne(self):
         """Confirme la polyligne actuelle et l'ajoute à la couche vectorielle."""
         if self.polyligne_confirmee is not None and self.couche_vectorielle is not None:
-            # Construire la polyligne en 3D avec les valeurs Z du MNT
-            points_avec_z = []
-            for point in self.liste_points:
-                z = self.obtenir_elevation_au_point(point)
-                if z is not None:
+            # Construire la polyligne originale à partir de self.liste_points
+            self.polyligne_originale = QgsGeometry.fromPolylineXY(self.liste_points)
+
+            # Vérifier si la simplification est activée
+            if self.simplification_activee:
+                # Obtenir la géométrie simplifiée
+                simplified_geom = self.polyligne_confirmee
+
+                # Densifier la polyligne simplifiée
+                densified_simplified_geom = simplified_geom.densifyByDistance(
+                    1)  # Ajustez la distance de densification si nécessaire
+
+                # Obtenir les points de la polyligne simplifiée densifiée
+                simplified_points = densified_simplified_geom.asPolyline()
+
+                # Calculer les distances cumulatives le long de la polyligne simplifiée
+                simplified_cumulative = [0]
+                for i in range(1, len(simplified_points)):
+                    dist = simplified_points[i - 1].distance(simplified_points[i])
+                    simplified_cumulative.append(simplified_cumulative[-1] + dist)
+                total_simplified_length = simplified_cumulative[-1]
+
+                # Calculer les distances cumulatives le long de la polyligne originale
+                original_points = self.polyligne_originale.asPolyline()
+                original_cumulative = [0]
+                for i in range(1, len(original_points)):
+                    dist = original_points[i - 1].distance(original_points[i])
+                    original_cumulative.append(original_cumulative[-1] + dist)
+                total_original_length = original_cumulative[-1]
+
+                # Préparer la liste des points avec Z
+                points_avec_z = []
+
+                # Pour chaque point de la polyligne simplifiée densifiée
+                for i, point in enumerate(simplified_points):
+                    # Calculer la proportion de la distance le long de la polyligne simplifiée
+                    prop = simplified_cumulative[i] / total_simplified_length
+                    # Distance correspondante le long de la polyligne originale
+                    original_dist = prop * total_original_length
+                    # Trouver le segment sur la polyligne originale où se trouve cette distance
+                    for j in range(1, len(original_cumulative)):
+                        if original_cumulative[j] >= original_dist:
+                            prev_dist = original_cumulative[j - 1]
+                            next_dist = original_cumulative[j]
+                            t = (original_dist - prev_dist) / (next_dist - prev_dist) if next_dist != prev_dist else 0
+                            # Interpoler la valeur Z sur la polyligne originale
+                            z_prev = self.obtenir_elevation_au_point(original_points[j - 1])
+                            z_next = self.obtenir_elevation_au_point(original_points[j])
+                            z = z_prev + t * (z_next - z_prev) if z_next is not None and z_prev is not None else 0
+                            break
+                    else:
+                        # Si on dépasse la longueur, on prend le dernier point
+                        z = self.obtenir_elevation_au_point(original_points[-1]) or 0
+                    # Créer un nouveau point avec les coordonnées X,Y de la polyligne simplifiée et la valeur Z interpolée
                     point_z = QgsPoint(point.x(), point.y(), z)
                     points_avec_z.append(point_z)
-                else:
-                    point_z = QgsPoint(point.x(), point.y(), 0)
-                    points_avec_z.append(point_z)
-            # Créer la géométrie de la polyligne en 3D
-            polyligne_z = QgsGeometry.fromPolyline(points_avec_z)
 
+                # Créer la géométrie de la polyligne en 3D
+                polyligne_z = QgsGeometry.fromPolyline(points_avec_z)
+            else:
+                # Si la simplification n'est pas activée, utiliser les points originaux
+                points_avec_z = []
+                for point in self.liste_points:
+                    z = self.obtenir_elevation_au_point(point)
+                    if z is not None:
+                        point_z = QgsPoint(point.x(), point.y(), z)
+                    else:
+                        point_z = QgsPoint(point.x(), point.y(), 0)
+                    points_avec_z.append(point_z)
+                polyligne_z = QgsGeometry.fromPolyline(points_avec_z)
+
+            # Créer et ajouter l'entité à la couche vectorielle
             entite = QgsFeature()
             entite.setGeometry(polyligne_z)
 
@@ -1281,7 +1379,6 @@ class OutilTraceCrete(QgsMapTool):
                 from datetime import datetime
                 horadateur = datetime.now().strftime('%d/%m/%y')
                 attributs.append(horadateur)
-
 
             entite.setAttributes(attributs)
             self.couche_vectorielle.dataProvider().addFeature(entite)
@@ -1584,7 +1681,7 @@ class OutilTraceCrete(QgsMapTool):
         X_grid, Y_grid = np.meshgrid(X, Y)
 
         # Obtenir les valeurs Z du MNT
-        Z_grid = self.outil_trace_crete.obtenir_elevation_aux_points(X_grid, Y_grid)
+        Z_grid = self.outil_trace_crete.obtenir_elevation_aux_points_multiples(X_grid, Y_grid)
 
         # Tracer la surface 3D
         self.ax.plot_surface(X_grid, Y_grid, Z_grid, edgecolor='royalblue', lw=0.5,
@@ -2006,7 +2103,7 @@ class FenetreProfilElevation(QDockWidget):
         X_grid, Y_grid = np.meshgrid(X, Y)
 
         # Obtenir les valeurs Z du MNT
-        Z_grid = self.outil_trace_crete.obtenir_elevation_aux_points(X_grid, Y_grid)
+        Z_grid = self.outil_trace_crete.obtenir_elevation_aux_points_multiples(X_grid, Y_grid)
 
         # Sauvegarder les grilles pour on_mouse_move
         self.X_grid = X_grid

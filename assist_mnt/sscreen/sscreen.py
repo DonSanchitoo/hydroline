@@ -1,7 +1,12 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QGraphicsOpacityEffect
+"""
+sscreen/sscreen.py
+"""
+
+import os
+
 from PyQt5.QtCore import QTimer, Qt, QPropertyAnimation, pyqtSignal
 from PyQt5.QtGui import QPixmap, QGuiApplication, QFont
-import os
+from PyQt5.QtWidgets import QWidget, QLabel, QGraphicsOpacityEffect
 
 
 class SplashScreen(QWidget):
