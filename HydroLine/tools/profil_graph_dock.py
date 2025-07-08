@@ -10,10 +10,10 @@ import webbrowser
 from ..external import img2pdf
 from ..external.pyqtgraph import PlotWidget
 from ..external.pyqtgraph.exporters import ImageExporter
+from ..external import pyqtgraph as pg
 
 import numpy as np
 import plotly.graph_objects as go
-import pyqtgraph as pg
 from PyQt5 import QtGui
 from osgeo import gdal
 from qgis.PyQt.QtCore import Qt, pyqtSignal, QFileInfo
