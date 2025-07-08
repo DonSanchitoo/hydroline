@@ -171,7 +171,7 @@ def alphashape(points: Union[List[Tuple[float]], np.ndarray],
     if coords.shape[-1] > 3:
         return perimeter_edges
     elif coords.shape[-1] == 3:
-        from ..external import trimesh
+        from ..alphashape import trimesh
         result = trimesh.Trimesh(vertices=coords, faces=list(perimeter_edges))
         trimesh.repair.fix_normals(result)
         return result
