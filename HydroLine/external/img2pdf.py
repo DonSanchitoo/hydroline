@@ -22,7 +22,7 @@ import sys
 import os
 import zlib
 import argparse
-from PIL import Image, TiffImagePlugin, GifImagePlugin, ImageCms, ExifTags
+from .PIL import Image, TiffImagePlugin, GifImagePlugin, ImageCms, ExifTags
 
 if hasattr(GifImagePlugin, "LoadingStrategy"):
     # Pillow 9.0.0 started emitting all frames but the first as RGB instead of
@@ -35,9 +35,9 @@ if hasattr(GifImagePlugin, "LoadingStrategy"):
     )
 
 # TiffImagePlugin.DEBUG = True
-from PIL.ExifTags import TAGS
+from .PIL.ExifTags import TAGS
 from datetime import datetime, timezone
-import jp2
+from ..external import jp2
 from enum import Enum
 from io import BytesIO
 import logging
