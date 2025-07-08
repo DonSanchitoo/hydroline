@@ -1,30 +1,28 @@
-"""
-tools/outil_rupture_pente
+import math
+import os
+import sys
 
-Module qui contient les algorithmes de détection de rupture de pente dynamique
-"""
-import numpy as np
 from osgeo import gdal
+import numpy as np
+
 from qgis.PyQt.QtCore import Qt, QObject, QPoint
 from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtWidgets import QMessageBox, QInputDialog
-from qgis._core import QgsLineString, QgsPoint
+from qgis._core import QgsFeature, QgsPoint, QgsLineString
 from qgis.core import (
     QgsProject,
     QgsRasterLayer,
-    QgsFeature,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsWkbTypes,
     QgsGeometry,
     QgsPointXY,
-    QgsWkbTypes,
-    QgsCoordinateTransform
 )
-from qgis.gui import QgsRubberBand
-import dask.array as da
-from osgeo import gdal_array
+from qgis.PyQt.QtWidgets import QAction, QMessageBox, QMenu, QToolButton, QInputDialog, QDockWidget, QWidget, QVBoxLayout, QComboBox, QApplication
+from qgis.gui import QgsMapTool, QgsRubberBand
 
 from .base_map_tool import BaseMapTool
-from ..sscreen.sscreen_load import SplashScreenLoad
 from ..threads.calcul_pentes_thread import CalculPentesThread
+from ..utils.raster_utils import generer_ombrage_invisible
 
 
 class OutilRupturePente(BaseMapTool):
@@ -41,8 +39,6 @@ class OutilRupturePente(BaseMapTool):
         """Initialise l'outil de tracé de rupture de pente."""
         super().__init__(canvas, couche_raster)
         self.canvas = canvas
-        self.couche_raster = couche_raster
-
         self.couche_raster = couche_raster
         self.mode = mode # 'concave' ou 'convexe'
         self.simplification_activee = False
@@ -80,34 +76,27 @@ class OutilRupturePente(BaseMapTool):
         # Pré-chargement des données raster
         self.charger_donnees_raster()
 
+        # Générer l'ombrage à partir du MNT en utilisant 'generer_ombrage'
+        self.couche_ombrage = generer_ombrage_invisible(self.couche_raster)
+        if self.couche_ombrage is None:
+            QMessageBox.critical(None, "Erreur", "Impossible de générer l'ombrage pour le MNT.")
+            return
 
-    def definir_mode_trace_libre(self, tracelibre):
-        """Active ou désactive le mode de tracé libre."""
-        if tracelibre:
-            # Entrer en mode tracé libre
-            self.mode_trace_libre = True
-            self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
-            if self.liste_points:
-                point_depart = self.liste_points[-1]
-                self.points_trace_libre = [point_depart]
-                self.bande_trace_libre.reset(QgsWkbTypes.LineGeometry)
-                # Convertir point_depart en QgsPointXY
-                self.bande_trace_libre.addPoint(QgsPointXY(point_depart))
-            else:
-                self.points_trace_libre = []
-        else:
-            # Sortir du mode tracé libre
-            self.mode_trace_libre = False
-            self.bande_trace_libre.reset(QgsWkbTypes.LineGeometry)
-            if len(self.points_trace_libre) >= 2:
-                # Ajouter les points tracés librement à liste_points (sauf le point de départ)
-                nouveaux_points = self.points_trace_libre[1:]
-                self.liste_points.extend(nouveaux_points)
-                # Mettre à jour la polyligne confirmée
-                self.polyligne_confirmee = QgsGeometry.fromPolyline(self.liste_points)
-                self.bande_confirmee.reset(QgsWkbTypes.LineGeometry)
-                self.bande_confirmee.addGeometry(self.polyligne_confirmee, None)
-            self.points_trace_libre = []
+        # Charger les données de l'ombrage (pour les calculs de pentes)
+        self.charger_donnees_hillshade()
+
+        # Démarrer le calcul des pentes locales dans un thread séparé
+        self.calcul_pentes_thread = CalculPentesThread(self.tableau_hillshade, self.gt)
+        self.calcul_pentes_thread.result_ready.connect(self.on_pentes_calculees)
+        self.calcul_pentes_thread.start()
+
+
+    def on_pentes_calculees(self, pentes_locales_degres):
+        """Appelé lorsque le calcul des pentes est terminé."""
+        self.pentes_locales_degres = pentes_locales_degres
+        self.calcul_termine = True
+        # Fermer le Splash Screen
+        self.splash_screen_load.close()
 
     def definir_couche_vectorielle(self, couche_vectorielle):
         """Assigne la couche vectorielle où stocker les polylignes."""
@@ -117,85 +106,42 @@ class OutilRupturePente(BaseMapTool):
 
     def confirmer_polyligne(self):
         """Confirme la polyligne actuelle et l'ajoute à la couche vectorielle."""
-        if self.mode_trace_libre:
-            # Sortir du mode tracé libre et inclure les points
-            self.definir_mode_trace_libre(False)
-
         if self.polyligne_confirmee is not None and self.couche_vectorielle is not None:
-            # Construire la polyligne originale à partir de self.liste_points
-            self.polyligne_originale = QgsGeometry.fromPolyline(self.liste_points)
-
-            # Extraire les points avec valeurs Z de la géométrie originale
-            line = self.polyligne_originale.constGet()
-            if isinstance(line, QgsLineString):
-                original_points = line.points()
-            else:
-                QMessageBox.warning(None, "Erreur", "La polyligne originale n'est pas une ligne.")
-                return
-
+            # Si la simplification est activée, simplifier la polyligne confirmée
             if self.simplification_activee:
-                # Obtenir la géométrie simplifiée
-                simplified_geom = self.polyligne_confirmee
-
-                # Densifier la polyligne simplifiée
-                densified_simplified_geom = simplified_geom.densifyByDistance(1)  # Ajustez la distance si nécessaire
-
-                # Extraire les points de la polyligne simplifiée densifiée
-                line_simplified = densified_simplified_geom.constGet()
-                if isinstance(line_simplified, QgsLineString):
-                    simplified_points = line_simplified.points()
-                else:
-                    QMessageBox.warning(None, "Erreur", "La polyligne simplifiée n'est pas une ligne.")
-                    return
-
-                # Calculer les distances cumulatives le long de la polyligne simplifiée
-                simplified_cumulative = [0]
-                for i in range(1, len(simplified_points)):
-                    dist = simplified_points[i - 1].distance(simplified_points[i])
-                    simplified_cumulative.append(simplified_cumulative[-1] + dist)
-                total_simplified_length = simplified_cumulative[-1]
-
-                # Calculer les distances cumulatives le long de la polyligne originale
-                original_cumulative = [0]
-                for i in range(1, len(original_points)):
-                    dist = original_points[i - 1].distance(original_points[i])
-                    original_cumulative.append(original_cumulative[-1] + dist)
-                total_original_length = original_cumulative[-1]
-
-                # Interpoler les valeurs Z de la polyligne originale vers la simplifiée
-                points_avec_z = []
-                for i, point in enumerate(simplified_points):
-                    prop = simplified_cumulative[i] / total_simplified_length if total_simplified_length != 0 else 0
-                    original_dist = prop * total_original_length
-                    # Trouver le segment correspondant sur la polyligne originale
-                    for j in range(1, len(original_cumulative)):
-                        if original_cumulative[j] >= original_dist:
-                            prev_dist = original_cumulative[j - 1]
-                            next_dist = original_cumulative[j]
-                            segment_length = next_dist - prev_dist
-                            t = (original_dist - prev_dist) / segment_length if segment_length != 0 else 0
-                            # Interpoler la valeur Z
-                            z_prev = original_points[j - 1].z() or 0  # Ajouter 'or 0' pour éviter None
-                            z_next = original_points[j].z() or 0
-                            z = z_prev + t * (z_next - z_prev)
-                            break
-                    else:
-                        z = original_points[-1].z() or 0
-                    point_z = QgsPoint(point.x(), point.y(), z)
-                    points_avec_z.append(point_z)
-
-                # Créer la géométrie en 3D
-                polyligne_z = QgsGeometry.fromPolyline(points_avec_z)
+                geometrie_a_sauvegarder = self.simplifier_geometrie(self.polyligne_confirmee)
             else:
-                # Cas sans simplification, utiliser les points originaux avec leurs valeurs Z
-                points_avec_z = []
-                for point in self.liste_points:
-                    z = point.z() or self.obtenir_elevation_au_point_unique(point) or 0
-                    point_z = QgsPoint(point.x(), point.y(), z)
-                    points_avec_z.append(point_z)
-                polyligne_z = QgsGeometry.fromPolyline(points_avec_z)
+                geometrie_a_sauvegarder = self.polyligne_confirmee
 
-            # Créer et ajouter l'entité à la couche vectorielle
+            # Construire la polyligne en 3D avec les valeurs Z du MNT
+            points_avec_z = []
+            if geometrie_a_sauvegarder.isMultipart():
+                # Gérer le cas multipartie si nécessaire
+                parties = geometrie_a_sauvegarder.asMultiPolyline()
+                for partie in parties:
+                    for point in partie:
+                        z = self.obtenir_elevation_au_point(point)
+                        if z is not None:
+                            point_z = QgsPoint(point.x(), point.y(), z)
+                        else:
+                            point_z = QgsPoint(point.x(), point.y(), 0)
+                        points_avec_z.append(point_z)
+            else:
+                line = geometrie_a_sauvegarder.constGet()
+                if isinstance(line, QgsLineString):
+                    for i in range(line.numPoints()):
+                        point = line.pointN(i)
+                        z = self.obtenir_elevation_au_point(point)
+                        if z is not None:
+                            point_z = QgsPoint(point.x(), point.y(), z)
+                        else:
+                            point_z = QgsPoint(point.x(), point.y(), 0)
+                        points_avec_z.append(point_z)
+
+            # Créer la géométrie de la polyligne avec les points simplifiés et les valeurs Z
+            polyligne_z = QgsGeometry.fromPolyline(points_avec_z)
+
+            # Créer une entité et définir sa géométrie et ses attributs
             entite = QgsFeature()
             entite.setGeometry(polyligne_z)
 
@@ -210,6 +156,7 @@ class OutilRupturePente(BaseMapTool):
                 if ok and nom:
                     attributs.append(nom)
                 else:
+                    # Si l'utilisateur annule ou ne saisit pas de nom, mettre une chaîne vide
                     attributs.append('')
             if 'SHAPE_LENGTH' in champs_presentes:
                 longueur = polyligne_z.length()
@@ -234,6 +181,97 @@ class OutilRupturePente(BaseMapTool):
         self.simplification_activee = activee
         self.mettre_a_jour_bande_dynamique()
 
+    def definir_mode_trace_libre(self, tracelibre):
+        """Active ou désactive le mode de tracé libre."""
+        if tracelibre:
+            # Entrer en mode tracé libre
+            self.mode_trace_libre = True
+            self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
+            if self.liste_points:
+                point_depart = self.liste_points[-1]
+                self.points_trace_libre = [point_depart]
+                self.bande_trace_libre.reset(QgsWkbTypes.LineGeometry)
+                self.bande_trace_libre.addPoint(QgsPointXY(point_depart))
+            else:
+                self.points_trace_libre = []
+        else:
+            # Sortir du mode tracé libre
+            self.mode_trace_libre = False
+            self.bande_trace_libre.reset(QgsWkbTypes.LineGeometry)
+            if len(self.points_trace_libre) >= 2:
+                # Ajouter les points tracés librement à liste_points (sauf le point de départ)
+                nouveaux_points = self.points_trace_libre[1:]
+                self.liste_points.extend(nouveaux_points)
+                # Mettre à jour la polyligne confirmée
+                self.polyligne_confirmee = QgsGeometry.fromPolyline(self.liste_points)
+                self.bande_confirmee.reset(QgsWkbTypes.LineGeometry)
+                self.bande_confirmee.addGeometry(self.polyligne_confirmee, None)
+            self.points_trace_libre = []
+
+    def charger_donnees_mnt(self):
+        """Charge les données du MNT en mémoire pour un accès rapide."""
+        # Ouvrir le raster MNT avec GDAL
+        source = self.couche_raster.dataProvider().dataSourceUri()
+        self.dataset = gdal.Open(source)
+
+        if self.dataset is None:
+            print("Impossible d'ouvrir le MNT.")
+            return
+
+        # Obtenir la géotransformation et son inverse
+        self.mnt_gt = self.dataset.GetGeoTransform()
+        self.mnt_inv_gt = gdal.InvGeoTransform(self.mnt_gt)
+
+        if self.mnt_inv_gt is None:
+            print("Impossible de calculer la géotransformation inverse pour le MNT.")
+            return
+
+        # Lire les données du MNT dans un tableau NumPy
+        bande_raster = self.dataset.GetRasterBand(1)
+        self.tableau_raster = bande_raster.ReadAsArray()
+
+        if self.tableau_raster is None:
+            print("Impossible de lire les données du MNT.")
+            return
+
+        # Obtenir les dimensions du raster MNT
+        self.mnt_lignes, self.mnt_colonnes = self.tableau_raster.shape
+
+    def charger_donnees_hillshade(self):
+        """Charge les données de l'ombrage en mémoire pour un accès rapide."""
+        # Ouvrir le raster d'ombrage avec GDAL
+        source = self.couche_ombrage.dataProvider().dataSourceUri()
+        self.hillshade_dataset = gdal.Open(source)
+
+        if self.hillshade_dataset is None:
+            print("Impossible d'ouvrir le raster d'ombrage.")
+            return
+
+        # Obtenir la géotransformation et son inverse
+        self.gt = self.hillshade_dataset.GetGeoTransform()
+        self.inv_gt = gdal.InvGeoTransform(self.gt)
+
+        if self.inv_gt is None:
+            print("Impossible de calculer la géotransformation inverse pour l'ombrage.")
+            return
+
+        # Lire les données de l'ombrage dans un tableau NumPy
+        bande_raster = self.hillshade_dataset.GetRasterBand(1)
+        self.tableau_hillshade = bande_raster.ReadAsArray()
+
+        if self.tableau_hillshade is None:
+            print("Impossible de lire les données du raster d'ombrage.")
+            return
+
+        # Obtenir les dimensions du raster d'ombrage
+        self.raster_lignes, self.raster_colonnes = self.tableau_hillshade.shape
+
+    def definir_fenetre_profil(self, fenetre):
+        """Assigne la fenêtre du profil d'élévation."""
+        self.fenetre_profil = fenetre
+        if self.fenetre_profil is not None:
+            self.fenetre_profil.definir_outil(self)
+
     def mettre_a_jour_bande_dynamique(self):
         """Met à jour la bande élastique dynamique en appliquant ou non la simplification."""
         if self.chemin_dynamique:
@@ -244,73 +282,6 @@ class OutilRupturePente(BaseMapTool):
             else:
                 self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
                 self.bande_dynamique.addGeometry(self.chemin_dynamique, None)
-
-    def definir_fenetre_profil(self, fenetre):
-        """Assigne la fenêtre du profil d'élévation."""
-        self.fenetre_profil = fenetre
-        if self.fenetre_profil is not None:
-            self.fenetre_profil.definir_outil(self)
-
-    def mettre_a_jour_profil(self, geometrie):
-        """Met à jour le profil d'élévation avec le segment dynamique."""
-        if geometrie is None:
-            return
-
-        geom = geometrie.constGet()
-        if isinstance(geom, QgsLineString):
-            # Vérifier si la géométrie est en 3D
-            if geom.is3D():
-                # Extraire les points avec leurs valeurs Z
-                points = [geom.pointN(i) for i in range(geom.numPoints())]
-            else:
-                # La géométrie est en 2D, obtenir les valeurs Z à partir du raster
-                points = []
-                for i in range(geom.numPoints()):
-                    pt_xy = geom.pointN(i)
-                    z = self.obtenir_elevation_au_point_unique(pt_xy)
-                    if z is not None:
-                        point = QgsPoint(pt_xy.x(), pt_xy.y(), z)
-                    else:
-                        point = QgsPoint(pt_xy.x(), pt_xy.y(), 0)
-                    points.append(point)
-        else:
-            QMessageBox.warning(None, "Erreur", "La géométrie n'est pas une ligne.")
-            return
-
-        if not points:
-            QMessageBox.warning(None, "Erreur", "Aucun point dans la géométrie.")
-            return
-
-        elevations = []
-        coordonnees_x = []
-        coordonnees_y = []
-        distances = []
-        distance_totale = 0
-        point_precedent = None
-
-        for point in points:
-            coordonnees_x.append(point.x())
-            coordonnees_y.append(point.y())
-            elevation = point.z() if point.z() else self.obtenir_elevation_au_point_unique(point)
-            elevations.append(elevation if elevation is not None else 0)
-
-            if point_precedent is not None:
-                # Créer un segment entre le point précédent et le point actuel
-                segment = QgsGeometry.fromPolyline([point_precedent, point])  # Les points sont maintenant des QgsPoint
-                distance = segment.length()
-                distance_totale += distance
-            else:
-                distance = 0
-            distances.append(distance_totale)
-            point_precedent = point
-
-        # Appeler la méthode dans fenetre_profil en passant les coordonnées et les élévations
-        self.fenetre_profil.mettre_a_jour_profil(
-            coordonnees_x,
-            y_coords=coordonnees_y,
-            elevations=elevations,
-            longueur_segment=distance_totale
-        )
 
     def simplifier_geometrie(self, geometrie):
         """Simplifie la géométrie en préservant les points critiques."""
@@ -379,26 +350,29 @@ class OutilRupturePente(BaseMapTool):
                 index = i
 
         if dist_max > tol:
-            gauche = self.douglas_peucker_avec_critiques(points[:index + 1], tol, points_critiques)
-            droite = self.douglas_peucker_avec_critiques(points[index:], tol, points_critiques)
+            # Scinder la polyligne et simplifier récursivement
+            left_points = points[:index + 1]
+            right_points = points[index:]
+
+            gauche = self.douglas_peucker_avec_critiques(left_points, tol, points_critiques)
+            droite = self.douglas_peucker_avec_critiques(right_points, tol, points_critiques)
+
             # Supprimer le point dupliqué à la jonction
             simplified_points = gauche[:-1] + droite
         else:
+            # Décider de conserver les points intermédiaires en fonction des points critiques
             points_segment = points[1:-1]
             if any(p in points_critiques for p in points_segment):
                 simplified_points = points
             else:
                 simplified_points = [debut, fin]
 
-        # Assurer que les points simplifiés sont des QgsPoint avec Z
+        # Assurer que simplified_points contient des QgsPoint avec Z
         for idx in range(len(simplified_points)):
             p = simplified_points[idx]
             if not isinstance(p, QgsPoint):
-                z = self.obtenir_elevation_au_point_unique(p) or 0
+                z = p.z() if hasattr(p, 'z') else 0
                 simplified_points[idx] = QgsPoint(p.x(), p.y(), z)
-            elif p.z() == 0 or p.z() is None:
-                z = self.obtenir_elevation_au_point_unique(p) or 0
-                simplified_points[idx].setZ(z)
 
         return simplified_points
 
@@ -414,27 +388,92 @@ class OutilRupturePente(BaseMapTool):
             den = ((y2 - y1) ** 2 + (x2 - x1) ** 2) ** 0.5
             return num / den
 
+    def definir_fenetre_profil(self, fenetre):
+        """Assigne la fenêtre du profil d'élévation."""
+        self.fenetre_profil = fenetre
+        if self.fenetre_profil is not None:
+            self.fenetre_profil.definir_outil(self)
+
+    def mettre_a_jour_profil(self, geometrie):
+        """Met à jour le profil d'élévation avec le segment dynamique."""
+        if geometrie is None:
+            return
+
+        geom = geometrie.constGet()
+        if isinstance(geom, QgsLineString):
+            # Vérifier si la géométrie est en 3D
+            if geom.is3D():
+                # Extraire les points avec leurs valeurs Z
+                points = [geom.pointN(i) for i in range(geom.numPoints())]
+            else:
+                # La géométrie est en 2D, obtenir les valeurs Z à partir du raster
+                points = []
+                for i in range(geom.numPoints()):
+                    pt_xy = geom.pointN(i)
+                    z = self.obtenir_elevation_au_point_unique(pt_xy)
+                    if z is not None:
+                        point = QgsPoint(pt_xy.x(), pt_xy.y(), z)
+                    else:
+                        point = QgsPoint(pt_xy.x(), pt_xy.y(), 0)
+                    points.append(point)
+        else:
+            QMessageBox.warning(None, "Erreur", "La géométrie n'est pas une ligne.")
+            return
+
+        if not points:
+            QMessageBox.warning(None, "Erreur", "Aucun point dans la géométrie.")
+            return
+
+        elevations = []
+        coordonnees_x = []
+        coordonnees_y = []
+        distances = []
+        distance_totale = 0
+        point_precedent = None
+
+        for point in points:
+            coordonnees_x.append(point.x())
+            coordonnees_y.append(point.y())
+            elevation = point.z() if point.z() else self.obtenir_elevation_au_point_unique(point)
+            elevations.append(elevation if elevation is not None else 0)
+
+            if point_precedent is not None:
+                # Créer un segment entre le point précédent et le point actuel
+                segment = QgsGeometry.fromPolyline([point_precedent, point])  # Les points sont maintenant des QgsPoint
+                distance = segment.length()
+                distance_totale += distance
+            else:
+                distance = 0
+            distances.append(distance_totale)
+            point_precedent = point
+
+        # Appeler la méthode dans fenetre_profil en passant les coordonnées et les élévations
+        self.fenetre_profil.mettre_a_jour_profil(
+            coordonnees_x,
+            y_coords=coordonnees_y,
+            elevations=elevations,
+            longueur_segment=distance_totale
+        )
+
     def distance_euclidienne(self, p1, p2):
         """Calcule la distance euclidienne entre deux points en 2D."""
         dx = p1.x() - p2.x()
         dy = p1.y() - p2.y()
         return (dx * dx + dy * dy) ** 0.5
 
-    def obtenir_elevation_au_point_unique(self, point):
+    def obtenir_elevation_au_point(self, point):
         """Obtient l’élévation du raster au point donné."""
-        # On ne dépend plus de point.z()
-        if isinstance(point, QgsPointXY):
-            point_xy = point
-        else:
-            point_xy = QgsPointXY(point.x(), point.y())
+        original_z = point.z()
+        point_xy = QgsPointXY(point.x(), point.y())
 
         if self.crs_raster != self.crs_canvas:
             point_xy_transforme = self.transformation_vers_raster.transform(point_xy)
+            point = QgsPoint(point_xy_transforme.x(), point_xy_transforme.y(), original_z)
         else:
-            point_xy_transforme = point_xy
+            point = point
 
-        x = point_xy_transforme.x()
-        y = point_xy_transforme.y()
+        x = point.x()
+        y = point.y()
         px, py = gdal.ApplyGeoTransform(self.inv_gt, x, y)
         px = int(px)
         py = int(py)
@@ -444,16 +483,46 @@ class OutilRupturePente(BaseMapTool):
         else:
             return None
 
+    def charger_donnees_raster(self):
+        """Charge les données raster en mémoire pour un accès rapide."""
+        # Ouvrir le raster avec GDAL
+        source = self.couche_raster.dataProvider().dataSourceUri()
+        self.dataset = gdal.Open(source)
+
+        if self.dataset is None:
+            print("Impossible d'ouvrir le raster.")
+            return
+
+        # Obtenir la géotransformation et son inverse
+        self.gt = self.dataset.GetGeoTransform()
+        self.inv_gt = gdal.InvGeoTransform(self.gt)
+
+        if self.inv_gt is None:
+            print("Impossible de calculer la géotransformation inverse.")
+            return
+
+        # Lire les données du raster dans un tableau NumPy
+        bande_raster = self.dataset.GetRasterBand(1)
+        self.tableau_raster = bande_raster.ReadAsArray()
+
+        if self.tableau_raster is None:
+            print("Impossible de lire les données du raster.")
+            return
+
+        # Obtenir les dimensions du raster
+        self.raster_lignes, self.raster_colonnes = self.tableau_raster.shape
 
     def calculer_pentes_locales(self):
         """Calcule la pente locale pour chaque pixel du raster en utilisant Dask."""
+        import dask.array as da
+        from osgeo import gdal_array
 
         # Ouvrir le raster
         source = self.couche_raster.dataProvider().dataSourceUri()
         raster = gdal_array.LoadFile(source)
 
         # Créer un Dask array à partir du NumPy array
-        dask_array = da.from_array(raster, chunks=(1000, 1000))
+        dask_array = da.from_array(raster, chunks=(1000, 1000)) # Ajuster la taille des chunks
 
         # Calculer le gradient en utilisant Dask
         grad_y, grad_x = da.gradient(dask_array, self.gt[1], -self.gt[5])
@@ -472,13 +541,12 @@ class OutilRupturePente(BaseMapTool):
             return
 
         point_xy = self.toMapCoordinates(event.pos())
-        # Convertir en QgsPoint avec Z=0
         point_carte = QgsPoint(point_xy.x(), point_xy.y(), 0)
 
         if self.mode_trace_libre:
             # Mode tracé libre
             self.points_trace_libre.append(point_carte)
-            self.bande_trace_libre.addPoint(QgsPointXY(point_carte))  # Conversion en QgsPointXY
+            self.bande_trace_libre.addPoint(QgsPointXY(point_carte))
         else:
             if not self.liste_points:
                 # Premier clic : ajouter le point de départ
@@ -516,25 +584,24 @@ class OutilRupturePente(BaseMapTool):
     def canvasMoveEvent(self, event):
         if not self.calcul_termine:
             return
-        if self.liste_points:
-            point_xy = self.toMapCoordinates(event.pos())
-            # Convertir en QgsPoint avec Z=0
-            point_actuel = QgsPoint(point_xy.x(), point_xy.y(), 0)
 
-            if self.mode_trace_libre:
-                if self.points_trace_libre:
-                    self.bande_trace_libre.reset(QgsWkbTypes.LineGeometry)
-                    for point in self.points_trace_libre:
-                        self.bande_trace_libre.addPoint(QgsPointXY(point))  # Conversion en QgsPointXY
-                    self.bande_trace_libre.addPoint(QgsPointXY(point_actuel))  # Conversion en QgsPointXY
-
-            else :
+        if self.mode_trace_libre:
+            # Mode tracé libre
+            point_actuel = self.toMapCoordinates(event.pos())
+            if self.points_trace_libre:
+                self.bande_trace_libre.reset(QgsWkbTypes.LineGeometry)
+                for point in self.points_trace_libre:
+                    self.bande_trace_libre.addPoint(QgsPointXY(point))
+                self.bande_trace_libre.addPoint(QgsPointXY(point_actuel))
+        else:
+            if self.liste_points:
+                point_xy = self.toMapCoordinates(event.pos())
+                point_actuel = QgsPoint(point_xy.x(), point_xy.y(), 0)
                 geometrie_chemin = self.calculer_chemin_rupture_pente(self.liste_points[-1], point_actuel)
                 if geometrie_chemin:
-                    # Mettre à jour la polyligne dynamique
                     self.chemin_dynamique = geometrie_chemin
-                    # Mettre à jour la bande dynamique en appliquant la simplification si activée
                     self.mettre_a_jour_bande_dynamique()
+                    # Ajouter cet appel pour mettre à jour le profil topo 3D
                     if self.fenetre_profil:
                         self.mettre_a_jour_profil(self.chemin_dynamique)
 
@@ -655,7 +722,7 @@ class OutilRupturePente(BaseMapTool):
             x, y = gdal.ApplyGeoTransform(self.gt, px + 0.5, py + 0.5)
             point = QgsPoint(x, y)
             # Obtenir l'élévation au point
-            z = self.obtenir_elevation_au_point_unique(point)
+            z = self.obtenir_elevation_au_point(point)
             if z is None:
                 z = 0  # Valeur par défaut si l'élévation n'est pas disponible
             point.setZ(z)
@@ -672,6 +739,26 @@ class OutilRupturePente(BaseMapTool):
 
         return geometrie_chemin
 
+    def nettoyer_ressources(self):
+        """Nettoyage des ressources et réinitialisation de l'outil."""
+        self.reinitialiser() # Réinitialiser les bandes élastiques et autres éléments temporaires
+
+        # Libérer le dataset GDAL
+        if hasattr(self, 'dataset'):
+            self.dataset = None
+
+        # Libérer les grands tableaux NumPy
+        if hasattr(self, 'tableau_raster'):
+            del self.tableau_raster
+            self.tableau_raster = None
+
+        if hasattr(self, 'pentes_locales'):
+            del self.pentes_locales
+            self.pentes_locales = None
+
+        if hasattr(self, 'pentes_locales_degres'):
+            del self.pentes_locales_degres
+            self.pentes_locales_degres = None
 
     def reinitialiser(self):
         """Réinitialise l'outil pour un nouveau tracé."""
@@ -680,6 +767,9 @@ class OutilRupturePente(BaseMapTool):
         self.polyligne_confirmee = None
         self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
         self.bande_confirmee.reset(QgsWkbTypes.LineGeometry)
+        self.bande_trace_libre.reset(QgsWkbTypes.LineGeometry)
+        self.points_trace_libre = []
+        self.mode_trace_libre = False
 
     def charger_nouveau_mnt(self, couche_raster):
         """Change le MNT actif pour l'analyse et configure les ressources nécessaires."""
@@ -697,3 +787,28 @@ class OutilRupturePente(BaseMapTool):
 
         # Calcul des pentes locales pour le nouveau MNT
         self.calculer_pentes_locales()
+
+    def nettoyer_ressources(self):
+        """Nettoyage des ressources et réinitialisation de l'outil."""
+        self.reinitialiser()  # Réinitialiser les bandes élastiques et autres éléments temporaires
+
+        # Libérer le dataset GDAL du MNT
+        if hasattr(self, 'dataset'):
+            self.dataset = None
+
+        # Libérer le dataset GDAL de l'ombrage
+        if hasattr(self, 'hillshade_dataset'):
+            self.hillshade_dataset = None
+
+        # Libérer les grands tableaux NumPy
+        if hasattr(self, 'tableau_raster'):
+            del self.tableau_raster
+            self.tableau_raster = None
+
+        if hasattr(self, 'tableau_hillshade'):
+            del self.tableau_hillshade
+            self.tableau_hillshade = None
+
+        if hasattr(self, 'pentes_locales_degres'):
+            del self.pentes_locales_degres
+            self.pentes_locales_degres = None

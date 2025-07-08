@@ -57,7 +57,6 @@ class BaseMapTool(QgsMapTool):
         # Démarrer le calcul des pentes dans un thread
         self.calcul_pentes_thread = CalculPentesThread(self.tableau_raster, self.gt)
         self.calcul_pentes_thread.result_ready.connect(self.on_pentes_calculees)
-        self.calcul_pentes_thread.error_occurred.connect(self.on_pentes_calculees_error)
         self.calcul_pentes_thread.start()
 
 
@@ -116,7 +115,7 @@ class BaseMapTool(QgsMapTool):
         self.raster_lignes, self.raster_colonnes = self.tableau_raster.shape
 
 
-    def obtenir_elevation_au_point(self, point):
+    def obtenir_elevation_au_point_unique(self, point):
         """Obtient l'élévation du raster au point donné."""
         if self.crs_raster != self.crs_canvas:
             point = self.transformation_vers_raster.transform(point)

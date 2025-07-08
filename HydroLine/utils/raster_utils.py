@@ -96,7 +96,7 @@ def filtre_moyen_raster(couche_raster_entree, kernel_size=3):
     output_dataset = None
 
     # Créer une nouvelle couche raster à partir du chemin de sortie
-    output_raster_layer = QgsRasterLayer(output_path, 'Raster Filtré')
+    output_raster_layer = QgsRasterLayer(output_path, 'MNT_HydroLine')
 
     if not output_raster_layer.isValid():
         return None
@@ -128,7 +128,7 @@ def generer_ombrage(couche_raster_entree):
         'OUTPUT': 'TEMPORARY_OUTPUT'
     }
     output = processing.run("gdal:hillshade", params)
-    couche_ombrage = QgsRasterLayer(output['OUTPUT'], 'Ombrage')
+    couche_ombrage = QgsRasterLayer(output['OUTPUT'], 'Ombrage_HydroLine')
     return couche_ombrage if couche_ombrage.isValid() else None
 
 
@@ -156,7 +156,7 @@ def fusionner_et_arrondir_rasters(couches_raster, precision_decimales=1):
         'OUTPUT': 'TEMPORARY_OUTPUT'
     }
     fusion_output = processing.run("gdal:merge", merge_params)
-    couche_fusionnee = QgsRasterLayer(fusion_output['OUTPUT'], 'Raster_Combine')
+    couche_fusionnee = QgsRasterLayer(fusion_output['OUTPUT'], 'Raster_Combine_HydroLine')
 
     if not couche_fusionnee.isValid():
         return None
@@ -169,5 +169,35 @@ def fusionner_et_arrondir_rasters(couches_raster, precision_decimales=1):
         'RTYPE': 6  # Float32
     }
     calc_output = processing.run("gdal:rastercalculator", calc_params)
-    couche_arrondie = QgsRasterLayer(calc_output['OUTPUT'], 'Raster Final Arrondi')
+    couche_arrondie = QgsRasterLayer(calc_output['OUTPUT'], 'MNT_Raster_HydroLine')
     return couche_arrondie if couche_arrondie.isValid() else None
+
+
+def generer_ombrage_invisible(couche_raster_entree):
+    """
+    Génère un ombrage pour la couche de raster entrée.
+
+    Args:
+        couche_raster_entree (QgsRasterLayer): La couche raster d'entrée.
+
+    Returns:
+        QgsRasterLayer: La couche raster d'ombrage.
+    """
+    params = {
+        'INPUT': couche_raster_entree.source(),
+        'BAND': 1,
+        'Z_FACTOR': 1.0,
+        'SCALE': 1.0,
+        'AZIMUTH': 315.0,
+        'ALTITUDE': 45.0,
+        'COMPUTE_EDGES': False,
+        'ZEVENBERGEN': False,
+        'MULTIDIRECTIONAL': False,
+        'COMBINED': False,
+        'OUTPUT': 'TEMPORARY_OUTPUT'
+    }
+    output = processing.run("gdal:hillshade", params, feedback=None)
+    couche_ombrage = QgsRasterLayer(output['OUTPUT'], 'Ombrage')
+
+    # Ne pas ajouter la couche au projet
+    return couche_ombrage if couche_ombrage.isValid() else None
