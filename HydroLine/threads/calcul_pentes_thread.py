@@ -13,8 +13,7 @@ class CalculPentesThread(QThread):
 
     def run(self):
         """Exécute le calcul des pentes locales."""
-        import dask.array as da
-
+        from ..external.dask import array as da
         try:
             # Créer un Dask array à partir du tableau NumPy
             dask_array = da.from_array(self.hillshade_array, chunks=(1000, 1000))  # Ajustez les chunks si nécessaire
