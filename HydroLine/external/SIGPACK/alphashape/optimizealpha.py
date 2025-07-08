@@ -3,9 +3,9 @@ import sys
 import logging
 import shapely
 from shapely.geometry import MultiPoint
-import trimesh
 from typing import Union, Tuple, List
-import rtree  # Needed by trimesh
+from ..alphashape import rtree
+from ..alphashape import trimesh
 import numpy as np
 try:
     import geopandas
