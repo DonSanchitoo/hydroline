@@ -378,7 +378,7 @@ class HydroLine(QObject):
 
         # Bouton tracé libre
         self.action_tracer_libre = QAction(QIcon(os.path.join(chemin_icones, "icon_toggle.png")),
-                                           self.traduire(u'Tracé Libre'), self.interface_qgis.mainWindow())
+                                           self.traduire(u'Tracé Libre : Touche S'), self.interface_qgis.mainWindow())
         self.action_tracer_libre.setCheckable(True)
         self.action_tracer_libre.toggled.connect(self.basculer_tracer_libre)
         self.barre_outils.insertAction(self.action_bouton_menu, self.action_tracer_libre)
@@ -393,7 +393,7 @@ class HydroLine(QObject):
 
         self.action_ligne_crete_suivante = QAction(
             QIcon(os.path.join(chemin_icones, "icon_next.png")),
-            self.traduire(u'Ajouter la polyligne active à la couche / Démarrer une autre'),
+            self.traduire(u'Ajouter la polyligne active à la couche / Démarrer une autre : Touche D'),
             self.interface_qgis.mainWindow()
         )
         self.action_ligne_crete_suivante.triggered.connect(self.ligne_extreme_suivante)
@@ -435,7 +435,7 @@ class HydroLine(QObject):
         # Bouton "tracé libre"
         self.action_tracer_libre_rupture = QAction(
             QIcon(os.path.join(chemin_icones, "icon_toggle.png")),
-            self.traduire(u'Tracé Libre'),
+            self.traduire(u'Tracé Libre : Touche S'),
             self.interface_qgis.mainWindow()
         )
         self.action_tracer_libre_rupture.setCheckable(True)
@@ -447,7 +447,7 @@ class HydroLine(QObject):
         # Bouton pour "ligne de rupture suivante"
         self.action_ligne_rupture_suivante = QAction(
             QIcon(os.path.join(chemin_icones, "icon_next.png")),
-            self.traduire(u'Ajouter la polyligne active à la couche / Démarrer une autre'),
+            self.traduire(u'Ajouter la polyligne active à la couche / Démarrer une autre : Touche D'),
             self.interface_qgis.mainWindow()
         )
         self.action_ligne_rupture_suivante.triggered.connect(self.ligne_rupture_suivante)
@@ -730,6 +730,10 @@ class HydroLine(QObject):
             return
 
         self.outil_rupture_pente = OutilRupturePente(self.canvas, couche_mnt, mode=mode_selectionne)
+        # Connecter le signal
+        self.outil_rupture_pente.mode_trace_libre_changed.connect(self.action_tracer_libre_rupture.setChecked)
+
+        self.outil_rupture_pente = OutilRupturePente(self.canvas, couche_mnt, mode=mode_selectionne)
 
         self.outil_rupture_pente.definir_couche_vectorielle(self.couche_rupture)
 
@@ -837,6 +841,8 @@ class HydroLine(QObject):
             return
 
         self.outil_trace_crete = OutilTraceCrete(self.canvas, couche_mnt)
+        # Connecter le signal
+        self.outil_trace_crete.mode_trace_libre_changed.connect(self.action_tracer_libre.setChecked)
 
         self.outil_trace_crete.definir_couche_vectorielle(self.couche_crete)
         self.canvas.setMapTool(self.outil_trace_crete)
