@@ -19,10 +19,12 @@ if chemin_plugin not in sys.path:
 
 
 from PyQt5.QtCore import Qt
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QDialog, QFrame
 from PyQt5.QtGui import QPixmap
 
-from PyQt5.QtCore import QUrl, QTimer
+from PyQt5.QtCore import QUrl, QTimer, pyqtSignal
+
 
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QPoint, QVariant
 from qgis.PyQt.QtGui import QIcon, QColor, QPainter
@@ -49,6 +51,7 @@ import numpy as np
 import math
 
 from .outil_points_bas import select_next_pixel as select_next_pixel_points_bas
+from ..utils.undo_manager import UndoManager, AddPointsAction
 
 
 class OutilTraceCrete(BaseMapTool):
@@ -69,6 +72,8 @@ class OutilTraceCrete(BaseMapTool):
         self.data_loaded = False
         self.points_bas_active = False
         self.select_next_pixel_func = self.select_next_pixel_points_hauts
+        self.undo_manager = UndoManager()
+
 
         # Pré-calcul des transformations de coordonnées
         self.crs_canvas = self.canvas.mapSettings().destinationCrs()
@@ -108,6 +113,37 @@ class OutilTraceCrete(BaseMapTool):
         self.raster_loading_thread = RasterLoadingThread(self.couche_raster)
         self.raster_loading_thread.raster_loaded.connect(self.on_raster_loaded)
         self.raster_loading_thread.start()
+
+    mode_trace_libre_changed = pyqtSignal(bool)
+
+    def activate(self):
+        super().activate()
+        self.canvas.setFocus()
+        self.canvas.installEventFilter(self)
+
+    def deactivate(self):
+        self.canvas.removeEventFilter(self)
+        super().deactivate()
+
+    def eventFilter(self, obj, event):
+        if obj == self.canvas and event.type() == QtCore.QEvent.KeyPress:
+            key = event.key()
+            if key == Qt.Key_S:
+                self.definir_mode_trace_libre(not self.mode_trace_libre)
+                return True
+            elif key == Qt.Key_C:
+                self.confirmer_polyligne()
+                return True
+            elif key == Qt.Key_Z and event.modifiers() & Qt.ControlModifier:
+                self.undo_last_action()
+                return True
+        return False
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_S:
+            self.definir_mode_trace_libre(not self.mode_trace_libre)
+        else:
+            super().keyPressEvent(event)
 
     def on_raster_loaded(self, tableau_raster, gt, inv_gt, raster_lignes, raster_colonnes):
         """Callback lorsque le chargement du raster est terminé."""
@@ -166,7 +202,7 @@ class OutilTraceCrete(BaseMapTool):
         """Confirme la polyligne actuelle et l'ajoute à la couche vectorielle."""
         if self.polyligne_confirmee is not None and self.couche_vectorielle is not None:
             # Construire la polyligne originale à partir de self.liste_points
-            self.polyligne_originale = QgsGeometry.fromPolylineXY(self.liste_points)
+            self.polyligne_originale = QgsGeometry.fromPolyline(self.liste_points)
 
             # Vérifier si la simplification est activée
             if self.simplification_activee:
@@ -302,7 +338,6 @@ class OutilTraceCrete(BaseMapTool):
                 self.bande_dynamique.addGeometry(self.chemin_dynamique, None)
 
     def definir_mode_trace_libre(self, tracelibre):
-        """Bascule le mode de tracé libre."""
         if tracelibre:
             # Entrer en mode tracé libre
             self.mode_trace_libre = True
@@ -311,7 +346,7 @@ class OutilTraceCrete(BaseMapTool):
                 point_depart = self.liste_points[-1]
                 self.points_trace_libre = [point_depart]
                 self.bande_trace_libre.reset(QgsWkbTypes.LineGeometry)
-                self.bande_trace_libre.addPoint(point_depart)
+                self.bande_trace_libre.addPoint(QgsPointXY(point_depart))  # Conversion en QgsPointXY
             else:
                 self.points_trace_libre = []
         else:
@@ -319,78 +354,28 @@ class OutilTraceCrete(BaseMapTool):
             self.mode_trace_libre = False
             self.bande_trace_libre.reset(QgsWkbTypes.LineGeometry)
             if len(self.points_trace_libre) >= 2:
-                # Ajouter les points tracés librement à liste_points
+                # Ajouter les points tracés librement à liste_points (sauf le point de départ)
                 nouveaux_points = self.points_trace_libre[1:]
-                self.liste_points.extend(nouveaux_points)
+                # Convertir en QgsPoint avec Z
+                nouveaux_points_qgspoint = []
+                for p in nouveaux_points:
+                    elevation = self.obtenir_elevation_au_point(p)
+                    if elevation is not None:
+                        point_z = QgsPoint(p.x(), p.y(), elevation)
+                    else:
+                        point_z = QgsPoint(p.x(), p.y(), 0)
+                    nouveaux_points_qgspoint.append(point_z)
+
+                # Créer une action d'annulation pour ces points
+                action = AddPointsAction(self, nouveaux_points_qgspoint)
+                self.undo_manager.add_action(action)
+
+                self.liste_points.extend(nouveaux_points_qgspoint)
                 # Mettre à jour la polyligne confirmée
-                self.polyligne_confirmee = QgsGeometry.fromPolylineXY(self.liste_points)
+                self.polyligne_confirmee = QgsGeometry.fromPolyline(self.liste_points)
                 self.bande_confirmee.reset(QgsWkbTypes.LineGeometry)
                 self.bande_confirmee.addGeometry(self.polyligne_confirmee, None)
-            self.points_trace_libre = []
-
-    def calculer_chemin_dijkstra(self, cost_raster, start, end):
-        import heapq
-
-        height, width = cost_raster.shape
-        visited = np.full((height, width), False)
-        distances = np.full((height, width), np.inf)
-        previous = np.full((height, width, 2), -1, dtype=int)
-
-        # File prioritaire pour l'ensemble ouvert
-        heap = []
-
-        sy, sx = start
-        ey, ex = end
-
-        distances[sy, sx] = 0
-        heapq.heappush(heap, (0, (sy, sx)))
-
-        # Directions (8-connectivité)
-        neighbors = [(-1, 0), (1, 0), (0, -1), (0, 1),
-                     (-1, -1), (-1, 1), (1, -1), (1, 1)]
-
-        while heap:
-            current_distance, (cy, cx) = heapq.heappop(heap)
-
-            if (cy, cx) == (ey, ex):
-                # Destination trouvée
-                break
-
-            if visited[cy, cx]:
-                continue
-
-            visited[cy, cx] = True
-
-            for dy, dx in neighbors:
-                ny, nx = cy + dy, cx + dx
-                if 0 <= ny < height and 0 <= nx < width:
-                    if not visited[ny, nx] and cost_raster[ny, nx] != np.inf:
-                        # Coût de mouvement
-                        if dy != 0 and dx != 0:
-                            movement_cost = math.sqrt(2)
-                        else:
-                            movement_cost = 1
-                        total_cost = current_distance + cost_raster[ny, nx] * movement_cost
-                        if total_cost < distances[ny, nx]:
-                            distances[ny, nx] = total_cost
-                            previous[ny, nx] = [cy, cx]
-                            heapq.heappush(heap, (total_cost, (ny, nx)))
-
-        # Reconstruire le chemin
-        path = []
-        cy, cx = ey, ex
-        if distances[cy, cx] == np.inf:
-            return None  # Chemin non trouvé
-
-        while (cy, cx) != (sy, sx):
-            path.append((cy, cx))
-            cy, cx = previous[cy, cx]
-            if cy == -1:
-                return None  # Chemin non trouvé
-
-        path.append((sy, sx))
-        path.reverse()
-        return path
+                self.points_trace_libre = []
 
     def lisser_chemin(self, points, intensite=0.1):
         """
@@ -417,38 +402,85 @@ class OutilTraceCrete(BaseMapTool):
             points = new_points
         return points
 
-    def canvasPressEvent(self, event):
-        """Gestion des clics de souris."""
-        if not self.data_loaded:
-            QMessageBox.information(None, "Chargement en cours",
-                                    "Veuillez patienter, le chargement des données est en cours.")
-            return
+    def undo_last_action(self):
+        if not self.undo_manager.can_undo():
+            QMessageBox.information(None, "Information", "Aucune action à annuler.")
+        else:
+            self.undo_manager.undo()
 
-        point_carte = self.toMapCoordinates(event.pos())
+    def remove_last_point(self):
+        if self.liste_points:
+            self.liste_points.pop()
+            # Mettre à jour la polyligne confirmée et les bandes élastiques
+            if self.liste_points:
+                self.polyligne_confirmee = QgsGeometry.fromPolyline(self.liste_points)
+                self.bande_confirmee.reset(QgsWkbTypes.LineGeometry)
+                self.bande_confirmee.addGeometry(self.polyligne_confirmee, None)
+            else:
+                self.polyligne_confirmee = None
+                self.bande_confirmee.reset(QgsWkbTypes.LineGeometry)
+            # Réinitialiser le chemin dynamique
+            self.chemin_dynamique = None
+            self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
+        else:
+            QMessageBox.information(None, "Information", "Aucun point à annuler.")
+
+    def canvasPressEvent(self, event):
+        point_carte_xy = self.toMapCoordinates(event.pos())
+        point_carte = QgsPoint(point_carte_xy.x(), point_carte_xy.y())
+        elevation = self.obtenir_elevation_au_point(point_carte)
+        if elevation is not None:
+            point_carte.setZ(elevation)
+        else:
+            point_carte.setZ(0)
 
         if self.mode_trace_libre:
             # Mode tracé libre
             self.points_trace_libre.append(point_carte)
-            self.bande_trace_libre.addPoint(point_carte)
+            self.bande_trace_libre.addPoint(QgsPointXY(point_carte))
+            # Créer une action d'annulation pour ce point
+            action = AddPointsAction(self, [point_carte], mode='trace_libre')
+            self.undo_manager.add_action(action)
         else:
             if not self.liste_points:
                 # Premier clic : ajouter le point de départ
                 self.liste_points.append(point_carte)
+                # Créer une action d'annulation pour ce point
+                action = AddPointsAction(self, [point_carte])
+                self.undo_manager.add_action(action)
             else:
-                # Confirmer le segment actuel
                 if self.chemin_dynamique:
-                    nouveaux_points = self.chemin_dynamique.asPolyline()[1:]  # Exclure le premier point
-                    self.liste_points.extend(nouveaux_points)
-                    self.polyligne_confirmee = QgsGeometry.fromPolylineXY(self.liste_points)
+                    # Utiliser la géométrie simplifiée si la simplification est activée
+                    if self.simplification_activee:
+                        geometrie_a_utiliser = self.simplifier_geometrie(self.chemin_dynamique)
+                    else:
+                        geometrie_a_utiliser = self.chemin_dynamique
+
+                    # Extraire les nouveaux points (en excluant le premier point)
+                    nouveaux_points = geometrie_a_utiliser.asPolyline()[1:]
+
+                    # Convertir les nouveaux points en objets QgsPoint avec Z
+                    converted_points = []
+                    for p in nouveaux_points:
+                        elevation = self.obtenir_elevation_au_point(p)
+                        if elevation is not None:
+                            p_z = QgsPoint(p.x(), p.y(), elevation)
+                        else:
+                            p_z = QgsPoint(p.x(), p.y(), 0)
+                        converted_points.append(p_z)
+
+                    # Créer une action d'annulation pour ces points
+                    action = AddPointsAction(self, converted_points)
+                    self.undo_manager.add_action(action)
+
+                    # Ajouter les points à la liste
+                    self.liste_points.extend(converted_points)
+                    # Mettre à jour la polyligne confirmée
+                    self.polyligne_confirmee = QgsGeometry.fromPolyline(self.liste_points)
                     self.bande_confirmee.reset(QgsWkbTypes.LineGeometry)
                     self.bande_confirmee.addGeometry(self.polyligne_confirmee, None)
                     self.chemin_dynamique = None
                     self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
-                # Réinitialiser le dernier point de mouvement
-                self.dernier_point_deplacement = None
-                # Réinitialiser le graphique
-                if self.fenetre_profil:
-                    self.fenetre_profil.reinitialiser()
 
     def canvasMoveEvent(self, event):
         """Gestion des mouvements de souris."""
@@ -457,15 +489,28 @@ class OutilTraceCrete(BaseMapTool):
 
         if self.mode_trace_libre:
             # Mode tracé libre
-            point_actuel = self.toMapCoordinates(event.pos())
+            point_actuel_xy = self.toMapCoordinates(event.pos())
+            point_actuel = QgsPoint(point_actuel_xy.x(), point_actuel_xy.y())
+            elevation = self.obtenir_elevation_au_point(point_actuel)
+            if elevation is not None:
+                point_actuel.setZ(elevation)
+            else:
+                point_actuel.setZ(0)
             if self.points_trace_libre:
                 self.bande_trace_libre.reset(QgsWkbTypes.LineGeometry)
                 for point in self.points_trace_libre:
-                    self.bande_trace_libre.addPoint(point)
-                self.bande_trace_libre.addPoint(point_actuel)
+                    self.bande_trace_libre.addPoint(QgsPointXY(point))
+                self.bande_trace_libre.addPoint(QgsPointXY(point_actuel))
+
         else:
             if self.liste_points:
-                point_actuel = self.toMapCoordinates(event.pos())
+                point_actuel_xy = self.toMapCoordinates(event.pos())
+                point_actuel = QgsPoint(point_actuel_xy.x(), point_actuel_xy.y())
+                elevation = self.obtenir_elevation_au_point(point_actuel)
+                if elevation is not None:
+                    point_actuel.setZ(elevation)
+                else:
+                    point_actuel.setZ(0)
                 # Comportement par défaut
                 if self.mode == 1:
                     if self.dernier_point_deplacement is None:

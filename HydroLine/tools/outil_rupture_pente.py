@@ -17,12 +17,15 @@ from qgis.core import (
     QgsGeometry,
     QgsPointXY,
 )
+from PyQt5.QtCore import pyqtSignal
+from PyQt5 import QtCore
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QMenu, QToolButton, QInputDialog, QDockWidget, QWidget, QVBoxLayout, QComboBox, QApplication
 from qgis.gui import QgsMapTool, QgsRubberBand
 
 from .base_map_tool import BaseMapTool
 from ..threads.calcul_pentes_thread import CalculPentesThread
 from ..utils.raster_utils import generer_ombrage_invisible
+from ..utils.undo_manager import UndoManager, AddPointsAction
 
 
 class OutilRupturePente(BaseMapTool):
@@ -44,6 +47,8 @@ class OutilRupturePente(BaseMapTool):
         self.simplification_activee = False
         self.tolerance_simplification = 2.0
         self.calcul_termine = False
+        self.undo_manager = UndoManager()
+
 
         # Pré-calcul des transformations de coordonnées
         self.crs_canvas = self.canvas.mapSettings().destinationCrs()
@@ -57,7 +62,7 @@ class OutilRupturePente(BaseMapTool):
 
         # Bande élastique pour la ligne dynamique
         self.bande_dynamique = QgsRubberBand(self.canvas, QgsWkbTypes.LineGeometry)
-        self.bande_dynamique.setColor(QColor(255, 0, 0))
+        self.bande_dynamique.setColor(QColor(255, 255, 0))
         self.bande_dynamique.setWidth(2)
         self.bande_dynamique.setLineStyle(Qt.DashLine)
 
@@ -76,6 +81,11 @@ class OutilRupturePente(BaseMapTool):
         # Pré-chargement des données raster
         self.charger_donnees_raster()
 
+        # Démarrer le calcul des pentes locales dans un thread séparé
+        self.calcul_pentes_thread = CalculPentesThread(self.tableau_raster, self.gt)
+        self.calcul_pentes_thread.result_ready.connect(self.on_pentes_calculees)
+        self.calcul_pentes_thread.start()
+
         # Générer l'ombrage à partir du MNT en utilisant 'generer_ombrage'
         self.couche_ombrage = generer_ombrage_invisible(self.couche_raster)
         if self.couche_ombrage is None:
@@ -90,6 +100,61 @@ class OutilRupturePente(BaseMapTool):
         self.calcul_pentes_thread.result_ready.connect(self.on_pentes_calculees)
         self.calcul_pentes_thread.start()
 
+    mode_trace_libre_changed = pyqtSignal(bool)
+
+    def on_pentes_calculees(self, pentes_locales_degres):
+        """Appelé lorsque le calcul des pentes est terminé."""
+        self.pentes_locales_degres = pentes_locales_degres
+        self.calcul_termine = True
+        # Fermer le Splash Screen
+        self.splash_screen_load.close()
+
+
+    def activate(self):
+        super().activate()
+        self.canvas.setFocus()
+        self.canvas.installEventFilter(self)
+
+    def deactivate(self):
+        self.canvas.removeEventFilter(self)
+        super().deactivate()
+
+    def eventFilter(self, obj, event):
+        if obj == self.canvas and event.type() == QtCore.QEvent.KeyPress:
+            key = event.key()
+            if key == Qt.Key_S:
+                self.definir_mode_trace_libre(not self.mode_trace_libre)
+                return True
+            elif key == Qt.Key_C:
+                self.confirmer_polyligne()
+                return True
+            elif key == Qt.Key_Z and event.modifiers() & Qt.ControlModifier:
+                self.undo_last_action()
+                return True
+        return False
+
+    def undo_last_action(self):
+        if not self.undo_manager.can_undo():
+            QMessageBox.information(None, "Information", "Aucune action à annuler.")
+        else:
+            self.undo_manager.undo()
+
+    def remove_last_point(self):
+        if self.liste_points:
+            self.liste_points.pop()
+            # Mettre à jour la polyligne confirmée et les bandes élastiques
+            if self.liste_points:
+                self.polyligne_confirmee = QgsGeometry.fromPolylineXY(self.liste_points)
+                self.bande_confirmee.reset(QgsWkbTypes.LineGeometry)
+                self.bande_confirmee.addGeometry(self.polyligne_confirmee, None)
+            else:
+                self.polyligne_confirmee = None
+                self.bande_confirmee.reset(QgsWkbTypes.LineGeometry)
+            # Réinitialiser le chemin dynamique
+            self.chemin_dynamique = None
+            self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
+        else:
+            QMessageBox.information(None, "Information", "Aucun point à annuler.")
 
     def on_pentes_calculees(self, pentes_locales_degres):
         """Appelé lorsque le calcul des pentes est terminé."""
@@ -183,6 +248,8 @@ class OutilRupturePente(BaseMapTool):
 
     def definir_mode_trace_libre(self, tracelibre):
         """Active ou désactive le mode de tracé libre."""
+        self.mode_trace_libre = tracelibre
+        self.mode_trace_libre_changed.emit(tracelibre)
         if tracelibre:
             # Entrer en mode tracé libre
             self.mode_trace_libre = True
@@ -201,6 +268,9 @@ class OutilRupturePente(BaseMapTool):
             if len(self.points_trace_libre) >= 2:
                 # Ajouter les points tracés librement à liste_points (sauf le point de départ)
                 nouveaux_points = self.points_trace_libre[1:]
+                # Créer une action pour ces points
+                action = AddPointsAction(self, nouveaux_points)
+                self.undo_manager.add_action(action)
                 self.liste_points.extend(nouveaux_points)
                 # Mettre à jour la polyligne confirmée
                 self.polyligne_confirmee = QgsGeometry.fromPolyline(self.liste_points)
@@ -547,12 +617,18 @@ class OutilRupturePente(BaseMapTool):
             # Mode tracé libre
             self.points_trace_libre.append(point_carte)
             self.bande_trace_libre.addPoint(QgsPointXY(point_carte))
+            # Créer une action pour ce point
+            action = AddPointsAction(self, point_carte, mode='trace_libre')
+            self.undo_manager.add_action(action)
         else:
             if not self.liste_points:
                 # Premier clic : ajouter le point de départ
                 self.liste_points.append(point_carte)
+                # Créer une action pour ce point
+                action = AddPointsAction(self, point_carte)
+                self.undo_manager.add_action(action)
             else:
-                # Confirmer le segment actuel
+                # Confirmer le segment dynamique
                 if self.chemin_dynamique:
                     # Utiliser la géométrie simplifiée si la simplification est activée
                     if self.simplification_activee:
@@ -573,8 +649,13 @@ class OutilRupturePente(BaseMapTool):
                             p_converted = QgsPoint(p.x(), p.y(), z_value)
                             converted_points.append(p_converted)
 
+                    # Créer une action pour ces points
+                    action = AddPointsAction(self, converted_points)
+                    self.undo_manager.add_action(action)
+
+                    # Ajouter les points à la liste
                     self.liste_points.extend(converted_points)
-                    # Construire la polyligne confirmée à partir de `self.liste_points`
+                    # Construire la polyligne confirmée
                     self.polyligne_confirmee = QgsGeometry.fromPolyline(self.liste_points)
                     self.bande_confirmee.reset(QgsWkbTypes.LineGeometry)
                     self.bande_confirmee.addGeometry(self.polyligne_confirmee, None)
@@ -738,27 +819,6 @@ class OutilRupturePente(BaseMapTool):
         geometrie_chemin = QgsGeometry.fromPolyline(liste_points)
 
         return geometrie_chemin
-
-    def nettoyer_ressources(self):
-        """Nettoyage des ressources et réinitialisation de l'outil."""
-        self.reinitialiser() # Réinitialiser les bandes élastiques et autres éléments temporaires
-
-        # Libérer le dataset GDAL
-        if hasattr(self, 'dataset'):
-            self.dataset = None
-
-        # Libérer les grands tableaux NumPy
-        if hasattr(self, 'tableau_raster'):
-            del self.tableau_raster
-            self.tableau_raster = None
-
-        if hasattr(self, 'pentes_locales'):
-            del self.pentes_locales
-            self.pentes_locales = None
-
-        if hasattr(self, 'pentes_locales_degres'):
-            del self.pentes_locales_degres
-            self.pentes_locales_degres = None
 
     def reinitialiser(self):
         """Réinitialise l'outil pour un nouveau tracé."""

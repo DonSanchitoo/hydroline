@@ -1,8 +1,6 @@
-"""
-dialogs/parametres_dialog.py
 
-Permet de gérer l'affichage et la gestion de la dialog des paramètres pour l'ensemble du plugin
-"""
+# dialogs/parametres_dialog.py
+
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QFrame
 from qgis.PyQt.QtCore import Qt, QObject, QCoreApplication
@@ -15,6 +13,9 @@ import os
 
 
 class ParametresDialog(QDialog):
+    """
+    Permet de gérer l'affichage et la gestion de la dialog des paramètres pour l'ensemble du plugin
+    """
     def __init__(self, parent=None):
         super(ParametresDialog, self).__init__(parent)
         uic.loadUi(os.path.join(os.path.dirname(__file__), 'settings.ui'), self)

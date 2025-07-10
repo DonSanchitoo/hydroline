@@ -1,14 +1,16 @@
-"""
-dialogs/slider_dialog.py
 
-Permet de gérer les sliders notamment pour la tolérence de simplification
-"""
+# dialogs/slider_dialog.py
+
+
 
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QSlider, QLabel, QPushButton
 from PyQt5.QtCore import Qt
 
 
 class SliderDialog(QDialog):
+    """
+    Permet de gérer les sliders notamment pour la tolérence de simplification
+    """
     def __init__(self, min_value=0, max_value=20, step=0.5, parent=None):
         super(SliderDialog, self).__init__(parent)
 

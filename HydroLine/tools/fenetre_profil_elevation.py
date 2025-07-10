@@ -1,8 +1,6 @@
-"""
-tools/fenetre_profil_elevation.py
 
-Module qui se charge du graphique dynamique de visualisation 3D dans le dock
-"""
+# tools/fenetre_profil_elevation.py
+
 import numpy as np
 from PyQt5.QtWidgets import QDockWidget, QWidget, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -37,14 +35,40 @@ class FenetreProfilElevation(QDockWidget):
         self.setWidget(widget)
 
     def reinitialiser(self):
-        """Réinitialise le graphique."""
+        """
+        Reset fonction
+        Returns
+        -------
+
+        """
+
         self.ax.clear()
         self.canvas.draw()
 
     def definir_outil(self, outil):
+        """
+        Définit l'outil
+        Parameters
+        ----------
+        outil
+
+        Returns
+        -------
+
+        """
         self.outil = outil
 
     def on_mouse_move(self, event):
+        """
+        Quand la souris bouge
+        Parameters
+        ----------
+        event
+
+        Returns
+        -------
+
+        """
         if event.inaxes == self.ax:
             x_mouse = event.xdata
             y_mouse = event.ydata

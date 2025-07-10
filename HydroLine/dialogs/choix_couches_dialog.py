@@ -1,8 +1,6 @@
-"""
-dialogs/Choix_couches_dialog.py
 
-Module permettant de gérer l'affichage des différentes dialogs indispensables aux outils du plugin
-"""
+# dialogs/Choix_couches_dialog.py
+
 
 from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QLabel, QComboBox,
@@ -14,6 +12,9 @@ from qgis.core import QgsProject, QgsMapLayer, QgsWkbTypes
 
 
 class ChoixCouchesDialogPourTrace(QDialog):
+    """
+    Permet de gérer l'affichage des différentes dialogs indispensables aux outils du plugin
+    """
     def __init__(self, parent=None):
         super(ChoixCouchesDialogPourTrace, self).__init__(parent)
         self.setWindowTitle("Sélectionner les couches")

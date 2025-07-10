@@ -53,22 +53,15 @@ class BaseMapTool(QgsMapTool):
 
         # Charger les données raster
         self.charger_donnees_raster()
+        self.data_loaded = True
 
-        # Démarrer le calcul des pentes dans un thread
-        self.calcul_pentes_thread = CalculPentesThread(self.tableau_raster, self.gt)
-        self.calcul_pentes_thread.result_ready.connect(self.on_pentes_calculees)
-        self.calcul_pentes_thread.start()
-
-
-    def on_pentes_calculees(self, pentes_locales_degres):
-        """Appelé lorsque le calcul des pentes est terminé."""
-        self.pentes_locales_degres = pentes_locales_degres
-        self.calcul_termine = True
         # Fermer le Splash Screen
         self.splash_screen_load.close()
 
+
     def on_pentes_calculees_error(self, error_message):
-        """Gère les erreurs survenues lors du calcul des pentes."""
+        """
+        """
         self.splash_screen_load.close()
         QMessageBox.critical(None, "Erreur", error_message)
 
@@ -92,7 +85,6 @@ class BaseMapTool(QgsMapTool):
         self.dataset = gdal.Open(source)
 
         if self.dataset is None:
-            print("Impossible d'ouvrir le raster.")
             return
 
         # Obtenir la géotransformation et son inverse
