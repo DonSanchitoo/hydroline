@@ -1,6 +1,6 @@
-"""
-sscreen/sscreen_load.py
-"""
+
+# sscreen/sscreen_load.py
+
 
 import os
 
@@ -10,7 +10,41 @@ from PyQt5.QtWidgets import QWidget, QLabel, QGraphicsOpacityEffect
 
 
 class SplashScreenLoad(QWidget):
+    """
+    Classe gérant l'affichage d'un écran de chargement avec une animation d'image en fondu.
+
+    Cette classe affiche une image de fond statique et une image animée avec un effet de fondu en entrée
+    et sortie, donnant une impression dynamique pendant le chargement de l'application.
+
+    Attributes
+    ----------
+    background_label : QLabel
+        Étiquette affichant l'image de fond statique.
+    moving_label : QLabel
+        Étiquette affichant l'image animée avec effet de fondu.
+    version_label : QLabel
+        Étiquette affichant la version de l'application.
+    opacity_effect : QGraphicsOpacityEffect
+        Effet d'opacité appliqué sur l'image animée.
+    anim_group : QSequentialAnimationGroup
+        Groupe d'animations contrôlant le cycle de fondu.
+
+    Methods
+    -------
+    start_animation()
+        Commence l'animation de fondu indéfinie pour l'image animée.
+    """
+
     def __init__(self, parent=None):
+        """
+        Initialise l'écran de chargement avec les paramètres nécessaires.
+
+        Parameters
+        ----------
+        parent : QWidget, optional
+            Widget parent, par défaut None.
+        """
+
         super(SplashScreenLoad, self).__init__(parent)
 
         self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
@@ -26,12 +60,10 @@ class SplashScreenLoad(QWidget):
             height
         )
 
-        # Image de fond (load2.png) qui reste affichée
         self.background_label = QLabel(self)
         self.background_label.setAlignment(Qt.AlignCenter)
         self.background_label.setGeometry(0, 80, width, height - 150)
 
-        # Image animée (load1.png) avec effet de fondu
         self.moving_label = QLabel(self)
         self.moving_label.setAlignment(Qt.AlignCenter)
         self.moving_label.setGeometry(0, 80, width, height - 150)
@@ -45,7 +77,6 @@ class SplashScreenLoad(QWidget):
 
         self.setAttribute(Qt.WA_TranslucentBackground)
 
-        # Charger et appliquer l'image de fond
         background_path = os.path.join(os.path.dirname(__file__), 'load2.png')
         background_pixmap = QPixmap(background_path)
         self.background_label.setPixmap(background_pixmap.scaled(
@@ -55,7 +86,6 @@ class SplashScreenLoad(QWidget):
             Qt.SmoothTransformation
         ))
 
-        # Charger et appliquer l'image animée
         moving_path = os.path.join(os.path.dirname(__file__), 'load1.png')
         moving_pixmap = QPixmap(moving_path)
         self.moving_label.setPixmap(moving_pixmap.scaled(
@@ -71,23 +101,27 @@ class SplashScreenLoad(QWidget):
         self.start_animation()
 
     def start_animation(self):
-        transition_time = 1000  # Durée de chaque cycle de fondu (en ms)
+        """
+        Commence l'animation de fondu indéfinie pour l'image animée.
+
+        Cette méthode initialise et démarre les animations d'entrée et de sortie pour créer
+        un effet de fondu continu sur l'image animée.
+        """
+
+        transition_time = 1000
 
         self.opacity_effect.setOpacity(0)
 
-        # Animation d'apparition
         anim_in = QPropertyAnimation(self.opacity_effect, b'opacity')
         anim_in.setDuration(transition_time)
         anim_in.setStartValue(0)
         anim_in.setEndValue(1)
 
-        # Animation de disparition
         anim_out = QPropertyAnimation(self.opacity_effect, b'opacity')
         anim_out.setDuration(transition_time)
         anim_out.setStartValue(1)
         anim_out.setEndValue(0)
 
-        # Grouper les animations pour un cycle de fondu complet
         self.anim_group = QSequentialAnimationGroup()
         self.anim_group.addAnimation(anim_in)
         self.anim_group.addAnimation(anim_out)

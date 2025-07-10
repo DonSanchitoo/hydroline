@@ -1,25 +1,34 @@
 # tools/outil_points_bas.py
 
 
-def select_next_pixel(courant, candidats_voisins, elevation_courante, arrivee_px, resoudre_egalite):
+def select_next_pixel_bas(courant, candidats_voisins, elevation_courante, arrivee_px, resoudre_egalite):
     """
-    Sélectionne le prochain pixel en suivant les points bas.
+    Sélectionne le prochain pixel en suivant les points bas parmi les candidats voisins.
 
-    Args:
-        courant (tuple): Coordonnées (cx, cy) du pixel courant.
-        candidats_voisins (list): Liste des voisins candidats avec leurs informations.
-        elevation_courante (float): Élévation du pixel courant.
-        arrivee_px (tuple): Coordonnées (cx, cy) du pixel d'arrivée.
-        resoudre_egalite (function): Fonction pour départager les candidats en cas d'égalité.
+    Cette fonction évalue les pixels voisins d'un pixel courant pour déterminer
+    le prochain pixel dans le chemin en fonction des élévations et la destination souhaitée.
 
-    Returns:
-        tuple: Coordonnées (cx, cy) du prochain pixel.
+    Parameters
+    ----------
+    courant : tuple
+        Coordonnées (cx, cy) du pixel courant.
+    candidats_voisins : list of dict
+        Liste des voisins candidats avec leurs informations, incluant 'elevation'.
+    elevation_courante : float
+        Élévation du pixel courant.
+    arrivee_px : tuple
+        Coordonnées (cx, cy) du pixel d'arrivée désigné.
+    resoudre_egalite : function
+        Fonction pour départager les candidats en cas d'égalité d'élévations.
+
+    Returns
+    -------
+    tuple
+        Coordonnées (cx, cy) du prochain pixel à sélectionner.
     """
-    # Rechercher les voisins avec une élévation inférieure
     voisins_plus_bas = [n for n in candidats_voisins if n['elevation'] < elevation_courante]
 
     if voisins_plus_bas:
-        # Sélectionner le voisin avec l'élévation la plus basse
         elevation_min = min(n['elevation'] for n in voisins_plus_bas)
         voisins_minimums = [n for n in voisins_plus_bas if n['elevation'] == elevation_min]
         prochain_px = resoudre_egalite(voisins_minimums, arrivee_px)

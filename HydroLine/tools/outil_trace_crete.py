@@ -1,8 +1,6 @@
-"""
-tools/outil_trace_crete.py
 
-Module qui compose l'algorithme de détection de points hauts dynamique.
-"""
+# tools/outil_trace_crete.py
+
 
 import os
 import sys
@@ -16,7 +14,6 @@ from ..threads.raster_loading_thread import RasterLoadingThread
 chemin_plugin = os.path.dirname(__file__)
 if chemin_plugin not in sys.path:
     sys.path.append(chemin_plugin)
-
 
 from PyQt5.QtCore import Qt
 from PyQt5 import QtCore
@@ -50,7 +47,7 @@ from PyQt5.QtGui import QColor
 import numpy as np
 import math
 
-from .outil_points_bas import select_next_pixel as select_next_pixel_points_bas
+from .outil_points_bas import select_next_pixel_bas as select_next_pixel_points_bas
 from ..utils.undo_manager import UndoManager, AddPointsAction
 
 
@@ -58,13 +55,128 @@ class OutilTraceCrete(BaseMapTool):
     """
     Outil de dessin de ligne de crête avec assistance dynamique sur MNT.
 
-    Args:
-        canvas (QgsMapCanvas): Le canevas de la carte.
-        couche_raster (QgsRasterLayer): La couche raster MNT.
+    Cette classe permet d'interagir avec le Modèle Numérique de Terrain pour tracer des lignes de crête
+    en utilisant des calculs dynamiques basés sur l'altitude des pixels.
+
+    Attributes
+    ----------
+    canvas : QgsMapCanvas
+        Le canevas de la carte.
+    couche_raster : QgsRasterLayer
+        La couche raster contenant le MNT.
+    id_counter : int
+        Compteur utilisé pour assigner des identifiants aux polylignes.
+    data_loaded : bool
+        Indicateur montrant si les données du raster ont été chargées avec succès.
+    points_bas_active : bool
+        Indicateur du mode de tracé utilisant les points bas, par défaut False.
+    select_next_pixel_func : function
+        Fonction utilisée pour sélectionner le prochain pixel pendant le tracé.
+    undo_manager : UndoManager
+        Gestionnaire d'annulation des actions réalisées sur le tracé.
+    liste_points : list of QgsPoint
+        Liste des points actuellement tracés.
+    chemin_dynamique : QgsGeometry or None
+        Géométrie représentative du chemin dynamique en cours de tracé.
+    polyligne_confirmee : QgsGeometry or None
+        Géométrie de la polyligne confirmée.
+    mode_trace_libre : bool
+        Indicateur pour le mode de tracé libre, par défaut False.
+    points_trace_libre : list of QgsPoint
+        Liste de points tracés en mode libre.
+    fenetre_profil : FenetreProfilElevation or None
+        Fenêtre contenant le graphique de profil d'altitude.
+    simplification_activee : bool
+        Indicateur si la simplification est activée, par défaut False.
+    tolerance_simplification : float
+        Tolérance utilisée pour la simplification du tracé, par défaut 2.0.
+    mode : int
+        Mode de tracé indiquant la stratégie, par défaut 1 (automatique).
+    distance_seuil : float
+        Distance seuil utilisée pour les calculs, par défaut 10 mètres.
+    dernier_point_deplacement : QgsPoint or None
+        Dernier point ayant servi à un calcul lié aux déplacements.
+
+    Methods
+    -------
+    activate()
+        Active l'outil en installant le filtre d'événement.
+    deactivate()
+        Désactive l'outil en supprimant le filtre d'événement.
+    eventFilter(obj, event)
+        Gère les événements filtrés pour les actions clavier.
+    keyPressEvent(event)
+        Gère les touches du clavier pour les actions spécifiques.
+    on_raster_loaded(tableau_raster, gt, inv_gt, raster_lignes, raster_colonnes)
+        Callback exécuté lorsque le chargement du raster est terminé.
+    set_points_bas(active)
+        Active ou désactive le mode Points Bas.
+    obtenir_elevation_aux_points_multiples(x_array, y_array)
+        Obtient les élévations du raster aux coordonnées données.
+    definir_couche_vectorielle(couche_vectorielle)
+        Définit la couche vectorielle où enregistrer les polylignes tracées.
+    confirmer_polyligne()
+        Confirme la polyligne actuelle et l'ajoute à la couche vectorielle.
+    definir_fenetre_profil(fenetre)
+        Assigne la fenêtre du profil d'élévation.
+    definir_mode(mode, distance_seuil)
+        Définit le mode de fonctionnement de l'outil et la distance seuil.
+    definir_simplification(activee)
+        Active ou désactive la simplification du tracé.
+    mettre_a_jour_bande_dynamique()
+        Met à jour la bande élastique dynamique en tenant compte de la simplification.
+    definir_mode_trace_libre(tracelibre)
+        Active ou désactive le mode de tracé libre.
+    lisser_chemin(points, intensite)
+        Applique un lissage aux points du chemin, selon une intensité.
+    undo_last_action()
+        Annule la dernière action réalisée.
+    remove_last_point()
+        Retire le dernier point ajouté à la polyligne.
+    canvasPressEvent(event)
+        Gère les événements de clic de souris sur le canevas.
+    canvasMoveEvent(event)
+        Gère les événements de déplacement de la souris sur le canevas.
+    keyPressEvent(event)
+        Gère les actions lorsque des touches clavier sont pressées.
+    mettre_a_jour_profil(x_coords, y_coords, distances, elevations, index_marqueur)
+        Met à jour le graphique du profil d'élévation en 3D basé sur les données fournies.
+    obtenir_elevation_au_point(point)
+        Obtient l'élévation du raster au point donné.
+    select_next_pixel_points_hauts(courant, candidats_voisins, elevation_courante, arrivee_px, resoudre_egalite)
+        Sélectionne le prochain pixel en favorisant les points hauts.
+    calculer_chemin_extreme(point_depart, point_arrivee)
+        Calcule le chemin de plus haute ou plus basse altitude entre deux points.
+    resoudre_egalite(candidats, arrivee_px)
+        Départage les candidats en cas d'égalité.
+    reinitialiser()
+        Réinitialise l'outil pour un nouveau tracé.
+    simplifier_geometrie(geometrie)
+        Simplifie la géométrie tout en conservant certains points critiques.
+    douglas_peucker_avec_critiques(points, tol, points_critiques)
+        Simplifie une polyligne en conservant des points critiques.
+    distance_perpendiculaire(point, debut, fin)
+        Calcule la distance perpendiculaire du point à la ligne donnée.
+    distance_euclidienne(p1, p2)
+        Calcule la distance euclidienne entre deux points.
+    obtenir_elevation_aux_points(x_array, y_array)
+        Obtient les élévations du raster aux points spécifiés.
+    mettre_a_jour_profil(geometrie)
+        Met à jour le profil d'élévation avec le segment dynamique.
     """
 
     def __init__(self, canvas, couche_raster):
-        """Initialise l'outil de tracé."""
+        """
+        Initialise l'outil de tracé de crête.
+
+        Parameters
+        ----------
+        canvas : QgsMapCanvas
+            Le canevas de la carte utilisé comme contexte pour le tracé.
+        couche_raster : QgsRasterLayer
+            La couche raster contenant le MNT pour la référence d'altitude.
+        """
+
         super().__init__(canvas, couche_raster)
         self.canvas = canvas
         self.couche_raster = couche_raster
@@ -75,41 +187,36 @@ class OutilTraceCrete(BaseMapTool):
         self.undo_manager = UndoManager()
 
 
-        # Pré-calcul des transformations de coordonnées
         self.crs_canvas = self.canvas.mapSettings().destinationCrs()
         self.crs_raster = self.couche_raster.crs()
         self.transformation_vers_raster = QgsCoordinateTransform(self.crs_canvas, self.crs_raster, QgsProject.instance())
         self.transformation_depuis_raster = QgsCoordinateTransform(self.crs_raster, self.crs_canvas, QgsProject.instance())
 
-        self.liste_points = []  # Liste pour stocker les points de la polyligne
+        self.liste_points = []
         self.chemin_dynamique = None
-        self.polyligne_confirmee = None  # Polyligne confirmée unique
+        self.polyligne_confirmee = None
         self.mode_trace_libre = False
         self.points_trace_libre = []
         self.fenetre_profil = None
         self.simplification_activee = False
         self.tolerance_simplification = 2.0
         self.mode = 1  # Mode par défaut
-        self.distance_seuil = 10  # Distance seuil par défaut en mètres
-        self.dernier_point_deplacement = None  # Dernier point où le calcul a été effectué
+        self.distance_seuil = 10
+        self.dernier_point_deplacement = None
 
-        # Bande élastique pour la ligne dynamique
         self.bande_dynamique = QgsRubberBand(self.canvas, QgsWkbTypes.LineGeometry)
         self.bande_dynamique.setColor(QColor(255, 255, 0))
         self.bande_dynamique.setWidth(2)
         self.bande_dynamique.setLineStyle(Qt.DashLine)
 
-        # Bande élastique pour la polyligne confirmée
         self.bande_confirmee = QgsRubberBand(self.canvas, QgsWkbTypes.LineGeometry)
         self.bande_confirmee.setColor(QColor(0, 0, 255))
         self.bande_confirmee.setWidth(3)
 
-        # Bande élastique pour le tracé libre
         self.bande_trace_libre = QgsRubberBand(self.canvas, QgsWkbTypes.LineGeometry)
         self.bande_trace_libre.setColor(QColor(0, 255, 0))
         self.bande_trace_libre.setWidth(3)
 
-        # Démarrer le chargement des données raster en arrière-plan
         self.raster_loading_thread = RasterLoadingThread(self.couche_raster)
         self.raster_loading_thread.raster_loaded.connect(self.on_raster_loaded)
         self.raster_loading_thread.start()
@@ -117,15 +224,46 @@ class OutilTraceCrete(BaseMapTool):
     mode_trace_libre_changed = pyqtSignal(bool)
 
     def activate(self):
+        """
+        Active l'outil de tracé.
+
+        Met le focus sur le canevas de la carte et installe un filtre d'événement
+        pour détecter les interactions clavier.
+        """
         super().activate()
         self.canvas.setFocus()
         self.canvas.installEventFilter(self)
 
     def deactivate(self):
+        """
+        Désactive l'outil de tracé.
+
+        Supprime le filtre d'événement du canevas pour arrêter la détection
+        des interactions clavier.
+        """
         self.canvas.removeEventFilter(self)
         super().deactivate()
 
     def eventFilter(self, obj, event):
+        """
+        Filtre les événements du canevas pour déclencher des actions basées sur les touches clavier.
+
+        Permet d'activer/désactiver le mode tracé libre, confirmer les polylignes
+        et annuler la dernière action à travers des raccourcis clavier.
+
+        Parameters
+        ----------
+        obj : QObject
+            Objet qui génère l'événement.
+        event : QEvent
+            Événement à filtrer.
+
+        Returns
+        -------
+        bool
+            True si l'événement est traité par le filtre, sinon False.
+        """
+
         if obj == self.canvas and event.type() == QtCore.QEvent.KeyPress:
             key = event.key()
             if key == Qt.Key_S:
@@ -140,13 +278,41 @@ class OutilTraceCrete(BaseMapTool):
         return False
 
     def keyPressEvent(self, event):
+        """
+        Gère les événements de pression de touche pour le tracé libre.
+
+        Active/désactive le mode tracé libre si la lettre 'S' est pressée.
+
+        Parameters
+        ----------
+        event : QKeyEvent
+            Événement de pression de touche.
+        """
+
         if event.key() == Qt.Key_S:
             self.definir_mode_trace_libre(not self.mode_trace_libre)
         else:
             super().keyPressEvent(event)
 
     def on_raster_loaded(self, tableau_raster, gt, inv_gt, raster_lignes, raster_colonnes):
-        """Callback lorsque le chargement du raster est terminé."""
+        """
+        Callback après le chargement du raster.
+
+        Configure les données de raster et ferme l'écran de démarrage.
+
+        Parameters
+        ----------
+        tableau_raster : np.ndarray
+            Tableau des données raster chargées.
+        gt : tuple
+            Géotransformation du raster.
+        inv_gt : tuple
+            Inverse de la géotransformation du raster.
+        raster_lignes : int
+            Nombre de lignes dans le raster.
+        raster_colonnes : int
+            Nombre de colonnes dans le raster.
+        """
         self.tableau_raster = tableau_raster
         self.gt = gt
         self.inv_gt = inv_gt
@@ -154,23 +320,43 @@ class OutilTraceCrete(BaseMapTool):
         self.raster_colonnes = raster_colonnes
         self.data_loaded = True
 
-        # Fermer le Splash Screen
         self.splash_screen_load.close()
 
     def set_points_bas(self, active):
-        """Active ou désactive le mode Points Bas."""
+        """
+        Active ou désactive le mode Points Bas.
+
+        Change la fonction de sélection de pixel en fonction du mode choisi.
+
+        Parameters
+        ----------
+        active : bool
+            True pour activer le mode Points Bas, False pour le désactiver.
+        """
         self.points_bas_active = active
         if self.points_bas_active:
-            # Utiliser la fonction de sélection pour les points bas
             self.select_next_pixel_func = select_next_pixel_points_bas
         else:
-            # Utiliser la fonction de sélection pour les points hauts
             self.select_next_pixel_func = self.select_next_pixel_points_hauts
 
     def obtenir_elevation_aux_points_multiples(self, x_array, y_array):
-        """Obtient les élévations du raster aux points donnés."""
+        """
+        Obtient les élévations du raster aux points donnés en utilisant la transformation.
+
+        Parameters
+        ----------
+        x_array : np.ndarray
+            Tableau des coordonnées x des points.
+        y_array : np.ndarray
+            Tableau des coordonnées y des points.
+
+        Returns
+        -------
+        np.ndarray
+            Tableau des élévations correspondant aux coordonnées.
+        """
+
         if self.crs_raster != self.crs_canvas:
-            # Transformer les points
             transformer = self.transformation_vers_raster
             points = [QgsPointXY(x, y) for x, y in zip(x_array.flatten(), y_array.flatten())]
             points_transformed = [transformer.transform(p) for p in points]
@@ -180,7 +366,6 @@ class OutilTraceCrete(BaseMapTool):
             x_array_transformed = x_array
             y_array_transformed = y_array
 
-        # Calculer les coordonnées pixels
         gt = self.inv_gt  # Inverse de la géotransformation
         px_array = gt[0] + gt[1] * x_array_transformed + gt[2] * y_array_transformed
         py_array = gt[3] + gt[4] * x_array_transformed + gt[5] * y_array_transformed
@@ -188,7 +373,6 @@ class OutilTraceCrete(BaseMapTool):
         px_array = px_array.astype(int)
         py_array = py_array.astype(int)
 
-        # Masque pour les points valides
         mask = (px_array >= 0) & (px_array < self.raster_colonnes) & (py_array >= 0) & (py_array < self.raster_lignes)
         elevations = np.full(x_array.shape, np.nan)
         elevations[mask] = self.tableau_raster[py_array[mask], px_array[mask]]
@@ -196,34 +380,39 @@ class OutilTraceCrete(BaseMapTool):
         return elevations
 
     def definir_couche_vectorielle(self, couche_vectorielle):
+        """
+        Définit la couche vectorielle où enregistrer les polylignes tracées.
+
+        Parameters
+        ----------
+        couche_vectorielle : QgsVectorLayer
+            La couche vectorielle pour stocker les tracés.
+        """
         self.couche_vectorielle = couche_vectorielle
 
     def confirmer_polyligne(self):
-        """Confirme la polyligne actuelle et l'ajoute à la couche vectorielle."""
+        """
+        Confirme la polyligne actuelle et l'ajoute à la couche vectorielle.
+
+        Convertit la polyligne en 3D si la simplification est activée,
+        et enregistre ses attributs dans la couche vectorielle.
+        """
         if self.polyligne_confirmee is not None and self.couche_vectorielle is not None:
-            # Construire la polyligne originale à partir de self.liste_points
             self.polyligne_originale = QgsGeometry.fromPolyline(self.liste_points)
 
-            # Vérifier si la simplification est activée
             if self.simplification_activee:
-                # Obtenir la géométrie simplifiée
                 simplified_geom = self.polyligne_confirmee
 
-                # Densifier la polyligne simplifiée
                 densified_simplified_geom = simplified_geom.densifyByDistance(
-                    1)  # Ajustez la distance de densification si nécessaire
+                    1)
 
-                # Obtenir les points de la polyligne simplifiée densifiée
                 simplified_points = densified_simplified_geom.asPolyline()
-
-                # Calculer les distances cumulatives le long de la polyligne simplifiée
                 simplified_cumulative = [0]
                 for i in range(1, len(simplified_points)):
                     dist = simplified_points[i - 1].distance(simplified_points[i])
                     simplified_cumulative.append(simplified_cumulative[-1] + dist)
                 total_simplified_length = simplified_cumulative[-1]
 
-                # Calculer les distances cumulatives le long de la polyligne originale
                 original_points = self.polyligne_originale.asPolyline()
                 original_cumulative = [0]
                 for i in range(1, len(original_points)):
@@ -231,16 +420,11 @@ class OutilTraceCrete(BaseMapTool):
                     original_cumulative.append(original_cumulative[-1] + dist)
                 total_original_length = original_cumulative[-1]
 
-                # Préparer la liste des points avec Z
                 points_avec_z = []
 
-                # Pour chaque point de la polyligne simplifiée densifiée
                 for i, point in enumerate(simplified_points):
-                    # Calculer la proportion de la distance le long de la polyligne simplifiée
                     prop = simplified_cumulative[i] / total_simplified_length
-                    # Distance correspondante le long de la polyligne originale
                     original_dist = prop * total_original_length
-                    # Trouver le segment sur la polyligne originale où se trouve cette distance
                     for j in range(1, len(original_cumulative)):
                         if original_cumulative[j] >= original_dist:
                             prev_dist = original_cumulative[j - 1]
@@ -252,16 +436,12 @@ class OutilTraceCrete(BaseMapTool):
                             z = z_prev + t * (z_next - z_prev) if z_next is not None and z_prev is not None else 0
                             break
                     else:
-                        # Si on dépasse la longueur, on prend le dernier point
                         z = self.obtenir_elevation_au_point(original_points[-1]) or 0
-                    # Créer un nouveau point avec les coordonnées X,Y de la polyligne simplifiée et la valeur Z interpolée
                     point_z = QgsPoint(point.x(), point.y(), z)
                     points_avec_z.append(point_z)
 
-                # Créer la géométrie de la polyligne en 3D
                 polyligne_z = QgsGeometry.fromPolyline(points_avec_z)
             else:
-                # Si la simplification n'est pas activée, utiliser les points originaux
                 points_avec_z = []
                 for point in self.liste_points:
                     z = self.obtenir_elevation_au_point(point)
@@ -272,22 +452,18 @@ class OutilTraceCrete(BaseMapTool):
                     points_avec_z.append(point_z)
                 polyligne_z = QgsGeometry.fromPolyline(points_avec_z)
 
-            # Créer et ajouter l'entité à la couche vectorielle
             entite = QgsFeature()
             entite.setGeometry(polyligne_z)
 
-            # Construire les attributs en fonction des préférences
             attributs = []
             champs_presentes = [field.name() for field in self.couche_vectorielle.fields()]
             if 'OBJECTID' in champs_presentes:
                 attributs.append(self.id_counter)
             if 'Denomination' in champs_presentes:
-                # Demander à l'utilisateur de saisir un nom
                 nom, ok = QInputDialog.getText(None, "Entrer un nom", "Dénomination de la polyligne :")
                 if ok and nom:
                     attributs.append(nom)
                 else:
-                    # Si l'utilisateur annule ou ne saisit pas de nom, mettre une chaîne vide
                     attributs.append('')
             if 'SHAPE_LENGTH' in champs_presentes:
                 longueur = polyligne_z.length()
@@ -301,33 +477,55 @@ class OutilTraceCrete(BaseMapTool):
             self.couche_vectorielle.dataProvider().addFeature(entite)
             self.couche_vectorielle.updateExtents()
             self.id_counter += 1
-            # Réinitialiser l'outil pour un nouveau tracé
             self.reinitialiser()
         else:
             QMessageBox.warning(None, "Avertissement", "Aucune polyligne confirmée à enregistrer.")
 
-
     def definir_fenetre_profil(self, fenetre):
-        """Assigne la fenêtre du profil d'élévation."""
+        """
+        Assigne la fenêtre du profil d'élévation à l'outil.
+
+        Parameters
+        ----------
+        fenetre : FenetreProfilElevation
+            Fenêtre pour afficher le profil d'élévation.
+        """
         self.fenetre_profil = fenetre
         if self.fenetre_profil is not None:
             self.fenetre_profil.definir_outil(self)
 
-
     def definir_mode(self, mode, distance_seuil=None):
-        """Définit le mode de fonctionnement de l'outil."""
+        """
+        Définit le mode de fonctionnement de l'outil et réinitialise le point de mouvement si nécessaire.
+
+        Parameters
+        ----------
+        mode : int
+            Mode opérationnel de l'outil (par exemple, automatique ou manuel).
+        distance_seuil : float, optional
+            Distance seuil utilisée pour les calculs, par défaut None.
+        """
         self.mode = mode
         if distance_seuil is not None:
             self.distance_seuil = distance_seuil
         self.dernier_point_deplacement = None  # Réinitialiser le dernier point de mouvement
 
     def definir_simplification(self, activee):
-        """Active ou désactive la simplification du tracé."""
+        """
+        Active ou désactive la simplification du tracé.
+
+        Parameters
+        ----------
+        activee : bool
+            True pour activer la simplification, False pour la désactiver.
+        """
         self.simplification_activee = activee
         self.mettre_a_jour_bande_dynamique()
 
     def mettre_a_jour_bande_dynamique(self):
-        """Met à jour la bande élastique dynamique en appliquant ou non la simplification."""
+        """
+        Met à jour la bande élastique dynamique et applique la simplification si activée.
+        """
         if self.chemin_dynamique:
             if self.simplification_activee:
                 geometrie_simplifiee = self.simplifier_geometrie(self.chemin_dynamique)
@@ -338,8 +536,21 @@ class OutilTraceCrete(BaseMapTool):
                 self.bande_dynamique.addGeometry(self.chemin_dynamique, None)
 
     def definir_mode_trace_libre(self, tracelibre):
+        """
+        Active ou désactive le mode de tracé libre.
+
+        Parameters
+        ----------
+        tracelibre : bool
+            True pour activer le mode tracé libre, False pour le désactiver.
+
+        Notes
+        -----
+        Lorsque le mode tracé libre est activé, ajoute les points tracés librement à la liste
+        principale à la sortie du mode.
+        """
+
         if tracelibre:
-            # Entrer en mode tracé libre
             self.mode_trace_libre = True
             self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
             if self.liste_points:
@@ -350,13 +561,10 @@ class OutilTraceCrete(BaseMapTool):
             else:
                 self.points_trace_libre = []
         else:
-            # Sortir du mode tracé libre
             self.mode_trace_libre = False
             self.bande_trace_libre.reset(QgsWkbTypes.LineGeometry)
             if len(self.points_trace_libre) >= 2:
-                # Ajouter les points tracés librement à liste_points (sauf le point de départ)
                 nouveaux_points = self.points_trace_libre[1:]
-                # Convertir en QgsPoint avec Z
                 nouveaux_points_qgspoint = []
                 for p in nouveaux_points:
                     elevation = self.obtenir_elevation_au_point(p)
@@ -366,52 +574,40 @@ class OutilTraceCrete(BaseMapTool):
                         point_z = QgsPoint(p.x(), p.y(), 0)
                     nouveaux_points_qgspoint.append(point_z)
 
-                # Créer une action d'annulation pour ces points
                 action = AddPointsAction(self, nouveaux_points_qgspoint)
                 self.undo_manager.add_action(action)
 
                 self.liste_points.extend(nouveaux_points_qgspoint)
-                # Mettre à jour la polyligne confirmée
                 self.polyligne_confirmee = QgsGeometry.fromPolyline(self.liste_points)
                 self.bande_confirmee.reset(QgsWkbTypes.LineGeometry)
                 self.bande_confirmee.addGeometry(self.polyligne_confirmee, None)
                 self.points_trace_libre = []
 
-    def lisser_chemin(self, points, intensite=0.1):
-        """
-        Applique un lissage à une liste de points.
-        Intensité de 0 (pas de lissage) à 1 (lissage maximal).
-        """
-        if len(points) < 3:
-            return points
-
-        # Par exemple, utiliser l'algorithme de Chaikin
-        for _ in range(int(intensite * 1)):  # Ajuster le nombre d'itérations
-            new_points = [points[0]]
-            for i in range(len(points) - 1):
-                q = QgsPointXY(
-                    0.75 * points[i].x() + 0.25 * points[i + 1].x(),
-                    0.75 * points[i].y() + 0.25 * points[i + 1].y()
-                )
-                r = QgsPointXY(
-                    0.25 * points[i].x() + 0.75 * points[i + 1].x(),
-                    0.25 * points[i].y() + 0.75 * points[i + 1].y()
-                )
-                new_points.extend([q, r])
-            new_points.append(points[-1])
-            points = new_points
-        return points
-
     def undo_last_action(self):
+        """
+        Annule la dernière action enregistrée.
+
+        Notes
+        -----
+        Si aucune action n'est disponible pour l'annulation, informe l'utilisateur.
+        """
         if not self.undo_manager.can_undo():
             QMessageBox.information(None, "Information", "Aucune action à annuler.")
         else:
             self.undo_manager.undo()
 
     def remove_last_point(self):
+        """
+        Supprime le dernier point ajouté à la liste de la polyligne.
+
+        Notes
+        -----
+        Met à jour la polyligne confirmée et réinitialise le chemin dynamique si nécessaire.
+        Informe l'utilisateur si aucun point n'est disponible pour la suppression.
+        """
         if self.liste_points:
             self.liste_points.pop()
-            # Mettre à jour la polyligne confirmée et les bandes élastiques
+
             if self.liste_points:
                 self.polyligne_confirmee = QgsGeometry.fromPolyline(self.liste_points)
                 self.bande_confirmee.reset(QgsWkbTypes.LineGeometry)
@@ -419,13 +615,23 @@ class OutilTraceCrete(BaseMapTool):
             else:
                 self.polyligne_confirmee = None
                 self.bande_confirmee.reset(QgsWkbTypes.LineGeometry)
-            # Réinitialiser le chemin dynamique
             self.chemin_dynamique = None
             self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
         else:
             QMessageBox.information(None, "Information", "Aucun point à annuler.")
 
     def canvasPressEvent(self, event):
+        """
+        Gère les événements de clic de souris sur le canevas.
+
+        Ajoute des points à la liste de la polyligne et gère le mode tracé libre.
+
+        Parameters
+        ----------
+        event : QMouseEvent
+            Événement du clic de la souris.
+        """
+
         point_carte_xy = self.toMapCoordinates(event.pos())
         point_carte = QgsPoint(point_carte_xy.x(), point_carte_xy.y())
         elevation = self.obtenir_elevation_au_point(point_carte)
@@ -483,12 +689,22 @@ class OutilTraceCrete(BaseMapTool):
                     self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
 
     def canvasMoveEvent(self, event):
-        """Gestion des mouvements de souris."""
+        """
+        Gestion des mouvements de la souris sur le canevas.
+
+        Met à jour le tracé libre ou calcule le chemin de plus haute altitude
+        en fonction du mode activé.
+
+        Parameters
+        ----------
+        event : QMouseEvent
+            Événement de déplacement de la souris.
+        """
+
         if not self.data_loaded:
             return
 
         if self.mode_trace_libre:
-            # Mode tracé libre
             point_actuel_xy = self.toMapCoordinates(event.pos())
             point_actuel = QgsPoint(point_actuel_xy.x(), point_actuel_xy.y())
             elevation = self.obtenir_elevation_au_point(point_actuel)
@@ -511,13 +727,11 @@ class OutilTraceCrete(BaseMapTool):
                     point_actuel.setZ(elevation)
                 else:
                     point_actuel.setZ(0)
-                # Comportement par défaut
                 if self.mode == 1:
                     if self.dernier_point_deplacement is None:
                         self.dernier_point_deplacement = self.liste_points[-1]
                     distance = self.dernier_point_deplacement.distance(point_actuel)
                     if distance >= self.distance_seuil:
-                        # Calculer le chemin de plus haute altitude
                         geometrie_chemin = self.calculer_chemin_extreme(self.liste_points[-1], point_actuel)
                         if geometrie_chemin:
                             # Appliquer la simplification si activée
@@ -526,76 +740,59 @@ class OutilTraceCrete(BaseMapTool):
                                 self.chemin_dynamique = geometrie_simplifiee
                             else:
                                 self.chemin_dynamique = geometrie_chemin
-                            # Afficher la polyligne dynamique
                             self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
                             self.bande_dynamique.addGeometry(self.chemin_dynamique, None)
-                            # Mettre à jour le profil d'élévation avec le segment dynamique
                             if self.fenetre_profil:
-                                self.mettre_a_jour_profil(self.chemin_dynamique)
-                            # Mettre à jour le dernier point de mouvement
+                                self.mettre_a_jour_profil_segment(self.chemin_dynamique)
                             self.dernier_point_deplacement = point_actuel
                     else:
-                        pass  # Ne pas recalculer si la distance n'est pas atteinte
+                        pass
                 else:
-                    pass  # Gérer les autres modes si nécessaire
-
-    def keyPressEvent(self, event):
-        """Gestion des touches du clavier."""
-        if self.mode == 2 and event.key() == Qt.Key_T:
-            if self.liste_points:
-                point_depart = self.liste_points[-1]
-                position_souris = self.canvas.mouseLastXY()
-                point_actuel = self.toMapCoordinates(QPoint(position_souris.x(), position_souris.y()))
-                # Calculer le chemin de plus haute altitude
-                geometrie_chemin = self.calculer_chemin_extreme(point_depart, point_actuel)
-                if geometrie_chemin:
-                    # Appliquer la simplification si activée
-                    if self.simplification_activee:
-                        geometrie_simplifiee = self.simplifier_geometrie(geometrie_chemin)
-                        self.chemin_dynamique = geometrie_simplifiee
-                    else:
-                        self.chemin_dynamique = geometrie_chemin
-                    # Afficher la polyligne dynamique
-                    self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
-                    self.bande_dynamique.addGeometry(self.chemin_dynamique, None)
-                    # Mettre à jour le profil d'élévation avec le segment dynamique
-                    if self.fenetre_profil:
-                        self.mettre_a_jour_profil(self.chemin_dynamique)
-        else:
-            super().keyPressEvent(event)  # Autres touches
+                    pass
 
     def mettre_a_jour_profil(self, x_coords, y_coords, distances, elevations, index_marqueur):
-        """Met à jour le graphique 3D du profil d'élévation."""
-        self.ax.clear()
+        """
+        Met à jour le graphique 3D du profil d'élévation.
 
-        # Déterminer l'étendue de la zone à afficher
-        buffer = 50  # mètres, ajustez selon vos besoins
+        Affiche les données d'élévation et ajuste les limites basées sur les coordonnées fournies.
+
+        Parameters
+        ----------
+        x_coords : np.ndarray
+            Coordonnées en x des points du tracé.
+        y_coords : np.ndarray
+            Coordonnées en y des points du tracé.
+        distances : np.ndarray
+            Distances cumulées le long du tracé.
+        elevations : np.ndarray
+            Élévations des points le long du tracé.
+        index_marqueur : int
+            Index du marqueur à mettre en évidence, s'il y a lieu.
+        """
+        self.ax.clear()
+        buffer = 50
         xmin = min(x_coords) - buffer
         xmax = max(x_coords) + buffer
         ymin = min(y_coords) - buffer
         ymax = max(y_coords) + buffer
 
-        # Créer une grille
-        num_points = 100  # Ajustez selon vos besoins
+        num_points = 100
         X = np.linspace(xmin, xmax, num_points)
         Y = np.linspace(ymin, ymax, num_points)
         X_grid, Y_grid = np.meshgrid(X, Y)
 
-        # Obtenir les valeurs Z du MNT
         Z_grid = self.outil.obtenir_elevation_aux_points_multiples(X_grid, Y_grid)
 
-        # Tracer la surface 3D
+
         self.ax.plot_surface(X_grid, Y_grid, Z_grid, edgecolor='royalblue', lw=0.5,
                              rstride=10, cstride=10, alpha=0.6, cmap='terrain')
 
-        # Ajouter les projections de contours
         zmin = np.nanmin(Z_grid)
         zmax = np.nanmax(Z_grid)
         self.ax.contourf(X_grid, Y_grid, Z_grid, zdir='z', offset=zmin, cmap='terrain')
         self.ax.contourf(X_grid, Y_grid, Z_grid, zdir='x', offset=xmin, cmap='terrain')
         self.ax.contourf(X_grid, Y_grid, Z_grid, zdir='y', offset=ymax, cmap='terrain')
 
-        # Tracer votre parcours
         self.ax.plot(
             x_coords,
             y_coords,
@@ -604,7 +801,6 @@ class OutilTraceCrete(BaseMapTool):
             label='Parcours'
         )
 
-        # Ajuster les limites
         self.ax.set_xlim(xmin, xmax)
         self.ax.set_ylim(ymin, ymax)
         self.ax.set_zlim(zmin, zmax)
@@ -617,7 +813,19 @@ class OutilTraceCrete(BaseMapTool):
         self.canvas.draw()
 
     def obtenir_elevation_au_point(self, point):
-        """Obtient l'élévation du raster au point donné."""
+        """
+        Obtient l'élévation du raster au point donné.
+
+        Parameters
+        ----------
+        point : QgsPoint
+            Point pour lequel obtenir l'élévation.
+
+        Returns
+        -------
+        float or None
+            Élévation au point donné en unités raster, ou None si en dehors des limites.
+        """
         if self.crs_raster != self.crs_canvas:
             point = self.transformation_vers_raster.transform(point)
         x = point.x()
@@ -633,8 +841,28 @@ class OutilTraceCrete(BaseMapTool):
 
     def select_next_pixel_points_hauts(self, courant, candidats_voisins, elevation_courante, arrivee_px,
                                        resoudre_egalite):
-        """Sélectionne le prochain pixel en suivant les points hauts."""
-        # Logique pour les points hauts
+        """
+        Sélectionne le prochain pixel en suivant les points hauts parmi les voisins.
+
+        Parameters
+        ----------
+        courant : tuple
+            Pixel courant avec ses coordonnées (x, y).
+        candidats_voisins : list of dict
+            Liste des voisins candidats avec leurs informations.
+        elevation_courante : float
+            Élévation du pixel courant.
+        arrivee_px : tuple
+            Coordonnées du pixel d'arrivée.
+        resoudre_egalite : function
+            Fonction pour départager les voisins en cas d'égalité.
+
+        Returns
+        -------
+        tuple
+            Coordonnées du prochain pixel choisi.
+        """
+
         voisins_plus_hauts = [n for n in candidats_voisins if n['elevation'] > elevation_courante]
 
         if voisins_plus_hauts:
@@ -656,28 +884,39 @@ class OutilTraceCrete(BaseMapTool):
         return prochain_px
 
     def calculer_chemin_extreme(self, point_depart, point_arrivee):
-        """Calcule le chemin de plus haute ou de plus basse altitude entre deux points."""
+        """
+        Calcule le chemin de plus haute ou le plus bas altitude entre deux points.
+
+        Parameters
+        ----------
+        point_depart : QgsPoint
+            Point de départ du chemin.
+        point_arrivee : QgsPoint
+            Point d'arrivée du chemin.
+
+        Returns
+        -------
+        QgsGeometry or None
+            Géométrie du chemin en 3D si calculé avec succès, ou None si échec ou en dehors des limites.
+        """
         if not self.data_loaded:
             return None
 
-        # Transformation des points si nécessaire
+
         if self.crs_raster != self.crs_canvas:
             point_depart = self.transformation_vers_raster.transform(point_depart)
             point_arrivee = self.transformation_vers_raster.transform(point_arrivee)
 
-        # Conversion des coordonnées spatiales en pixels raster
         depart_px = gdal.ApplyGeoTransform(self.inv_gt, point_depart.x(), point_depart.y())
         arrivee_px = gdal.ApplyGeoTransform(self.inv_gt, point_arrivee.x(), point_arrivee.y())
         depart_px = (int(round(depart_px[0])), int(round(depart_px[1])))
         arrivee_px = (int(round(arrivee_px[0])), int(round(arrivee_px[1])))
 
-        # Vérifier si les points sont dans les limites du raster
         if not (0 <= depart_px[0] < self.raster_colonnes and 0 <= depart_px[1] < self.raster_lignes):
             return None
         if not (0 <= arrivee_px[0] < self.raster_colonnes and 0 <= arrivee_px[1] < self.raster_lignes):
             return None
 
-        # Initialiser le chemin
         pixels_chemin = [depart_px]
         pixel_courant = depart_px
         iterations_max = 10000
@@ -770,7 +1009,22 @@ class OutilTraceCrete(BaseMapTool):
         return geometrie_chemin
 
     def resoudre_egalite(self, candidats, arrivee_px):
-        """Départage les candidats en cas d'égalité."""
+        """
+        Départage les candidats en cas d'égalité de choix.
+
+        Parameters
+        ----------
+        candidats : list of dict
+            Liste des candidats avec leurs coordonnées.
+        arrivee_px : tuple
+            Coordonnées du pixel d'arrivée.
+
+        Returns
+        -------
+        tuple
+            Coordonnées du meilleur candidat choisi.
+        """
+
         distance_min = float('inf')
         meilleur_candidat = None
         for candidat in candidats:
@@ -782,7 +1036,12 @@ class OutilTraceCrete(BaseMapTool):
         return meilleur_candidat['position']
 
     def reinitialiser(self):
-        """Réinitialise l'outil pour un nouveau tracé."""
+        """
+        Réinitialise l'outil pour un nouveau tracé.
+
+        Efface les points, bandes élastiques, et réinitialise le profil d'élévation.
+        """
+
         self.liste_points = []
         self.chemin_dynamique = None
         self.polyligne_confirmee = None
@@ -798,7 +1057,20 @@ class OutilTraceCrete(BaseMapTool):
             self.fenetre_profil.canvas.draw()
 
     def simplifier_geometrie(self, geometrie):
-        """Simplifie la géométrie en préservant les points critiques."""
+        """
+        Simplifie la géométrie en préservant les points critiques d'altitude maximale.
+
+        Parameters
+        ----------
+        geometrie : QgsGeometry
+            Géométrie à simplifier.
+
+        Returns
+        -------
+        QgsGeometry
+            Géométrie simplifiée conservant les points critiques.
+        """
+
         points = geometrie.asPolyline()
 
         if len(points) < 3:
@@ -815,7 +1087,24 @@ class OutilTraceCrete(BaseMapTool):
         return QgsGeometry.fromPolylineXY(points_simplifies)
 
     def douglas_peucker_avec_critiques(self, points, tol, points_critiques):
-        """Simplifie une polyligne en conservant les points critiques."""
+        """
+        Simplifie une polyligne en conservant des points critiques.
+
+        Parameters
+        ----------
+        points : list of QgsPoint
+            Points de la polyligne à simplifier.
+        tol : float
+            Tolérance pour la simplification.
+        points_critiques : list of QgsPoint
+            Points critiques à conserver.
+
+        Returns
+        -------
+        list of QgsPoint
+            Points de la polyligne simplifiée.
+        """
+
         if len(points) < 3:
             return points
 
@@ -843,7 +1132,24 @@ class OutilTraceCrete(BaseMapTool):
                 return [debut, fin]
 
     def distance_perpendiculaire(self, point, debut, fin):
-        """Calcule la distance perpendiculaire du point à la ligne debut-fin."""
+        """
+        Calcule la distance perpendiculaire du point à la ligne début-fin.
+
+        Parameters
+        ----------
+        point : QgsPoint
+            Point pour lequel calculer la distance.
+        debut : QgsPoint
+            Début de la ligne.
+        fin : QgsPoint
+            Fin de la ligne.
+
+        Returns
+        -------
+        float
+            Distance perpendiculaire entre le point et la ligne.
+        """
+
         if debut == fin:
             return self.distance_euclidienne(point, debut)
         else:
@@ -853,11 +1159,41 @@ class OutilTraceCrete(BaseMapTool):
             return num / den
 
     def distance_euclidienne(self, p1, p2):
-        """Calcule la distance euclidienne entre deux points."""
+        """
+        Calcule la distance euclidienne entre deux points.
+
+        Parameters
+        ----------
+        p1 : QgsPoint
+            Premier point.
+        p2 : QgsPoint
+            Deuxième point.
+
+        Returns
+        -------
+        float
+            Distance euclidienne entre les deux points.
+        """
+
         return ((p1.x() - p2.x()) ** 2 + (p1.y() - p2.y()) ** 2) ** 0.5
 
     def obtenir_elevation_aux_points(self, x_array, y_array):
-        """Obtient les élévations du raster aux points donnés."""
+        """
+        Obtient les élévations du raster aux points donnés.
+
+        Parameters
+        ----------
+        x_array : np.ndarray
+            Tableau des coordonnées x des points.
+        y_array : np.ndarray
+            Tableau des coordonnées y des points.
+
+        Returns
+        -------
+        np.ndarray
+            Tableau d'élévations correspondant aux points donnés.
+        """
+
         if self.crs_raster != self.crs_canvas:
             # Transformer les points
             transformer = QgsCoordinateTransform(self.crs_canvas, self.crs_raster, QgsProject.instance())
@@ -884,8 +1220,16 @@ class OutilTraceCrete(BaseMapTool):
 
         return elevations
 
-    def mettre_a_jour_profil(self, geometrie):
-        """Met à jour le profil d'élévation avec le segment dynamique."""
+    def mettre_a_jour_profil_segment(self, geometrie):
+        """
+        Met à jour le profil d'élévation avec le segment dynamique.
+
+        Parameters
+        ----------
+        geometrie : QgsGeometry
+            Géométrie du segment dynamique du profil d'élévation.
+        """
+
         if geometrie is None:
             return
 

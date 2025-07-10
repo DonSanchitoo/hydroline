@@ -1,6 +1,6 @@
-"""
-sscreen/sscreen.py
-"""
+
+# sscreen/sscreen.py
+
 
 import os
 
@@ -10,9 +10,56 @@ from PyQt5.QtWidgets import QWidget, QLabel, QGraphicsOpacityEffect
 
 
 class SplashScreen(QWidget):
+    """
+    Classe gérant l'affichage d'un écran de démarrage avec des logos et des textes dynamiques.
+
+    Cette classe affiche une séquence d'images et de textes afin de fournir une introduction à l'application.
+    L'écran reste en haut de toutes les fenêtres et s'affiche sans cadre jusqu'à ce que la séquence soit terminée.
+
+    Attributes
+    ----------
+    finished : pyqtSignal
+        Signal émis lorsque l'affichage de l'écran de démarrage est terminé.
+
+    current_index : int
+        Index actuel de l'image en cours d'affichage.
+
+    text_index : int
+        Index actuel du texte dynamique en cours d'affichage.
+
+    logos : list of QPixmap
+        Liste pixmap des logos à afficher.
+
+    dynamic_texts : list of tuple
+        Liste de tuples contenant le texte dynamique et sa durée d'affichage.
+
+    opacity_effect1 : QGraphicsOpacityEffect
+        Effet d'opacité appliqué sur le premier label d'image.
+
+    opacity_effect2 : QGraphicsOpacityEffect
+        Effet d'opacité appliqué sur le second label d'image.
+
+    text_opacity_effect : QGraphicsOpacityEffect
+        Effet d'opacité appliqué sur le label de texte dynamique.
+
+    Methods
+    -------
+    show_next_logo()
+        Affiche le logo suivant dans la séquence et met à jour le texte dynamique.
+    """
+
     finished = pyqtSignal()
 
     def __init__(self, parent=None):
+        """
+        Initialise l'écran de démarrage avec les paramètres requis.
+
+        Parameters
+        ----------
+        parent : QWidget, optional
+            Widget parent, par défaut None.
+        """
+
         super(SplashScreen, self).__init__(parent)
 
         self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
@@ -89,11 +136,17 @@ class SplashScreen(QWidget):
         self.show_next_logo()
 
     def show_next_logo(self):
+        """
+        Affiche le logo suivant dans la séquence d'affichage et met à jour le texte dynamique.
+
+        Cette méthode gère la transition des logos avec un effet de fondu enchaîné et passe au texte
+        dynamique suivant lorsque la séquence d'images est en cours.
+        """
+
         self.current_index += 1
 
         transition_time = 3000 // len(self.logos)
 
-        # Update dynamic text at start of cycle
         if self.text_index < len(self.dynamic_texts):
             text, delay = self.dynamic_texts[self.text_index]
             self.dynamic_text_label.setText(text)

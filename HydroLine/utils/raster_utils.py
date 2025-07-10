@@ -1,8 +1,7 @@
-"""
-utils/raster_utils.py
 
-Fonction communes sur le traitements de raster.
-"""
+# utils/raster_utils.py
+
+
 import os
 import tempfile
 
@@ -14,48 +13,41 @@ from qgis._core import QgsRasterLayer
 
 def filtre_moyen_raster(couche_raster_entree, kernel_size=3):
     """
-    Applique un filtre moyen à la couche raster d'entrée.
+    Applique un filtre moyen à la couche raster d'entrée pour lisser les valeurs.
 
-    Args:
-        couche_raster_entree (QgsRasterLayer): La couche raster d'entrée à filtrer.
-        kernel_size (int): La taille du noyau pour le filtre moyen.
+    Parameters
+    ----------
+    couche_raster_entree : QgsRasterLayer
+        La couche raster d'entrée à filtrer.
+    kernel_size : int, optional
+        La taille du noyau pour le filtre moyen, par défaut 3.
 
-    Returns:
-        QgsRasterLayer: La couche raster filtrée.
+    Returns
+    -------
+    QgsRasterLayer or None
+        La couche raster filtrée ou None si le traitement échoue.
     """
 
 
-
-    # Obtenir le chemin source de la couche raster
     input_path = couche_raster_entree.source()
-
-    # Ouvrir le raster en utilisant GDAL
     input_dataset = gdal.Open(input_path, gdal.GA_ReadOnly)
     if input_dataset is None:
         return None
-
-    # Obtenir la bande raster
     input_band = input_dataset.GetRasterBand(1)
 
-    # Lire les données raster en tant que tableau NumPy
     input_array = input_band.ReadAsArray()
     if input_array is None:
         return None
 
-    # Appliquer le filtre moyen en utilisant NumPy
-    # Créer le noyau
+
     kernel = np.ones((kernel_size, kernel_size), dtype=float) / (kernel_size * kernel_size)
-    # Appliquer la convolution en utilisant scipy.signal.convolve2d si disponible
     try:
         from scipy.signal import convolve2d
         output_array = convolve2d(input_array, kernel, mode='same', boundary='symm')
     except ImportError:
-        # Si scipy n'est pas disponible, utiliser une convolution manuelle
-        # Padding de l'array pour gérer les bords
         pad_size = kernel_size // 2
         padded_array = np.pad(input_array, pad_size, mode='edge')
 
-        # Initialiser l'array de sortie
         output_array = np.zeros_like(input_array, dtype=float)
 
         # Boucler sur l'array pour appliquer le filtre
@@ -66,11 +58,9 @@ def filtre_moyen_raster(couche_raster_entree, kernel_size=3):
                 # Calculer la moyenne
                 output_array[i, j] = np.sum(sub_array * kernel)
 
-    # Créer un fichier temporaire pour le raster de sortie
     temp_dir = tempfile.gettempdir()
     output_path = os.path.join(temp_dir, 'filtered_raster.tif')
 
-    # Créer le dataset de sortie
     driver = gdal.GetDriverByName('GTiff')
     output_dataset = driver.Create(
         output_path,
@@ -82,20 +72,16 @@ def filtre_moyen_raster(couche_raster_entree, kernel_size=3):
     if output_dataset is None:
         return None
 
-    # Copier les informations de géoréférencement
     output_dataset.SetGeoTransform(input_dataset.GetGeoTransform())
     output_dataset.SetProjection(input_dataset.GetProjection())
 
-    # Écrire l'array de sortie dans la bande raster
     output_band = output_dataset.GetRasterBand(1)
     output_band.WriteArray(output_array)
     output_band.FlushCache()
 
-    # Fermer les datasets
     input_dataset = None
     output_dataset = None
 
-    # Créer une nouvelle couche raster à partir du chemin de sortie
     output_raster_layer = QgsRasterLayer(output_path, 'MNT_HydroLine')
 
     if not output_raster_layer.isValid():
@@ -106,14 +92,19 @@ def filtre_moyen_raster(couche_raster_entree, kernel_size=3):
 
 def generer_ombrage(couche_raster_entree):
     """
-    Génère un ombrage pour la couche de raster entrée.
+    Génère un ombrage à partir de la couche raster d'entrée.
 
-    Args:
-        couche_raster_entree (QgsRasterLayer): La couche raster d'entrée.
+    Parameters
+    ----------
+    couche_raster_entree : QgsRasterLayer
+        La couche raster d'origine.
 
-    Returns:
-        QgsRasterLayer: La couche raster d'ombrage.
+    Returns
+    -------
+    QgsRasterLayer or None
+        La couche raster d'ombrage ou None si le traitement échoue.
     """
+
     params = {
         'INPUT': couche_raster_entree.source(),
         'BAND': 1,
@@ -134,15 +125,21 @@ def generer_ombrage(couche_raster_entree):
 
 def fusionner_et_arrondir_rasters(couches_raster, precision_decimales=1):
     """
-    Combine plusieurs rasters et arrondit les valeurs du raster résultant à un nombre spécifié de décimales.
+    Combine plusieurs rasters en un seul et arrondit les valeurs du raster résultant.
 
-    Args:
-        couches_raster (list of QgsRasterLayer): Liste de couches raster à fusionner.
-        precision_decimales (int): Nombre de décimales pour arrondir les valeurs.
+    Parameters
+    ----------
+    couches_raster : list of QgsRasterLayer
+        Liste de couches raster à fusionner.
+    precision_decimales : int, optional
+        Nombre de décimales pour arrondir les valeurs, par défaut 1.
 
-    Returns:
-        QgsRasterLayer: La couche raster fusionnée et arrondie.
+    Returns
+    -------
+    QgsRasterLayer or None
+        La couche raster fusionnée et arrondie ou None si le traitement échoue.
     """
+
     raster_sources = [layer.source() for layer in couches_raster]
 
     merge_params = {
@@ -175,14 +172,19 @@ def fusionner_et_arrondir_rasters(couches_raster, precision_decimales=1):
 
 def generer_ombrage_invisible(couche_raster_entree):
     """
-    Génère un ombrage pour la couche de raster entrée.
+    Génère un ombrage à partir de la couche raster d'entrée sans l'ajouter au projet.
 
-    Args:
-        couche_raster_entree (QgsRasterLayer): La couche raster d'entrée.
+    Parameters
+    ----------
+    couche_raster_entree : QgsRasterLayer
+        La couche raster d'origine.
 
-    Returns:
-        QgsRasterLayer: La couche raster d'ombrage.
+    Returns
+    -------
+    QgsRasterLayer or None
+        La couche raster d'ombrage ou None si le traitement échoue.
     """
+
     params = {
         'INPUT': couche_raster_entree.source(),
         'BAND': 1,

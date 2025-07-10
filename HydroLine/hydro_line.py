@@ -1,6 +1,6 @@
-"""
-HydroLine.py
-"""
+
+# /HydroLine.py
+
 import os
 import sys
 
@@ -40,12 +40,95 @@ class HydroLine(QObject):
     """
     Plugin QGIS pour l'assistance sur MNT.
 
-    Args:
-        interface_qgis (QgisInterface): L'interface QGIS principale.
+    Ce plugin fournit plusieurs outils pour visualiser, tracer et prolonger des lignes de crête et de rupture de pente
+    sur un Modèle Numérique de Terrain (MNT) au sein de QGIS.
+
+    Attributes
+    ----------
+    interface_qgis : QgisInterface
+        L'interface principale de QGIS.
+    canvas : QgsMapCanvas
+        Canevas pour le traçage et l'interaction avec les cartes.
+    chemin_plugin : str
+        Chemin vers le répertoire du plugin contenant les ressources.
+    actions : list of QAction
+        Liste des actions disponibles pour le plugin.
+    ...
+
+    Methods
+    -------
+    traduire(message)
+        Traduit un message en utilisant l'API de traduction Qt.
+    on_layer_will_be_removed(layer_id)
+        Gestionnaire appelé lorsqu'une couche est supprimée du projet.
+    initGui()
+        Configure le menu initial pour le plugin.
+    setup_toolbar_actions()
+        Configure les actions de la barre d'outils du plugin.
+    basculer_visibilite_barre_outils()
+        Bascule la visibilité de la barre d'outils et affiche le splash screen à l'ouverture.
+    lancer_outil()
+        Lance les outils du plugin après l'affichage du splash screen.
+    ligne_extreme_suivante()
+        Valide la polyligne actuelle et commence une nouvelle.
+    ligne_rupture_suivante()
+        Valide la polyligne actuelle et commence une nouvelle.
+    lancer_GraphZ()
+        Ouvre le dock de profil graphique.
+    unload()
+        Supprime la barre d'outils et les boutons du plugin de l'interface QGIS.
+    ouvrir_parametres()
+        Ouvre la fenêtre de paramètres du plugin et configure les outils en fonction des réglages.
+    mettre_a_jour_champs(couche)
+        Met à jour les champs de la couche sélectionnée selon les réglages actifs.
+    effacer_actions_barre_outils()
+        Supprime toutes les actions de la barre d'outils sauf pour MNTvisu et le menu.
+    lancer_prolongement()
+        Lance l'outil de prolongement de profil.
+    lancer_Epoint()
+        Lance l'outil enveloppe sur semis de points en utilisant alphashape.
+    afficher_outils_points_extremes()
+        Affiche les boutons de la barre d'outils pour le tracé et la simplification de seuils.
+    afficher_outil_rupture_pente()
+        Affiche les boutons de la barre d'outils pour le tracé de rupture de pente.
+    basculer_points_bas(state)
+        Active ou désactive le mode Points Bas dans l'outil.
+    basculer_tracer_libre_rupture(coche)
+        Active ou désactive le mode de tracé libre pour la rupture de pente.
+    basculer_simplification_rupture_pente(coche)
+        Active ou désactive la simplification de tracé pour l'outil de rupture de pente.
+    reinitialiser_barre_outils()
+        Réinitialise la barre d'outils à son état initial.
+    basculer_simplification(coche)
+        Active ou désactive la simplification de tracé.
+    basculer_tracer_libre(coche)
+        Active ou désactive le mode de tracé libre.
+    preparation_mnt()
+        Affiche le MNT avec ombrage, styles prédéfinis et gère les couches raster et TIN.
+    demarrer_rupture_pente()
+        Activation de l'outil de tracé de rupture de pente.
+    changer_mode_rupture(index)
+        Change le mode de rupture de pente en fonction de la sélection.
+    arreter_rupture()
+        Désactivation de l'outil de rupture de pente et création de la couche temporaire.
+    demarrer_points_extremes()
+        Activation de l'outil de tracé.
+    changer_mode(index)
+        Change le mode de l'outil en fonction de la sélection.
+    arreter_points_extremes()
+        Désactivation de l'outil et création de la couche temporaire.
     """
 
     def __init__(self, interface_qgis):
-        """Initialise le plugin."""
+        """
+        Initialise le plugin HydroLine avec les attributs nécessaires pour le fonctionnement.
+
+        Parameters
+        ----------
+        interface_qgis : QgisInterface
+            L'interface principale de QGIS pour plugin interaction.
+        """
+
         super().__init__()
         self.interface_qgis = interface_qgis
         self.canvas = interface_qgis.mapCanvas()
@@ -70,27 +153,43 @@ class HydroLine(QObject):
         }
         self.splash_screen = None
 
-
     def traduire(self, message):
         """
         Traduit un message en utilisant l'API de traduction Qt.
 
-        Args:
-            message (str): Le message à traduire.
+        Parameters
+        ----------
+        message : str
+            Le message à traduire.
 
-        Returns:
-            str: Le message traduit.
+        Returns
+        -------
+        str
+            Le message traduit.
         """
+
         return QCoreApplication.translate('AssistMnt', message)
 
     def on_layer_will_be_removed(self, layer_id):
+        """
+        Gestionnaire appelé lorsqu'une couche est supprimée du projet, met à jour les attributs en conséquence.
+
+        Parameters
+        ----------
+        layer_id : str
+            Identifiant ID de la couche supprimée.
+        """
+
         if self.couche_rupture and self.couche_rupture.id() == layer_id:
             self.couche_rupture = None
         if self.couche_crete and self.couche_crete.id() == layer_id:
             self.couche_crete = None
 
     def initGui(self):
-        """Configure le menu initial."""
+        """
+        Configure le menu initial du plugin dans l'interface QGIS.
+        """
+
         chemin_icones = os.path.join(self.chemin_plugin, "icon")
 
         # Créer le menu "Hydroline"
@@ -144,7 +243,10 @@ class HydroLine(QObject):
         self.interface_qgis.mainWindow().menuBar().addMenu(self.menu_hydroline)
 
     def setup_toolbar_actions(self):
-        """Configure les actions de la barre d'outils."""
+        """
+        Configure les actions de la barre d'outils du plugin.
+        """
+
         chemin_icones = os.path.join(self.chemin_plugin, "icon")
 
         self.action_mntvisu = QAction(
@@ -192,8 +294,9 @@ class HydroLine(QObject):
 
     def basculer_visibilite_barre_outils(self):
         """
-        Bascule la visibilité de la barre d'outils. Affiche le splash screen seulement lors de l'ouverture.
+        Bascule la visibilité de la barre d'outils, et affiche le splash screen seulement à l'ouverture.
         """
+
         is_currently_visible = self.barre_outils_visible
 
         if not is_currently_visible:
@@ -208,8 +311,9 @@ class HydroLine(QObject):
 
     def lancer_outil(self):
         """
-        Fonction appelée lorsque le splash screen est terminé.
+        Fonction appelée lorsque le splash screen est terminé, qui initialise les outils du plugin.
         """
+
         self.splash_screen.deleteLater()
         self.splash_screen = None
 
@@ -222,26 +326,38 @@ class HydroLine(QObject):
         self.barre_outils.setVisible(True)
 
     def ligne_extreme_suivante(self):
-        """Valide la polyligne actuelle et commence une nouvelle."""
+        """
+        Valide la polyligne en cours et commence une nouvelle ligne de crête.
+        """
+
         if self.outil_trace_crete is not None:
             self.outil_trace_crete.confirmer_polyligne()
         else:
             QMessageBox.warning(None, "Avertissement", "Aucun tracé en cours.")
 
     def ligne_rupture_suivante(self):
-        """Valide la polyligne actuelle et commence une nouvelle."""
+        """
+        Valide la polyligne en cours et commence une nouvelle ligne de rupture de pente.
+        """
+
         if self.outil_rupture_pente is not None:
             self.outil_rupture_pente.confirmer_polyligne()
         else:
             QMessageBox.warning(None, "Avertissement", "Aucun tracé en cours.")
 
     def lancer_GraphZ(self):
-        """Ouvre le dock de profil graphique."""
+        """
+        Ouvre le dock de profil graphique.
+        """
+
         self.prof_graph_dock = ProfilGraphDock(self.canvas, self.interface_qgis.mainWindow())
         self.interface_qgis.addDockWidget(Qt.BottomDockWidgetArea, self.prof_graph_dock)
 
     def unload(self):
-        """Supprime la barre d'outils du plugin et ses boutons de l'interface QGIS."""
+        """
+        Supprime la barre d'outils du plugin et ses boutons de l'interface QGIS.
+        """
+
         if self.barre_outils is not None:
             for action in self.actions:
                 self.barre_outils.removeAction(action)
@@ -255,7 +371,10 @@ class HydroLine(QObject):
             self.fenetre_profil = None
 
     def ouvrir_parametres(self):
-        """Ouvre la fenêtre de paramètres."""
+        """
+        Ouvre la fenêtre de paramètres et ajuste les réglages des outils du plugin.
+        """
+
         dialog = ParametresDialog(self.interface_qgis.mainWindow())
         if self.outil_trace_crete:
             current_mode = self.outil_trace_crete.mode
@@ -305,6 +424,15 @@ class HydroLine(QObject):
             pass
 
     def mettre_a_jour_champs(self, couche):
+        """
+        Met à jour les champs de la couche sélectionnée en fonction des réglages actifs.
+
+        Parameters
+        ----------
+        couche : QgsVectorLayer
+            Couche dont les champs doivent être mis à jour.
+        """
+
         if couche is not None:
             champs_presentes = [field.name() for field in couche.fields()]
             ids_a_mettre_a_jour = []
@@ -321,7 +449,10 @@ class HydroLine(QObject):
                         couche.updateFeature(feature)
 
     def effacer_actions_barre_outils(self):
-        """Supprime toutes les actions de la barre d'outils sauf MNTvisu et le menu."""
+        """
+        Supprime toutes les actions de la barre d'outils sauf pour MNTvisu et le menu.
+        """
+
         actions_a_conserver = [self.action_mntvisu, self.action_bouton_menu]
 
         actions_a_supprimer = [action for action in self.barre_outils.actions() if action not in actions_a_conserver]
@@ -332,11 +463,18 @@ class HydroLine(QObject):
                 self.actions.remove(action)
 
     def lancer_prolongement(self):
-        """Lance l'outil de prolongement de profil."""
+        """
+        Lance l'outil de prolongement de profil.
+        """
+
         self.interface_qgis.mainWindow().statusBar().showMessage("Chargement prolongement profil...", 2000)
         prolongement.main()
 
     def lancer_Epoint(self):
+        """
+        Lance l'outil enveloppe sur semis de points avec alphashape.
+        """
+
         self.interface_qgis.mainWindow().statusBar().showMessage(
             "Chargement de l'outil enveloppe sur semis de point 'alphashape'...", 2000)
 
@@ -354,8 +492,152 @@ class HydroLine(QObject):
         else:
             QMessageBox.information(self.interface_qgis.mainWindow(), "Information", "Opération annulée.")
 
+    def lancer_rupture_pente(self):
+        """
+        Activation de l'outil de tracé de rupture de pente avec création de la couche vectorielle.
+        """
+        dialog = ChoixCouchesDialogPourTrace(self.interface_qgis.mainWindow())
+        result = dialog.exec_()
+        if result == QDialog.Accepted:
+            couche_mnt = dialog.get_selected_mnt_layer()
+            couche_rupture_selectionnee = dialog.get_selected_polyline_layer()
+            nouvelle_couche = dialog.is_new_layer_checked()
+        else:
+            return
+
+        if couche_mnt is None:
+            QMessageBox.warning(None, "Avertissement", "Vous devez sélectionner un MNT.")
+            return
+
+        # Déterminer le mode sélectionné ('concave' ou 'convexe')
+        if hasattr(self, 'mode_combobox'):
+            mode_selectionne = 'concave' if self.mode_combobox.currentIndex() == 0 else 'convexe'
+        else:
+            # Par défaut, utiliser 'concave'
+            mode_selectionne = 'concave'
+            QMessageBox.warning(None, "Avertissement",
+                                "Le mode de rupture de pente n'a pas été défini. Utilisation du mode 'concave' par défaut.")
+
+        if couche_rupture_selectionnee is not None:
+            self.couche_rupture = couche_rupture_selectionnee
+        elif nouvelle_couche:
+            crs = self.canvas.mapSettings().destinationCrs()
+            self.couche_rupture = QgsVectorLayer(f"MultiLineStringZ?crs={crs.authid()}", "Ruptures de Pente", "memory")
+            if not self.couche_rupture.isValid():
+                QMessageBox.critical(None, "Erreur",
+                                     "Impossible de créer la couche vectorielle pour les ruptures de pente.")
+                return
+            champs = []
+            if self.field_settings.get('OBJECTID', True):
+                champs.append(QgsField('OBJECTID', QVariant.Int))
+            if self.field_settings.get('Denomination', True):
+                champs.append(QgsField('Denomination', QVariant.String))
+            if self.field_settings.get('SHAPE_LENGTH', True):
+                champs.append(QgsField('SHAPE_LENGTH', QVariant.Double))
+            if self.field_settings.get('HORADATEUR', True):
+                champs.append(QgsField('HORADATEUR', QVariant.String))
+
+            self.couche_rupture.dataProvider().addAttributes(champs)
+            self.couche_rupture.updateFields()
+
+            QgsProject.instance().addMapLayer(self.couche_rupture)
+            symbole = self.couche_rupture.renderer().symbol()
+            symbole.setColor(QColor('#FF0000'))
+            symbole.setWidth(1)
+        else:
+            QMessageBox.warning(None, "Avertissement",
+                                "Vous devez sélectionner une couche de polyligne ou cocher 'Nouvelle couche de travail'.")
+            return
+
+        self.outil_rupture_pente = OutilRupturePente(self.canvas, couche_mnt, mode=mode_selectionne)
+        # Connecter le signal
+        self.outil_rupture_pente.mode_trace_libre_changed.connect(self.action_tracer_libre_rupture.setChecked)
+
+        self.outil_rupture_pente = OutilRupturePente(self.canvas, couche_mnt, mode=mode_selectionne)
+
+        self.outil_rupture_pente.definir_couche_vectorielle(self.couche_rupture)
+
+        self.canvas.setMapTool(self.outil_rupture_pente)
+
+        if self.graphique_3d_active:
+            if self.fenetre_profil is None:
+                self.fenetre_profil = FenetreProfilElevation(self.interface_qgis.mainWindow())
+                self.interface_qgis.addDockWidget(Qt.RightDockWidgetArea, self.fenetre_profil)
+            self.outil_rupture_pente.definir_fenetre_profil(self.fenetre_profil)
+        else:
+            self.outil_rupture_pente.definir_fenetre_profil(None)
+
+    def lancer_points_extremes(self):
+        """
+        Activation de l'outil de tracé pour lignes de crête avec création de la couche vectorielle.
+        """
+        dialog = ChoixCouchesDialogPourTrace(self.interface_qgis.mainWindow())
+        result = dialog.exec_()
+        if result == QDialog.Accepted:
+            couche_mnt = dialog.get_selected_mnt_layer()
+            couche_crete_selectionnee = dialog.get_selected_polyline_layer()
+            nouvelle_couche = dialog.is_new_layer_checked()
+        else:
+            return
+
+        if couche_mnt is None:
+            QMessageBox.warning(None, "Avertissement", "Vous devez sélectionner un MNT.")
+            return
+
+        if couche_crete_selectionnee is not None:
+            self.couche_crete = couche_crete_selectionnee
+        elif nouvelle_couche:
+            crs = self.canvas.mapSettings().destinationCrs()
+            self.couche_crete = QgsVectorLayer(f"MultiLineStringZ?crs={crs.authid()}", "Lignes de Crête", "memory")
+            if not self.couche_crete.isValid():
+                QMessageBox.critical(None, "Erreur",
+                                     "Impossible de créer la couche vectorielle pour les lignes de crête.")
+                return
+            # Ajouter les champs à la couche en fonction des préférences
+            champs = []
+            if self.field_settings.get('OBJECTID', True):
+                champs.append(QgsField('OBJECTID', QVariant.Int))
+            if self.field_settings.get('Denomination', True):
+                champs.append(QgsField('Denomination', QVariant.String))
+            if self.field_settings.get('SHAPE_LENGTH', True):
+                champs.append(QgsField('SHAPE_LENGTH', QVariant.Double))
+            if self.field_settings.get('HORADATEUR', True):
+                champs.append(QgsField('HORADATEUR', QVariant.String))
+
+            self.couche_crete.dataProvider().addAttributes(champs)
+            self.couche_crete.updateFields()
+
+            QgsProject.instance().addMapLayer(self.couche_crete)
+            symbole = self.couche_crete.renderer().symbol()
+            symbole.setColor(QColor('#00FF00'))
+            symbole.setWidth(1)
+        else:
+            QMessageBox.warning(None, "Avertissement",
+                                "Vous devez sélectionner une couche de polyligne ou cocher 'Nouvelle couche de travail'.")
+            return
+
+        self.outil_trace_crete = OutilTraceCrete(self.canvas, couche_mnt)
+        # Connecter le signal
+        self.outil_trace_crete.mode_trace_libre_changed.connect(self.action_tracer_libre.setChecked)
+
+        self.outil_trace_crete.definir_couche_vectorielle(self.couche_crete)
+        self.canvas.setMapTool(self.outil_trace_crete)
+
+        if self.graphique_3d_active:
+            if self.fenetre_profil is None:
+                self.fenetre_profil = FenetreProfilElevation(self.interface_qgis.mainWindow())
+                self.interface_qgis.addDockWidget(Qt.RightDockWidgetArea, self.fenetre_profil)
+            self.outil_trace_crete.definir_fenetre_profil(self.fenetre_profil)
+        else:
+            self.outil_trace_crete.definir_fenetre_profil(None)
+
+        self.outil_trace_crete.definir_mode(1)  # Mode 1 par défaut
+
     def afficher_outils_points_extremes(self):
-        """Affiche les boutons pour le tracé de seuils."""
+        """
+        Affiche les boutons pour le tracé de seuils et la simplification dans la barre d'outils.
+        """
+
         self.effacer_actions_barre_outils()
 
         chemin_icones = os.path.join(self.chemin_plugin, "icon")
@@ -363,7 +645,7 @@ class HydroLine(QObject):
         # Bouton démarrer
         self.action_demarrer_mnt = QAction(QIcon(os.path.join(chemin_icones, "icon_seuil.png")), self.traduire(u'Lancer outil'),
                                            self.interface_qgis.mainWindow())
-        self.action_demarrer_mnt.triggered.connect(self.demarrer_points_extremes)
+        self.action_demarrer_mnt.triggered.connect(self.lancer_points_extremes)
         self.barre_outils.insertAction(self.action_bouton_menu, self.action_demarrer_mnt)
         self.actions.append(self.action_demarrer_mnt)
 
@@ -371,7 +653,7 @@ class HydroLine(QObject):
         self.bouton_simplification = QToolButton()
         self.bouton_simplification.setText("Simplification")
         self.bouton_simplification.setCheckable(True)
-        self.bouton_simplification.toggled.connect(self.basculer_simplification)
+        self.bouton_simplification.toggled.connect(self.basculer_simplification_crete)
         self.action_bouton_simplification = self.barre_outils.insertWidget(self.action_bouton_menu, self.bouton_simplification)
         self.actions.append(self.action_bouton_simplification)
 
@@ -380,7 +662,7 @@ class HydroLine(QObject):
         self.action_tracer_libre = QAction(QIcon(os.path.join(chemin_icones, "icon_toggle.png")),
                                            self.traduire(u'Tracé Libre : Touche S'), self.interface_qgis.mainWindow())
         self.action_tracer_libre.setCheckable(True)
-        self.action_tracer_libre.toggled.connect(self.basculer_tracer_libre)
+        self.action_tracer_libre.toggled.connect(self.basculer_tracer_libre_crete)
         self.barre_outils.insertAction(self.action_bouton_menu, self.action_tracer_libre)
         self.actions.append(self.action_tracer_libre)
 
@@ -407,7 +689,10 @@ class HydroLine(QObject):
         self.actions.append(self.action_arreter_mnt)
 
     def afficher_outil_rupture_pente(self):
-        """Affiche les boutons pour le tracé de rupture de pente."""
+        """
+        Affiche les boutons pour le tracé de rupture de pente dans la barre d'outils.
+        """
+
         # Effacer les actions existantes sauf MNTvisu et le menu
         self.effacer_actions_barre_outils()
 
@@ -417,7 +702,7 @@ class HydroLine(QObject):
         self.action_demarrer_rupture = QAction(QIcon(os.path.join(chemin_icones, "icon_rupture.png")),
                                                self.traduire(u'Lancer outil'),
                                                self.interface_qgis.mainWindow())
-        self.action_demarrer_rupture.triggered.connect(self.demarrer_rupture_pente)
+        self.action_demarrer_rupture.triggered.connect(self.lancer_rupture_pente)
         # Insérer l'action avant le bouton du menu
         self.barre_outils.insertAction(self.action_bouton_menu, self.action_demarrer_rupture)
         self.actions.append(self.action_demarrer_rupture)
@@ -473,7 +758,15 @@ class HydroLine(QObject):
         self.actions.append(self.action_mode_combobox)
 
     def basculer_points_bas(self, state):
-        """Active ou désactive le mode Points Bas dans l'outil."""
+        """
+        Active ou désactive le mode Points Bas dans l'outil trace crête.
+
+        Parameters
+        ----------
+        state : Qt.CheckState
+            État de la case à cocher pour Points Bas.
+        """
+
         if self.outil_trace_crete is not None:
             active = state == Qt.Checked
             self.outil_trace_crete.set_points_bas(active)
@@ -482,7 +775,15 @@ class HydroLine(QObject):
             self.checkbox_points_bas.setChecked(False)
 
     def basculer_tracer_libre_rupture(self, coche):
-        """Active ou désactive le mode de tracé libre pour rupture de pente."""
+        """
+        Active ou désactive le mode de tracé libre pour la rupture de pente.
+
+        Parameters
+        ----------
+        coche : bool
+            État activé ou désactivé du tracé libre.
+        """
+
         if hasattr(self, 'outil_rupture_pente') and self.outil_rupture_pente:
             self.outil_rupture_pente.definir_mode_trace_libre(coche)
         else:
@@ -491,7 +792,15 @@ class HydroLine(QObject):
             self.action_tracer_libre_rupture.setChecked(False)
 
     def basculer_simplification_rupture_pente(self, coche):
-        """Active ou désactive la simplification pour l'outil de rupture de pente."""
+        """
+        Active ou désactive la simplification de tracé pour l'outil de rupture de pente.
+
+        Parameters
+        ----------
+        coche : bool
+            État activé ou désactivé de la simplification.
+        """
+
         if hasattr(self, 'outil_rupture_pente') and self.outil_rupture_pente:
             if coche:
                 dialog = SliderDialog()
@@ -508,7 +817,10 @@ class HydroLine(QObject):
             self.bouton_simplification_pente.setChecked(False)
 
     def reinitialiser_barre_outils(self):
-        """Réinitialise la barre d'outils à son état initial."""
+        """
+        Réinitialise la barre d'outils à son état initial lors du lancement du plugin.
+        """
+
         self.effacer_actions_barre_outils()
 
         if self.outil_trace_crete is not None:
@@ -516,7 +828,16 @@ class HydroLine(QObject):
             self.outil_trace_crete = None
             self.canvas.unsetMapTool(self.canvas.mapTool())
 
-    def basculer_simplification(self, coche):
+    def basculer_simplification_crete(self, coche):
+        """
+        Active ou désactive la simplification de tracé pour le outil trace crête.
+
+        Parameters
+        ----------
+        coche : bool
+            État activé ou désactivé de la simplification.
+        """
+
         if self.outil_trace_crete is not None:
             if coche:
                 dialog = SliderDialog()
@@ -531,8 +852,16 @@ class HydroLine(QObject):
             QMessageBox.warning(None, "Avertissement", "Veuillez d'abord activer l'outil avec le bouton Démarrer MNT.")
             self.bouton_simplification.setChecked(False)
 
-    def basculer_tracer_libre(self, coche):
-        """Active ou désactive le mode de tracé libre."""
+    def basculer_tracer_libre_crete(self, coche):
+        """
+        Active ou désactive le mode de tracé libre pour le outil trace crête.
+
+        Parameters
+        ----------
+        coche : bool
+            État activé ou désactivé du tracé libre.
+        """
+
         if self.outil_trace_crete is not None:
             self.outil_trace_crete.definir_mode_trace_libre(coche)
         else:
@@ -540,8 +869,14 @@ class HydroLine(QObject):
             self.action_tracer_libre.setChecked(False)
 
     def preparation_mnt(self):
-        """Affiche le MNT avec ombrage et style, en gérant les couches raster et TIN."""
+        """
+        Affiche le MNT avec ombrage et style prédéfini, en gérant les couches raster et TIN.
 
+        Note
+        ----
+        Utilise les méthodes `filtre_moyen_raster` et `generer_ombrage` pour le filtrage
+        et l'ajout de l'ombrage au MNT.
+        """
         self.splash_screenLoad = SplashScreenLoad()
         self.splash_screenLoad.setParent(self.interface_qgis.mainWindow())
         self.splash_screenLoad.show()
@@ -674,81 +1009,16 @@ class HydroLine(QObject):
 
         self.splash_screenLoad.close()
 
-    def demarrer_rupture_pente(self):
-        """Activation de l'outil de tracé de rupture de pente."""
-        dialog = ChoixCouchesDialogPourTrace(self.interface_qgis.mainWindow())
-        result = dialog.exec_()
-        if result == QDialog.Accepted:
-            couche_mnt = dialog.get_selected_mnt_layer()
-            couche_rupture_selectionnee = dialog.get_selected_polyline_layer()
-            nouvelle_couche = dialog.is_new_layer_checked()
-        else:
-            return
-
-        if couche_mnt is None:
-            QMessageBox.warning(None, "Avertissement", "Vous devez sélectionner un MNT.")
-            return
-
-        # Déterminer le mode sélectionné ('concave' ou 'convexe')
-        if hasattr(self, 'mode_combobox'):
-            mode_selectionne = 'concave' if self.mode_combobox.currentIndex() == 0 else 'convexe'
-        else:
-            # Par défaut, utiliser 'concave'
-            mode_selectionne = 'concave'
-            QMessageBox.warning(None, "Avertissement",
-                                "Le mode de rupture de pente n'a pas été défini. Utilisation du mode 'concave' par défaut.")
-
-        if couche_rupture_selectionnee is not None:
-            self.couche_rupture = couche_rupture_selectionnee
-        elif nouvelle_couche:
-            crs = self.canvas.mapSettings().destinationCrs()
-            self.couche_rupture = QgsVectorLayer(f"MultiLineStringZ?crs={crs.authid()}", "Ruptures de Pente", "memory")
-            if not self.couche_rupture.isValid():
-                QMessageBox.critical(None, "Erreur",
-                                     "Impossible de créer la couche vectorielle pour les ruptures de pente.")
-                return
-            champs = []
-            if self.field_settings.get('OBJECTID', True):
-                champs.append(QgsField('OBJECTID', QVariant.Int))
-            if self.field_settings.get('Denomination', True):
-                champs.append(QgsField('Denomination', QVariant.String))
-            if self.field_settings.get('SHAPE_LENGTH', True):
-                champs.append(QgsField('SHAPE_LENGTH', QVariant.Double))
-            if self.field_settings.get('HORADATEUR', True):
-                champs.append(QgsField('HORADATEUR', QVariant.String))
-
-            self.couche_rupture.dataProvider().addAttributes(champs)
-            self.couche_rupture.updateFields()
-
-            QgsProject.instance().addMapLayer(self.couche_rupture)
-            symbole = self.couche_rupture.renderer().symbol()
-            symbole.setColor(QColor('#FF0000'))
-            symbole.setWidth(1)
-        else:
-            QMessageBox.warning(None, "Avertissement",
-                                "Vous devez sélectionner une couche de polyligne ou cocher 'Nouvelle couche de travail'.")
-            return
-
-        self.outil_rupture_pente = OutilRupturePente(self.canvas, couche_mnt, mode=mode_selectionne)
-        # Connecter le signal
-        self.outil_rupture_pente.mode_trace_libre_changed.connect(self.action_tracer_libre_rupture.setChecked)
-
-        self.outil_rupture_pente = OutilRupturePente(self.canvas, couche_mnt, mode=mode_selectionne)
-
-        self.outil_rupture_pente.definir_couche_vectorielle(self.couche_rupture)
-
-        self.canvas.setMapTool(self.outil_rupture_pente)
-
-        if self.graphique_3d_active:
-            if self.fenetre_profil is None:
-                self.fenetre_profil = FenetreProfilElevation(self.interface_qgis.mainWindow())
-                self.interface_qgis.addDockWidget(Qt.RightDockWidgetArea, self.fenetre_profil)
-            self.outil_rupture_pente.definir_fenetre_profil(self.fenetre_profil)
-        else:
-            self.outil_rupture_pente.definir_fenetre_profil(None)
-
     def changer_mode_rupture(self, index):
-        """Change le mode de rupture de pente."""
+        """
+        Change le mode de rupture de pente en fonction de la sélection du combo box.
+
+        Parameters
+        ----------
+        index : int
+            Index du mode sélectionné.
+        """
+
         if hasattr(self, 'outil_rupture_pente') and self.outil_rupture_pente is not None:
             mode = 'concave' if index == 0 else 'convexe'
             self.outil_rupture_pente.definir_mode(mode)
@@ -756,9 +1026,10 @@ class HydroLine(QObject):
             QMessageBox.warning(None, "Avertissement",
                                 "Veuillez d'abord activer l'outil avec le bouton Démarrer rupture de pente.")
 
-
     def arreter_rupture(self):
-        """Désactivation de l'outil de rupture de pente et création de la couche temporaire."""
+        """
+        Désactivation de l'outil de rupture de pente et création de la couche temporaire.
+        """
 
         if self.outil_rupture_pente is None or self.outil_rupture_pente.liste_points is None:
             QMessageBox.warning(None, "Avertissement", "Aucun tracé en cours.")
@@ -793,72 +1064,16 @@ class HydroLine(QObject):
         self.outil_rupture_pente = None
         self.canvas.unsetMapTool(self.canvas.mapTool())
 
-    def demarrer_points_extremes(self):
-        """Activation de l'outil de tracé."""
-        dialog = ChoixCouchesDialogPourTrace(self.interface_qgis.mainWindow())
-        result = dialog.exec_()
-        if result == QDialog.Accepted:
-            couche_mnt = dialog.get_selected_mnt_layer()
-            couche_crete_selectionnee = dialog.get_selected_polyline_layer()
-            nouvelle_couche = dialog.is_new_layer_checked()
-        else:
-            return
-
-        if couche_mnt is None:
-            QMessageBox.warning(None, "Avertissement", "Vous devez sélectionner un MNT.")
-            return
-
-        if couche_crete_selectionnee is not None:
-            self.couche_crete = couche_crete_selectionnee
-        elif nouvelle_couche:
-            crs = self.canvas.mapSettings().destinationCrs()
-            self.couche_crete = QgsVectorLayer(f"MultiLineStringZ?crs={crs.authid()}", "Lignes de Crête", "memory")
-            if not self.couche_crete.isValid():
-                QMessageBox.critical(None, "Erreur",
-                                     "Impossible de créer la couche vectorielle pour les lignes de crête.")
-                return
-            # Ajouter les champs à la couche en fonction des préférences
-            champs = []
-            if self.field_settings.get('OBJECTID', True):
-                champs.append(QgsField('OBJECTID', QVariant.Int))
-            if self.field_settings.get('Denomination', True):
-                champs.append(QgsField('Denomination', QVariant.String))
-            if self.field_settings.get('SHAPE_LENGTH', True):
-                champs.append(QgsField('SHAPE_LENGTH', QVariant.Double))
-            if self.field_settings.get('HORADATEUR', True):
-                champs.append(QgsField('HORADATEUR', QVariant.String))
-
-            self.couche_crete.dataProvider().addAttributes(champs)
-            self.couche_crete.updateFields()
-
-            QgsProject.instance().addMapLayer(self.couche_crete)
-            symbole = self.couche_crete.renderer().symbol()
-            symbole.setColor(QColor('#00FF00'))
-            symbole.setWidth(1)
-        else:
-            QMessageBox.warning(None, "Avertissement",
-                                "Vous devez sélectionner une couche de polyligne ou cocher 'Nouvelle couche de travail'.")
-            return
-
-        self.outil_trace_crete = OutilTraceCrete(self.canvas, couche_mnt)
-        # Connecter le signal
-        self.outil_trace_crete.mode_trace_libre_changed.connect(self.action_tracer_libre.setChecked)
-
-        self.outil_trace_crete.definir_couche_vectorielle(self.couche_crete)
-        self.canvas.setMapTool(self.outil_trace_crete)
-
-        if self.graphique_3d_active:
-            if self.fenetre_profil is None:
-                self.fenetre_profil = FenetreProfilElevation(self.interface_qgis.mainWindow())
-                self.interface_qgis.addDockWidget(Qt.RightDockWidgetArea, self.fenetre_profil)
-            self.outil_trace_crete.definir_fenetre_profil(self.fenetre_profil)
-        else:
-            self.outil_trace_crete.definir_fenetre_profil(None)
-
-        self.outil_trace_crete.definir_mode(1)  # Mode 1 par défaut
-
     def changer_mode(self, index):
-        """Change le mode de l'outil en fonction de la sélection."""
+        """
+        Change le mode de l'outil de trace crête en fonction de la sélection du combo box.
+
+        Parameters
+        ----------
+        index : int
+            Index du mode sélectionné.
+        """
+
         if self.outil_trace_crete is not None:
             if index == 0:
                 # Mode Automatique (Distance)
@@ -871,7 +1086,10 @@ class HydroLine(QObject):
             QMessageBox.warning(None, "Avertissement", "Veuillez d'abord activer l'outil avec le bouton Démarrer MNT.")
 
     def arreter_points_extremes(self):
-        """Désactivation de l'outil et création de la couche temporaire."""
+        """
+        Désactivation de l'outil de trace crête et création de la couche temporaire.
+        """
+
         if self.outil_trace_crete is None:
             QMessageBox.warning(None, "Avertissement", "Aucun tracé en cours.")
             return

@@ -12,22 +12,47 @@ class FenetreProfilElevation(QDockWidget):
     """
     Fenêtre pour afficher le profil d'élévation en 3D.
 
-    Args:
-        parent (QWidget): Le widget parent.
+    Cette classe crée une fenêtre dockable pour visualiser un profil d'élévation en trois dimensions,
+    en utilisant Matplotlib pour le rendu graphique.
+
+    Attributes
+    ----------
+    figure : matplotlib.figure.Figure
+        Figure Matplotlib pour le rendu 3D.
+    ax : matplotlib.axes._subplots.Axes3DSubplot
+        Subplot 3D pour le tracé du profil d'élévation.
+    canvas : FigureCanvasQTAgg
+        Canvas contenant la figure Matplotlib.
+
+    Methods
+    -------
+    reinitialiser()
+        Réinitialise le graphique 3D.
+    definir_outil(outil)
+        Définit l'outil à utiliser pour obtenir les données d'élévation.
+    on_mouse_move(event)
+        Traite les mouvements de la souris sur le graphique.
+    mettre_a_jour_profil(x_coords, y_coords, elevations, longueur_segment)
+        Met à jour le graphique 3D du profil d'élévation.
     """
 
     def __init__(self, parent=None):
-        """Initialise la fenêtre de profil d'élévation."""
+        """
+        Initialise la fenêtre de profil d'élévation.
+
+        Parameters
+        ----------
+        parent : QWidget, optional
+            Widget parent, par défaut None.
+        """
+
         super().__init__("Profil d'Élévation 3D", parent)
 
-
-        # Créer une figure Matplotlib en 3D
         self.figure = plt.figure()
         self.ax = self.figure.add_subplot(111, projection='3d')
         self.canvas = FigureCanvasQTAgg(self.figure)
         self.canvas.mpl_connect('motion_notify_event', self.on_mouse_move)
 
-        # Configurer le widget principal
         widget = QWidget()
         layout = QVBoxLayout()
         layout.addWidget(self.canvas)
@@ -36,38 +61,35 @@ class FenetreProfilElevation(QDockWidget):
 
     def reinitialiser(self):
         """
-        Reset fonction
-        Returns
-        -------
+        Réinitialise le graphique 3D.
 
+        Cette méthode efface le contenu actuel du graphique et le redessine ensuite.
         """
-
         self.ax.clear()
         self.canvas.draw()
 
     def definir_outil(self, outil):
         """
-        Définit l'outil
+        Définit l'outil à utiliser pour obtenir les données d'élévation.
+
         Parameters
         ----------
-        outil
-
-        Returns
-        -------
-
+        outil : object
+            Instance de l'outil utilisé pour accéder aux élévations MNT.
         """
         self.outil = outil
 
     def on_mouse_move(self, event):
         """
-        Quand la souris bouge
+        Traite les mouvements de la souris sur le graphique.
+
+        Quand la souris bouge sur le graphique, cette méthode affiche l'altitude correspondante
+        dans la barre de statut du parent.
+
         Parameters
         ----------
-        event
-
-        Returns
-        -------
-
+        event : matplotlib.backend_bases.MouseEvent
+            Événement de mouvement de la souris contenant les coordonnées de l'événement.
         """
         if event.inaxes == self.ax:
             x_mouse = event.xdata
@@ -88,16 +110,29 @@ class FenetreProfilElevation(QDockWidget):
                 self.parent().statusBar().showMessage(f"Altitude : {elevation:.2f} m")
 
     def mettre_a_jour_profil(self, x_coords, y_coords, elevations, longueur_segment):
-        """Met à jour le graphique 3D du profil d'élévation."""
+        """
+        Met à jour le graphique 3D du profil d'élévation.
+
+        Affiche les données d'élévation avec ou sans projection en fonction des coordonnées
+        x, y, et des élévations fournit, et s'ajuste dynamiquement selon la longueur du segment.
+
+        Parameters
+        ----------
+        x_coords : np.ndarray
+            Coordonnées en x des points du segment dynamique.
+        y_coords : np.ndarray
+            Coordonnées en y des points du segment dynamique.
+        elevations : np.ndarray
+            Élévations des points du segment dynamique.
+        longueur_segment : float
+            Longueur du segment dynamique pour ajuster la résolution.
+        """
         self.ax.clear()
 
-        # Ajuster le buffer en fonction de la longueur du segment dynamique
-        buffer_factor = 0.1  # Par exemple, 10% de la longueur du segment
-        buffer_min = 20  # Valeur minimale du buffer en mètres
+        buffer_factor = 0.1
+        buffer_min = 20
         buffer = max(buffer_min, longueur_segment * buffer_factor)
 
-        # Ajuster le nombre de points du maillage en fonction de la longueur
-        # Plus le segment est court, plus la résolution est élevée
         if longueur_segment <= 100:
             num_points = 250  # Résolution élevée pour les segments courts
         elif longueur_segment <= 500:
@@ -105,7 +140,7 @@ class FenetreProfilElevation(QDockWidget):
         elif longueur_segment <= 1000:
             num_points = 150
         else:
-            num_points = 100  # Résolution plus faible pour les segments longs
+            num_points = 100
 
         # Calculer les limites du graphique pour inclure tout le segment dynamique
         xmin = min(x_coords) - buffer
@@ -118,20 +153,16 @@ class FenetreProfilElevation(QDockWidget):
         Y = np.linspace(ymin, ymax, num_points)
         X_grid, Y_grid = np.meshgrid(X, Y)
 
-        # Obtenir les valeurs Z du MNT
         Z_grid = self.outil.obtenir_elevation_aux_points_multiples(X_grid, Y_grid)
 
-        # Sauvegarder les grilles pour on_mouse_move
         self.X_grid = X_grid
         self.Y_grid = Y_grid
         self.Z_grid = Z_grid
 
-        # Tracer la surface 3D
         self.ax.plot_surface(X_grid, Y_grid, Z_grid, edgecolor='gray', lw=0.2,
                              rstride=10, cstride=10, alpha=0.6, cmap='terrain',
                              zorder=1)
 
-        # Ajouter les projections de contours
         zmin = np.nanmin(Z_grid)
         zmax = np.nanmax(Z_grid)
 
@@ -142,7 +173,6 @@ class FenetreProfilElevation(QDockWidget):
         self.ax.contourf(X_grid, Y_grid, Z_grid, zdir='y', offset=ymax, cmap='terrain',
                          zorder=2)
 
-        # Tracer le segment dynamique
         self.ax.plot(
             x_coords,
             y_coords,
@@ -157,18 +187,16 @@ class FenetreProfilElevation(QDockWidget):
             zorder=10
         )
 
-        # Ajuster les limites
         self.ax.set_xlim(xmin, xmax)
         self.ax.set_ylim(ymin, ymax)
         self.ax.set_zlim(zmin, zmax)
 
-        # Ajuster les labels et le titre
         self.ax.set_xlabel("X (Longitude)")
         self.ax.set_ylabel("Y (Latitude)")
         self.ax.set_zlabel("Élévation (m)")
         self.ax.set_title("Assistance topographique 3D")
         self.ax.legend()
 
-        self.ax.dist = 7  # Vous pouvez ajuster cette valeur
+        self.ax.dist = 7
 
         self.canvas.draw()

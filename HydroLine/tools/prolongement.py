@@ -1,11 +1,7 @@
-"""
-tools/prolongement.py
 
-Module pour prolonger les profils en dehors des zones bathymétriques en utilisant les données MNT ou TIN.
-Ce script permet de générer des points le long des profils en prolongeant les lignes existantes,
-en tenant compte de la pente du terrain pour ajuster l'espacement des points (pour MNT raster),
-ou en ajoutant des points aux intersections avec les arêtes du maillage (pour TIN).
-"""
+# tools/prolongement.py
+
+
 
 import os
 import logging
@@ -35,10 +31,59 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 # Obtenez le chemin du fichier actuel
 plugin_dir = os.path.dirname(__file__)
 
+
 class ProlongementDesProfils:
     """
     Classe principale pour le traitement de prolongement des profils.
+    Ce script permet de générer des points le long des profils en prolongeant les lignes existantes,
+    en tenant compte de la pente du terrain pour ajuster l'espacement des points (pour MNT raster),
+
+    Attributes
+    ----------
+    couche_mnt : QgsRasterLayer or QgsMeshLayer
+        Couche contenant le Modèle Numérique de Terrain (MNT) ou le maillage (TIN).
+    couche_points : QgsVectorLayer
+        Couche contenant les points bathymétriques.
+    couche_lignes : QgsVectorLayer
+        Couche contenant les profils tracés à prolonger.
+    couche_emprise : QgsVectorLayer or None
+        Couche d'emprise facultative pour limiter l'analyse, par défaut None.
+    ...
+
+    Methods
+    -------
+    executer()
+        Lance le processus complet de prolongement des profils.
+    afficher_dialogue_selection_couches()
+        Affiche la boîte de dialogue pour la sélection des couches pertinentes.
+    initialiser_couches()
+        Initialise les couches et les champs nécessaires pour le traitement.
+    creer_nouvelle_couche()
+        Crée une nouvelle couche en mémoire pour les points prolongés.
+    ajouter_points_existants()
+        Ajoute les points existants de la couche de points à la nouvelle couche.
+    parcourir_lignes_profil()
+        Traite chaque profil de la couche de lignes pour générer de nouveaux points.
+    traiter_ligne(ligne)
+        Traite une ligne spécifique pour générer de nouveaux points.
+    extraire_sous_ligne(geom_ligne, distance_debut, distance_fin)
+        Extrait une partie de la ligne entre deux distances.
+    traiter_segment_raster(geom_segment)
+        Traite un segment pour générer des points le long de celui-ci selon la pente (MNT raster).
+    traiter_segment_tin(geom_segment)
+        Traite un segment pour générer des points aux intersections avec le maillage (TIN).
+    obtenir_z_tin(point_xy)
+        Obtient la valeur Z du TIN au point donné.
+    ajuster_densite()
+        Ajuste la densité des points si certaines lignes dépassent le nombre maximal permis.
+    attribuer_objectid_aux_nouveaux_points()
+        Attribue des valeurs OBJECTID aux nouveaux points générés.
+    ajouter_points_a_la_couche()
+        Ajoute les nouveaux points à la couche en mémoire.
+    finaliser()
+        Finalise le traitement en ajoutant la nouvelle couche au projet QGIS.
     """
+
     def __init__(self):
         """
         Initialise les attributs nécessaires pour le traitement.
@@ -66,7 +111,11 @@ class ProlongementDesProfils:
     def executer(self):
         """
         Lance le processus complet de prolongement des profils.
+
+        Exécute la série de fonctions nécessaires pour prolonger les lignes de profil
+        en ajoutant de nouveaux points calculés le long des segments.
         """
+
         try:
             if not self.afficher_dialogue_selection_couches():
                 return
@@ -86,11 +135,14 @@ class ProlongementDesProfils:
 
     def afficher_dialogue_selection_couches(self):
         """
-        Affiche la boîte de dialogue pour sélectionner les couches.
+        Affiche la boîte de dialogue pour la sélection des couches.
 
-        Returns:
-        bool: True si l'utilisateur a validé, False sinon.
+        Returns
+        -------
+        bool
+            True si l'utilisateur a validé la sélection, False sinon.
         """
+
         dialogue = DialogueSelectionCouchesPourProlongement()
         if dialogue.exec_() == QDialog.Accepted:
             nom_couche_mnt = dialogue.combobox_mnt.currentText()
@@ -126,8 +178,11 @@ class ProlongementDesProfils:
 
     def initialiser_couches(self):
         """
-        Initialise les couches et les champs nécessaires.
+        Initialise les couches et les champs nécessaires pour le traitement.
+
+        Configure les indices des champs et vérifie la disponibilité des données.
         """
+
         self.champs = self.couche_points.fields()
 
         self.index_objectid = self.couche_points.fields().indexFromName('OBJECTID')
@@ -151,8 +206,9 @@ class ProlongementDesProfils:
 
     def creer_nouvelle_couche(self):
         """
-        Crée une nouvelle couche en mémoire pour les nouveaux points.
+        Crée une nouvelle couche en mémoire pour stocker les points prolongés.
         """
+
         self.couche_points_nouveaux = QgsVectorLayer(f'Point?crs={self.crs.authid()}', 'Points_Combinés', 'memory')
         self.fournisseur_donnees = self.couche_points_nouveaux.dataProvider()
         self.fournisseur_donnees.addAttributes(self.champs)
@@ -163,6 +219,7 @@ class ProlongementDesProfils:
         """
         Ajoute les points existants de la couche de points à la nouvelle couche.
         """
+
         elements_existants = list(self.couche_points.getFeatures())
         self.fournisseur_donnees.addFeatures(elements_existants)
         logging.info(f'{len(elements_existants)} points existants ajoutés à la nouvelle couche.')
@@ -171,8 +228,9 @@ class ProlongementDesProfils:
 
     def parcourir_lignes_profil(self):
         """
-        Traite chaque profil de la couche par itération pour générer les nouveaux points le long des segments.
+        Traite chaque profil de la couche de lignes pour générer de nouveaux points.
         """
+
         total_lignes = self.couche_lignes.featureCount()
         compteur_lignes = 0
         logging.info(f'Commence le traitement des {total_lignes} lignes de profil.')
@@ -193,14 +251,19 @@ class ProlongementDesProfils:
 
     def traiter_ligne(self, ligne):
         """
-        Traite une ligne spécifique pour générer les nouveaux points.
+        Traite une ligne spécifique pour générer de nouveaux points le long des segments.
 
-        Args:
-            ligne (QgsFeature): La ligne à traiter.
+        Parameters
+        ----------
+        ligne : QgsFeature
+            La ligne de profil à traiter.
 
-        Returns:
-            list: Liste des nouveaux points générés pour la ligne.
+        Returns
+        -------
+        list of QgsFeature
+            Liste de nouveaux points générés le long de la ligne.
         """
+
         nouveaux_points_ligne = []
         geom_ligne = ligne.geometry()
 
@@ -297,16 +360,23 @@ class ProlongementDesProfils:
 
     def extraire_sous_ligne(self, geom_ligne, distance_debut, distance_fin):
         """
-        Extrait une sous-partie de la ligne entre deux distances données, en conservant les valeurs Z.
+        Extrait une partie de la ligne entre deux distances données, conservant les valeurs Z.
 
-        Args:
-            geom_ligne (QgsGeometry): La géométrie de la ligne d'origine.
-            distance_debut (float): Distance de début sur la ligne.
-            distance_fin (float): Distance de fin sur la ligne.
+        Parameters
+        ----------
+        geom_ligne : QgsGeometry
+            Géométrie de la ligne d'origine.
+        distance_debut : float
+            Distance de début sur la ligne.
+        distance_fin : float
+            Distance de fin sur la ligne.
 
-        Returns:
-            QgsGeometry: La sous-partie de la ligne correspondant aux distances, avec valeurs Z conservées.
+        Returns
+        -------
+        QgsGeometry or None
+            La sous-partie de la ligne ou None si échoue.
         """
+
         longueur_ligne = geom_ligne.length()
         if distance_debut >= longueur_ligne or distance_fin <= 0 or distance_debut >= distance_fin:
             return None
@@ -394,14 +464,19 @@ class ProlongementDesProfils:
 
     def traiter_segment_raster(self, geom_segment):
         """
-        Traite un segment pour générer des points le long de celui-ci en fonction de la pente (MNT raster).
+        Traite un segment pour générer des points basés sur la pente du MNT (raster).
 
-        Args:
-            geom_segment (QgsGeometry): La géométrie du segment à traiter.
+        Parameters
+        ----------
+        geom_segment : QgsGeometry
+            Géométrie du segment à traiter.
 
-        Returns:
-            list: Liste des nouveaux points générés pour le segment.
+        Returns
+        -------
+        list of QgsFeature
+            Liste de nouveaux points générés pour le segment.
         """
+
         nouveaux_points_segment = []
         longueur_segment = geom_segment.length()
         if longueur_segment == 0:
@@ -485,12 +560,17 @@ class ProlongementDesProfils:
         """
         Traite un segment pour générer des points aux intersections avec les arêtes du TIN.
 
-        Args:
-            geom_segment (QgsGeometry): La géométrie du segment à traiter.
+        Parameters
+        ----------
+        geom_segment : QgsGeometry
+            Géométrie du segment à traiter.
 
-        Returns:
-            list: Liste des nouveaux points générés pour le segment.
+        Returns
+        -------
+        list of QgsFeature
+            Liste de nouveaux points générés pour le segment.
         """
+
         nouveaux_points_segment = []
 
         # Utiliser l'algorithme 'native:exportmeshedges' pour extraire les arêtes du maillage
@@ -556,12 +636,17 @@ class ProlongementDesProfils:
         """
         Obtient la valeur Z du TIN au point donné.
 
-        Args:
-            point_xy (QgsPointXY): Le point pour lequel obtenir la valeur Z.
+        Parameters
+        ----------
+        point_xy : QgsPointXY
+            Le point pour lequel obtenir la valeur Z.
 
-        Returns:
-            float: La valeur Z, ou None si non disponible.
+        Returns
+        -------
+        float or None
+            La valeur Z ou None si non disponible.
         """
+
         # Utiliser le dataProvider pour identifier la valeur Z au point donné
         mesh_dp = self.couche_mnt.dataProvider()
         z_value, ok = mesh_dp.sample(point_xy, -1)  # -1 pour la valeur de temps par défaut
@@ -572,8 +657,9 @@ class ProlongementDesProfils:
 
     def ajuster_densite(self):
         """
-        Ajuste la densité des points si certaines lignes dépassent le nombre maximal de points (pour MNT raster).
+        Ajuste la densité des points sur les lignes si certaines dépassent le nombre maximal permis.
         """
+
         total_points_initial = len(self.tous_nouveaux_points)
         logging.info(f'Nombre total de points générés initialement: {total_points_initial}')
 

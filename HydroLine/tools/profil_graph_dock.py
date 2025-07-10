@@ -1,8 +1,6 @@
-"""
-tools/profil_graph_dock.py
 
-Module de l'outil GraphZ de visualisation de profil sur polylignes ZM
-"""
+# tools/profil_graph_dock.py
+
 import os
 import tempfile
 import webbrowser
@@ -29,7 +27,85 @@ from qgis.gui import QgsMapTool, QgsRubberBand
 
 
 class ProfilGraphDock(QDockWidget):
+    """
+    Dock widget pour afficher et gérer le profil d'élévation d'une polyligne Z.
+
+    Cette classe fournit une interface pour sélectionner des couches, afficher les graphiques
+    en 2D ou 3D, et exporter les visualisations en PNG ou PDF.
+
+    Attributes
+    ----------
+    canvas : QgsMapCanvas
+        Canevas de la carte QGIS.
+    layer_combo_box : QComboBox
+        ComboBox pour sélectionner la couche de polyligne Z.
+    view_mode_combo_box : QComboBox
+        ComboBox pour sélectionner le mode d'affichage (2D/3D).
+    raster_combo_box : QComboBox
+        ComboBox pour sélectionner la couche raster (MNT).
+    export_button : QPushButton
+        Bouton pour exporter le graphique.
+    graph_widget : PlotWidget
+        Widget graphique utilisant PyQtGraph.
+    map_tool : IdentifyLineTool
+        Outil de carte pour identifier les entités sur la couche sélectionnée.
+    rubber_band : QgsRubberBand
+        Bande élastique pour le suivi du curseur sur la carte.
+    cross_vertical_line : pg.InfiniteLine
+        Ligne verticale pour suivre la position de la souris sur le graphique.
+    cross_horizontal_line : pg.InfiniteLine
+        Ligne horizontale pour suivre la position de la souris sur le graphique.
+    x_label : pg.TextItem
+        Étiquette de texte pour afficher la position X sur le graphique.
+    y_label : pg.TextItem
+        Étiquette de texte pour afficher l'altitude Z sur le graphique.
+    points : list of QgsPoint
+        Liste des points de la polyligne Z pour le suivi de la souris.
+
+    Methods
+    -------
+    populate_layers()
+        Remplit le combo box avec les couches de polylignes Z disponibles.
+    populate_raster_layers()
+        Remplit le combo box avec les couches raster (MNT) disponibles.
+    on_view_mode_changed(index)
+        Appelé lorsque le mode de vue (2D/3D) est changé.
+    on_layer_changed(index)
+        Appelé lorsque la couche sélectionnée dans le combo box change.
+    closeEvent(event)
+        Gestion de la fermeture du dock en nettoyant les ressources.
+    on_raster_layer_changed(index)
+        Appelé lorsque la couche raster sélectionnée change.
+    show_3d_view(feature)
+        Affiche la visualisation 3D pour une entité donnée.
+    on_feature_identified(feature)
+        Appelé lorsqu'une entité est identifiée sur le canevas.
+    update_graph(geometry)
+        Met à jour le graphique avec la géométrie donnée.
+    mouse_moved(evt)
+        Gestion du déplacement de la souris sur le graphique.
+    mouse_clicked(evt)
+        Gestion du clic de souris sur le graphique.
+    set_point_on_map(point)
+        Ajoute le point cliqué sur le graphique à la carte QGIS.
+    update_map_cursor(map_point)
+        Met à jour le curseur sur la carte pour refléter la position sur le graphique.
+    export_graph()
+        Exporte le graphique actuel en PNG ou PDF sans les éléments interactifs.
+    """
+
     def __init__(self, canvas, parent=None):
+        """
+        Initialise le dock pour afficher le profil Z.
+
+        Parameters
+        ----------
+        canvas : QgsMapCanvas
+            Canevas de la carte QGIS pour l'interaction spatiale.
+        parent : QWidget, optional
+            Widget parent du dock, par défaut None.
+        """
+
         super().__init__(parent)
         self.setWindowTitle("Profil Z")
         self.canvas = canvas
@@ -118,20 +194,34 @@ class ProfilGraphDock(QDockWidget):
         self.points = []
 
     def populate_layers(self):
-        """Remplit le combo box avec les couches de polylignes Z disponibles."""
+        """
+        Remplit le combo box avec les couches de polylignes Z disponibles dans le projet.
+        """
+
         layers = QgsProject.instance().mapLayers().values()
         for layer in layers:
             if layer.type() == QgsMapLayer.VectorLayer and QgsWkbTypes.hasZ(layer.wkbType()):
                 self.layer_combo_box.addItem(layer.name())
 
     def populate_raster_layers(self):
-        """Remplit le combo box avec les couches raster (MNT) disponibles."""
+        """
+        Remplit le combo box avec les couches raster (MNT) disponibles dans le projet.
+        """
         layers = QgsProject.instance().mapLayers().values()
         for layer in layers:
             if layer.type() == QgsMapLayer.RasterLayer:
                 self.raster_combo_box.addItem(layer.name())
 
     def on_view_mode_changed(self, index):
+        """
+        Appelé lorsque le mode de vue (2D/3D) est changé.
+
+        Parameters
+        ----------
+        index : int
+            Index sélectionné dans le combo box.
+        """
+
         mode = self.view_mode_combo_box.currentText()
         if mode == '3D':
             self.raster_combo_box.show()
@@ -139,7 +229,15 @@ class ProfilGraphDock(QDockWidget):
             self.raster_combo_box.hide()
 
     def on_layer_changed(self, index):
-        """Appelée lorsque la couche sélectionnée dans le combo box change."""
+        """
+        Appelé lorsque la couche sélectionnée dans le combo box change.
+
+        Parameters
+        ----------
+        index : int
+            Index de la couche sélectionnée dans le combo box.
+        """
+
         if index == 0:
             # Aucune couche sélectionnée
             self.selected_layer = None
@@ -166,7 +264,15 @@ class ProfilGraphDock(QDockWidget):
                 self.map_tool = None
 
     def closeEvent(self, event):
-        """Gestion de la fermeture du dock."""
+        """
+        Gestion de la fermeture du dock en nettoyant les ressources.
+
+        Parameters
+        ----------
+        event : QCloseEvent
+            Événement de fermeture du dock.
+        """
+
         # Désactiver l'outil de carte
         if self.map_tool is not None:
             self.canvas.unsetMapTool(self.map_tool)
@@ -182,7 +288,15 @@ class ProfilGraphDock(QDockWidget):
         super().closeEvent(event)
 
     def on_raster_layer_changed(self, index):
-        """Appelée lorsque la couche raster sélectionnée change."""
+        """
+        Appelé lorsque la couche raster sélectionnée change.
+
+        Parameters
+        ----------
+        index : int
+            Index de la couche raster sélectionnée dans le combo box.
+        """
+
         if index == 0:
             self.selected_raster_layer = None
         else:
@@ -194,11 +308,27 @@ class ProfilGraphDock(QDockWidget):
                 self.selected_raster_layer = None
 
     def show_3d_view(self, feature):
-        """Affiche la visualisation 3D."""
+        """
+        Affiche la visualisation 3D pour une entité donnée.
+
+        Parameters
+        ----------
+        feature : QgsFeature
+            Entité sélectionnée pour la visualisation.
+        """
+
         ProfilGraph3D(feature, self.selected_layer, self.selected_raster_layer)
 
     def on_feature_identified(self, feature):
-        """Appelée lorsqu'une polyligne est cliquée sur le canevas."""
+        """
+        Appelé lorsqu'une entité est identifiée sur le canevas.
+
+        Parameters
+        ----------
+        feature : QgsFeature
+            Entité identifiée sur le canevas.
+        """
+
         mode = self.view_mode_combo_box.currentText()
         if mode == '2D':
             self.update_graph(feature.geometry())
@@ -210,7 +340,15 @@ class ProfilGraphDock(QDockWidget):
             self.show_3d_view(feature)
 
     def update_graph(self, geometry):
-        """Met à jour le graphique avec la géométrie donnée."""
+        """
+        Met à jour le graphique avec la géométrie donnée.
+
+        Parameters
+        ----------
+        geometry : QgsGeometry
+            Géométrie de la polyligne pour laquelle le profil sera affiché.
+        """
+
         points = list(geometry.vertices())
 
         if len(points) < 2:
@@ -281,6 +419,15 @@ class ProfilGraphDock(QDockWidget):
         self.graph_widget.scene().sigMouseClicked.connect(self.mouse_clicked)
 
     def mouse_moved(self, evt):
+        """
+        Gestion du déplacement de la souris sur le graphique, met à jour les crosshairs et les étiquettes.
+
+        Parameters
+        ----------
+        evt : QPointF
+            Position actuelle de la souris sur le graphique.
+        """
+
         try:
             pos = evt
             if self.graph_widget.sceneBoundingRect().contains(pos):
@@ -361,7 +508,15 @@ class ProfilGraphDock(QDockWidget):
             print(f"Erreur dans mouse_moved : {e}")
 
     def mouse_clicked(self, evt):
-        """Gestion du clic sur le graphique."""
+        """
+        Gestion du clic de souris sur le graphique, ajoute le point cliqué sur la carte.
+
+        Parameters
+        ----------
+        evt : QGraphicsSceneMouseEvent
+            Événement lié au clic de souris sur le graphique.
+        """
+
         pos = evt.scenePos()
         if self.graph_widget.sceneBoundingRect().contains(pos):
             mouse_point = self.graph_widget.plotItem.vb.mapSceneToView(pos)
@@ -388,7 +543,15 @@ class ProfilGraphDock(QDockWidget):
                     self.set_point_on_map(QgsPointXY(map_point.x(), map_point.y()))
 
     def set_point_on_map(self, point):
-        """Ajoute le point cliqué sur le graphique à la carte QGIS."""
+        """
+        Ajoute le point cliqué sur le graphique à la carte QGIS.
+
+        Parameters
+        ----------
+        point : QgsPointXY
+            Point à ajouter sur la carte.
+        """
+
         layers = QgsProject.instance().mapLayersByName('profile_points')
         if layers:
             layer = layers[0]
@@ -405,14 +568,25 @@ class ProfilGraphDock(QDockWidget):
         layer.triggerRepaint()
 
     def update_map_cursor(self, map_point):
-        """Met à jour le curseur sur la carte QGIS pour refléter la position sur le graphique."""
+        """
+        Met à jour le curseur sur la carte pour refléter la position sur le graphique.
+
+        Parameters
+        ----------
+        map_point : QgsPoint
+            Point sur le graphique correspondant à la position.
+        """
+
         self.rubber_band.reset(QgsWkbTypes.PointGeometry)
         map_point_xy = QgsPointXY(map_point.x(), map_point.y())
         self.rubber_band.addPoint(map_point_xy)
         self.rubber_band.show()
 
     def export_graph(self):
-        """Exporte le graphique actuel en PNG ou PDF sans les éléments interactifs."""
+        """
+        Exporte le graphique actuel en PNG ou PDF sans les éléments interactifs.
+        """
+
         options = "Image PNG (*.png);;Document PDF (*.pdf)"
         file_path, selected_filter = QFileDialog.getSaveFileName(
             self, "Enregistrer le graphique", "", options
@@ -458,6 +632,24 @@ class ProfilGraphDock(QDockWidget):
             self.y_label.show()
 
 class IdentifyLineTool(QgsMapTool):
+    """
+    Outil personnalisé pour identifier les lignes sur une couche de polylignes.
+
+    Attributes
+    ----------
+    canvas : QgsMapCanvas
+        Canevas sur lequel l'outil fonctionne.
+    layer : QgsVectorLayer
+        Couche de polylignes à identifier.
+    feature_identified : pyqtSignal
+        Signal émis lorsque l'on identifie une ligne.
+
+    Methods
+    -------
+    canvasReleaseEvent(event)
+        Gère les événements de libération de clic de souris pour identifier la ligne la plus proche.
+    """
+
     feature_identified = pyqtSignal(object)
 
     def __init__(self, canvas, layer):
@@ -467,6 +659,14 @@ class IdentifyLineTool(QgsMapTool):
         self.setCursor(Qt.CrossCursor)
 
     def canvasReleaseEvent(self, event):
+        """
+        Identifie la ligne la plus proche du point cliqué sur le canevas.
+
+        Parameters
+        ----------
+        event : QMouseEvent
+            Événement de clic de la souris.
+        """
         point = self.toMapCoordinates(event.pos())
         min_distance = float('inf')
         nearest_feature = None
@@ -481,8 +681,25 @@ class IdentifyLineTool(QgsMapTool):
         if nearest_feature:
             self.feature_identified.emit(nearest_feature)
 
-
 class ProfilGraph3D(QWidget):
+    """
+    Widget pour afficher une visualisation 3D d'un profil sur une polyligne et un MNT.
+
+    Attributes
+    ----------
+    feature : QgsFeature
+        L'entité de la polyligne sélectionnée.
+    polyline_layer : QgsVectorLayer
+        La couche de polylignes.
+    raster_layer : QgsRasterLayer
+        La couche raster MNT.
+
+    Methods
+    -------
+    create_3d_visualization()
+        Crée la visualisation 3D du profil à partir des données de polyligne et du MNT.
+    """
+
     def __init__(self, feature, polyline_layer, raster_layer, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Profil 3D")
@@ -494,26 +711,26 @@ class ProfilGraph3D(QWidget):
         self.create_3d_visualization()
 
     def create_3d_visualization(self):
-        # Obtenir le SCR des couches
+        """
+        Crée la visualisation 3D du profil à partir des données de polyligne et du MNT.
+
+        Effectue les calculs nécessaires et affiche le profil 3D dans une fenêtre Plotly.
+        """
+
         polyline_crs = self.polyline_layer.crs()
         raster_crs = self.raster_layer.crs()
 
-        # Obtenir la géométrie de la polyligne
         geom = self.feature.geometry()
 
-        # Vérifier si une transformation de coordonnées est nécessaire
         if polyline_crs != raster_crs:
             transform = QgsCoordinateTransform(polyline_crs, raster_crs, QgsProject.instance())
             geom.transform(transform)
 
-        # Créer un buffer (zone tampon) de 30 mètres autour de la polyligne
         buffer_distance = 30  # 30 mètres
-        buffered_geom = geom.buffer(buffer_distance, segments=8)  # Augmenter 'segments' pour une meilleure précision
+        buffered_geom = geom.buffer(buffer_distance, segments=8)
 
-        # Obtenir l'emprise du buffer
         extent = buffered_geom.boundingBox()
 
-        # Ouvrir le MNT avec GDAL
         raster_path = self.raster_layer.dataProvider().dataSourceUri()
         ds = gdal.Open(raster_path, gdal.GA_ReadOnly)
         if ds is None:
@@ -523,7 +740,6 @@ class ProfilGraph3D(QWidget):
         gt = ds.GetGeoTransform()
         inv_gt = gdal.InvGeoTransform(gt)
 
-        # Calculer les indices des pixels correspondants
         x_min = extent.xMinimum()
         x_max = extent.xMaximum()
         y_min = extent.yMinimum()
@@ -532,7 +748,6 @@ class ProfilGraph3D(QWidget):
         ulx, uly = map(int, gdal.ApplyGeoTransform(inv_gt, x_min, y_max))
         lrx, lry = map(int, gdal.ApplyGeoTransform(inv_gt, x_max, y_min))
 
-        # Gérer les valeurs hors limites
         ulx = max(0, min(ulx, ds.RasterXSize - 1))
         uly = max(0, min(uly, ds.RasterYSize - 1))
         lrx = max(0, min(lrx, ds.RasterXSize - 1))
@@ -568,19 +783,16 @@ class ProfilGraph3D(QWidget):
         y = np.arange(nrows) * new_gt[5] + new_gt[3]
         x_grid, y_grid = np.meshgrid(x, y)
 
-        # Gérer les valeurs NoData
         no_data_value = band.GetNoDataValue()
         if no_data_value is not None:
             dem_data[dem_data == no_data_value] = np.nan
 
         z_grid = dem_data
 
-        # Vérifier les valeurs Z du MNT
         if np.isnan(z_grid).all():
             QMessageBox.warning(self, "Erreur", "Le MNT ne contient pas de données valides dans cette zone.")
             return
 
-        # Obtenir les coordonnées de la polyligne
         points = list(geom.vertices())
         if not points:
             QMessageBox.warning(self, "Erreur", "La polyligne ne contient pas de points.")
@@ -590,12 +802,10 @@ class ProfilGraph3D(QWidget):
         line_y = [p.y() for p in points]
         line_z = [p.z() for p in points]
 
-        # Vérifier les valeurs Z de la polyligne
         if all(z == 0 or np.isnan(z) for z in line_z):
-            # Si les valeurs Z sont manquantes ou nulles, extraire les altitudes du MNT
+
             line_z = []
             for x_pt, y_pt in zip(line_x, line_y):
-                # Convertir les coordonnées géographiques en indices de pixels
                 px, py = gdal.ApplyGeoTransform(inv_gt, x_pt, y_pt)
                 px = int(px) - min(ulx, lrx)
                 py = int(py) - min(uly, lry)
@@ -606,13 +816,10 @@ class ProfilGraph3D(QWidget):
                     line_z.append(np.nan)
 
         else:
-            # Sinon, utiliser les valeurs Z de la polyligne
             line_z = [z if not np.isnan(z) else 0 for z in line_z]
 
-        # Créer la figure Plotly
         fig = go.Figure()
 
-        # Ajouter la surface du MNT avec les contours
         fig.add_trace(go.Surface(
             x=x_grid,
             y=y_grid,
@@ -630,7 +837,6 @@ class ProfilGraph3D(QWidget):
             )
         ))
 
-        # Ajouter la polyligne
         fig.add_trace(go.Scatter3d(
             x=line_x,
             y=line_y,
@@ -641,7 +847,6 @@ class ProfilGraph3D(QWidget):
             name='Polyligne Z'
         ))
 
-        # Mettre à jour la mise en page
         fig.update_layout(
             scene=dict(
                 xaxis_title='X',
@@ -659,12 +864,10 @@ class ProfilGraph3D(QWidget):
             margin=dict(l=65, r=50, b=65, t=90)
         )
 
-        # Enregistrer la figure Plotly en tant que fichier HTML temporaire
         with tempfile.NamedTemporaryFile(delete=False, suffix='.html') as tmp_file:
             fig.write_html(tmp_file.name, include_plotlyjs='cdn')
             tmp_file_name = tmp_file.name
 
-        # Ouvrir le fichier HTML dans le navigateur par défaut
         webbrowser.open_new_tab('file://' + tmp_file_name)
 
 
