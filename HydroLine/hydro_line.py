@@ -144,7 +144,7 @@ class HydroLine(QObject):
         self.fenetre_profil = None
         self.liste_modes = None
         self.action_liste_modes = None
-        self.graphique_3d_active = True
+        self.graphique_3d_active = False
         self.couche_crete = None
         self.couche_rupture = None
         QgsProject.instance().layerWillBeRemoved.connect(self.on_layer_will_be_removed)
