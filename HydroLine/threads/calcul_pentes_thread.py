@@ -3,10 +3,15 @@
 import numpy as np
 from PyQt5.QtCore import QThread, pyqtSignal
 from qgis.PyQt.QtWidgets import QAction, QMessageBox
+import logging
+from ..logs.logs_config import setup_logging
+
+setup_logging()
 
 try :
     import dask
 except ImportError:
+    logging.warning("Dask manquant. L'installation de Dask est nécessaire pour utiliser HydroLine pleinement.")
     QMessageBox.warning(
         None,
         "HydroLine warning",
