@@ -3,6 +3,7 @@
 
 import os
 import sys
+import logging
 
 import processing
 from qgis.PyQt.QtCore import Qt, QObject, QCoreApplication, QVariant
@@ -34,7 +35,9 @@ from .tools.outil_trace_crete import OutilTraceCrete
 from .tools.profil_graph_dock import ProfilGraphDock
 from .utils.raster_utils import filtre_moyen_raster, generer_ombrage, fusionner_et_arrondir_rasters, filtre_median_raster, reprojeter_raster
 from .external.SIGPACK import Epoint
+from .logs.logs_config import setup_logging
 
+setup_logging()
 
 class HydroLine(QObject):
     """
@@ -152,6 +155,7 @@ class HydroLine(QObject):
             'HORADATEUR': True
         }
         self.splash_screen = None
+        logging.info("HydroLine initialisé.")
 
     def traduire(self, message):
         """
@@ -1023,7 +1027,7 @@ class HydroLine(QObject):
             if len(couches_raster) > 1 or couches_raster[0] != couche_combinee_filtre:
                 for couche in couches_raster:
                     QgsProject.instance().removeMapLayer(couche.id())
-
+        logging.info("Fonction préparation MNT : succès")
         self.splash_screenLoad.close()
 
     def changer_mode_rupture(self, index):
