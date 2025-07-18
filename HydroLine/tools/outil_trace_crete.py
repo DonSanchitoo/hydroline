@@ -14,7 +14,6 @@ from ..threads.raster_loading_thread import RasterLoadingThread
 chemin_plugin = os.path.dirname(__file__)
 if chemin_plugin not in sys.path:
     sys.path.append(chemin_plugin)
-
 from PyQt5.QtCore import Qt
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QDialog, QFrame
@@ -49,6 +48,7 @@ import math
 
 from .outil_points_bas import select_next_pixel_bas as select_next_pixel_points_bas
 from ..utils.undo_manager import UndoManager, AddPointsAction
+from ..utils.error import afficher_message_epsg
 
 
 class OutilTraceCrete(BaseMapTool):
@@ -185,7 +185,7 @@ class OutilTraceCrete(BaseMapTool):
         self.points_bas_active = False
         self.select_next_pixel_func = self.select_next_pixel_points_hauts
         self.undo_manager = UndoManager()
-
+        self.warned_crs_mismatch = False
 
         self.crs_canvas = self.canvas.mapSettings().destinationCrs()
         self.crs_raster = self.couche_raster.crs()
@@ -339,45 +339,6 @@ class OutilTraceCrete(BaseMapTool):
         else:
             self.select_next_pixel_func = self.select_next_pixel_points_hauts
 
-    def obtenir_elevation_aux_points_multiples(self, x_array, y_array):
-        """
-        Obtient les élévations du raster aux points donnés en utilisant la transformation.
-
-        Parameters
-        ----------
-        x_array : np.ndarray
-            Tableau des coordonnées x des points.
-        y_array : np.ndarray
-            Tableau des coordonnées y des points.
-
-        Returns
-        -------
-        np.ndarray
-            Tableau des élévations correspondant aux coordonnées.
-        """
-
-        if self.crs_raster != self.crs_canvas:
-            transformer = self.transformation_vers_raster
-            points = [QgsPointXY(x, y) for x, y in zip(x_array.flatten(), y_array.flatten())]
-            points_transformed = [transformer.transform(p) for p in points]
-            x_array_transformed = np.array([p.x() for p in points_transformed]).reshape(x_array.shape)
-            y_array_transformed = np.array([p.y() for p in points_transformed]).reshape(y_array.shape)
-        else:
-            x_array_transformed = x_array
-            y_array_transformed = y_array
-
-        gt = self.inv_gt  # Inverse de la géotransformation
-        px_array = gt[0] + gt[1] * x_array_transformed + gt[2] * y_array_transformed
-        py_array = gt[3] + gt[4] * x_array_transformed + gt[5] * y_array_transformed
-
-        px_array = px_array.astype(int)
-        py_array = py_array.astype(int)
-
-        mask = (px_array >= 0) & (px_array < self.raster_colonnes) & (py_array >= 0) & (py_array < self.raster_lignes)
-        elevations = np.full(x_array.shape, np.nan)
-        elevations[mask] = self.tableau_raster[py_array[mask], px_array[mask]]
-
-        return elevations
 
     def definir_couche_vectorielle(self, couche_vectorielle):
         """
@@ -700,7 +661,6 @@ class OutilTraceCrete(BaseMapTool):
         event : QMouseEvent
             Événement de déplacement de la souris.
         """
-
         if not self.data_loaded:
             return
 
@@ -728,23 +688,24 @@ class OutilTraceCrete(BaseMapTool):
                 else:
                     point_actuel.setZ(0)
                 if self.mode == 1:
-                    if self.dernier_point_deplacement is None:
+                    if self.dernier_point_deplacement is None and self.liste_points:
                         self.dernier_point_deplacement = self.liste_points[-1]
-                    distance = self.dernier_point_deplacement.distance(point_actuel)
-                    if distance >= self.distance_seuil:
-                        geometrie_chemin = self.calculer_chemin_extreme(self.liste_points[-1], point_actuel)
-                        if geometrie_chemin:
-                            # Appliquer la simplification si activée
-                            if self.simplification_activee:
-                                geometrie_simplifiee = self.simplifier_geometrie(geometrie_chemin)
-                                self.chemin_dynamique = geometrie_simplifiee
-                            else:
-                                self.chemin_dynamique = geometrie_chemin
-                            self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
-                            self.bande_dynamique.addGeometry(self.chemin_dynamique, None)
-                            if self.fenetre_profil:
-                                self.mettre_a_jour_profil_segment(self.chemin_dynamique)
-                            self.dernier_point_deplacement = point_actuel
+                    if self.dernier_point_deplacement:  # Ajoutez une vérification ici
+                        distance = self.dernier_point_deplacement.distance(point_actuel)
+                        if distance >= self.distance_seuil:
+                            geometrie_chemin = self.calculer_chemin_extreme(self.liste_points[-1], point_actuel)
+                            if geometrie_chemin:
+                                # Appliquer la simplification si activée
+                                if self.simplification_activee:
+                                    geometrie_simplifiee = self.simplifier_geometrie(geometrie_chemin)
+                                    self.chemin_dynamique = geometrie_simplifiee
+                                else:
+                                    self.chemin_dynamique = geometrie_chemin
+                                self.bande_dynamique.reset(QgsWkbTypes.LineGeometry)
+                                self.bande_dynamique.addGeometry(self.chemin_dynamique, None)
+                                if self.fenetre_profil:
+                                    self.mettre_a_jour_profil_segment(self.chemin_dynamique)
+                                self.dernier_point_deplacement = point_actuel
                     else:
                         pass
                 else:
@@ -826,17 +787,23 @@ class OutilTraceCrete(BaseMapTool):
         float or None
             Élévation au point donné en unités raster, ou None si en dehors des limites.
         """
-        if self.crs_raster != self.crs_canvas:
-            point = self.transformation_vers_raster.transform(point)
-        x = point.x()
-        y = point.y()
-        px, py = gdal.ApplyGeoTransform(self.inv_gt, x, y)
-        px = int(px)
-        py = int(py)
-        if 0 <= px < self.raster_colonnes and 0 <= py < self.raster_lignes:
-            elevation = self.tableau_raster[py, px]
-            return float(elevation)
-        else:
+        try :
+            if self.crs_raster != self.crs_canvas:
+                point = self.transformation_vers_raster.transform(point)
+            x = point.x()
+            y = point.y()
+            px, py = gdal.ApplyGeoTransform(self.inv_gt, x, y)
+            px = int(px)
+            py = int(py)
+            if 0 <= px < self.raster_colonnes and 0 <= py < self.raster_lignes:
+                elevation = self.tableau_raster[py, px]
+                return float(elevation)
+            else:
+                return None
+        except TypeError as e:
+            if "unexpected type 'QgsPoint'" in str(e):
+                afficher_message_epsg()
+                self.reinitialiser()
             return None
 
     def select_next_pixel_points_hauts(self, courant, candidats_voisins, elevation_courante, arrivee_px,
@@ -1176,49 +1143,6 @@ class OutilTraceCrete(BaseMapTool):
         """
 
         return ((p1.x() - p2.x()) ** 2 + (p1.y() - p2.y()) ** 2) ** 0.5
-
-    def obtenir_elevation_aux_points(self, x_array, y_array):
-        """
-        Obtient les élévations du raster aux points donnés.
-
-        Parameters
-        ----------
-        x_array : np.ndarray
-            Tableau des coordonnées x des points.
-        y_array : np.ndarray
-            Tableau des coordonnées y des points.
-
-        Returns
-        -------
-        np.ndarray
-            Tableau d'élévations correspondant aux points donnés.
-        """
-
-        if self.crs_raster != self.crs_canvas:
-            # Transformer les points
-            transformer = QgsCoordinateTransform(self.crs_canvas, self.crs_raster, QgsProject.instance())
-            points = [QgsPointXY(x, y) for x, y in zip(x_array.flatten(), y_array.flatten())]
-            points_transformed = [transformer.transform(p) for p in points]
-            x_array_transformed = np.array([p.x() for p in points_transformed]).reshape(x_array.shape)
-            y_array_transformed = np.array([p.y() for p in points_transformed]).reshape(y_array.shape)
-        else:
-            x_array_transformed = x_array
-            y_array_transformed = y_array
-
-        # Calculer les coordonnées pixels
-        gt = self.inv_gt  # InvGeoTransform
-        px_array = gt[0] + gt[1] * x_array_transformed + gt[2] * y_array_transformed
-        py_array = gt[3] + gt[4] * x_array_transformed + gt[5] * y_array_transformed
-
-        px_array = px_array.astype(int)
-        py_array = py_array.astype(int)
-
-        # Masque pour les points valides
-        mask = (px_array >= 0) & (px_array < self.raster_colonnes) & (py_array >= 0) & (py_array < self.raster_lignes)
-        elevations = np.full(x_array.shape, np.nan)
-        elevations[mask] = self.tableau_raster[py_array[mask], px_array[mask]]
-
-        return elevations
 
     def mettre_a_jour_profil_segment(self, geometrie):
         """

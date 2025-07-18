@@ -19,7 +19,12 @@ from qgis.core import (
     QgsGeometry,
     QgsPointXY,
 )
+from qgis.core import QgsMessageLog, Qgis
+
+
+
 from PyQt5.QtCore import pyqtSignal
+from qgis.core import QgsCsException
 from PyQt5 import QtCore
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QMenu, QToolButton, QInputDialog, QDockWidget, QWidget, QVBoxLayout, QComboBox, QApplication
 from qgis.gui import QgsMapTool, QgsRubberBand
@@ -28,6 +33,7 @@ from .base_map_tool import BaseMapTool
 from ..threads.calcul_pentes_thread import CalculPentesThread
 from ..utils.raster_utils import generer_ombrage_invisible
 from ..utils.undo_manager import UndoManager, AddPointsAction
+from ..utils.error import afficher_message_epsg
 
 
 class OutilRupturePente(BaseMapTool):
@@ -144,6 +150,7 @@ class OutilRupturePente(BaseMapTool):
         self.tolerance_simplification = 2.0
         self.calcul_termine = False
         self.undo_manager = UndoManager()
+        self.crs_warning_displayed = False
 
         self.crs_canvas = self.canvas.mapSettings().destinationCrs()
         self.crs_raster = self.couche_raster.crs()
@@ -408,21 +415,18 @@ class OutilRupturePente(BaseMapTool):
         self.hillshade_dataset = gdal.Open(source)
 
         if self.hillshade_dataset is None:
-            print("Impossible d'ouvrir le raster d'ombrage.")
             return
 
         self.gt = self.hillshade_dataset.GetGeoTransform()
         self.inv_gt = gdal.InvGeoTransform(self.gt)
 
         if self.inv_gt is None:
-            print("Impossible de calculer la géotransformation inverse pour l'ombrage.")
             return
 
         bande_raster = self.hillshade_dataset.GetRasterBand(1)
         self.tableau_hillshade = bande_raster.ReadAsArray()
 
         if self.tableau_hillshade is None:
-            print("Impossible de lire les données du raster d'ombrage.")
             return
 
         self.raster_lignes, self.raster_colonnes = self.tableau_hillshade.shape
@@ -711,25 +715,33 @@ class OutilRupturePente(BaseMapTool):
         float or None
             Élévation au point donné, ou None si en dehors des limites.
         """
+        try:
+            original_z = point.z()
+            point_xy = QgsPointXY(point.x(), point.y())
 
-        original_z = point.z()
-        point_xy = QgsPointXY(point.x(), point.y())
+            if self.crs_raster != self.crs_canvas:
+                point_xy_transforme = self.transformation_vers_raster.transform(point_xy)
+                point = QgsPoint(point_xy_transforme.x(), point_xy_transforme.y(), original_z)
+            else:
+                point = point
 
-        if self.crs_raster != self.crs_canvas:
-            point_xy_transforme = self.transformation_vers_raster.transform(point_xy)
-            point = QgsPoint(point_xy_transforme.x(), point_xy_transforme.y(), original_z)
-        else:
-            point = point
-
-        x = point.x()
-        y = point.y()
-        px, py = gdal.ApplyGeoTransform(self.inv_gt, x, y)
-        px = int(px)
-        py = int(py)
-        if 0 <= px < self.raster_colonnes and 0 <= py < self.raster_lignes:
-            elevation = self.tableau_raster[py, px]
-            return float(elevation)
-        else:
+            x = point.x()
+            y = point.y()
+            px, py = gdal.ApplyGeoTransform(self.inv_gt, x, y)
+            px = int(px)
+            py = int(py)
+            if 0 <= px < self.raster_colonnes and 0 <= py < self.raster_lignes:
+                elevation = self.tableau_raster[py, px]
+                return float(elevation)
+            else:
+                return None
+        except QgsCsException as e:
+            if not self.crs_warning_displayed:
+                QgsMessageLog.logMessage("Erreur de transformation des coordonnées. Le projet doit-être en epsg:2154",
+                                         level=Qgis.Critical)
+                afficher_message_epsg()
+                self.crs_warning_displayed = True
+            self.reinitialiser()
             return None
 
     def charger_donnees_raster(self):
@@ -924,7 +936,6 @@ class OutilRupturePente(BaseMapTool):
                        0 <= cy + dy < self.raster_lignes]
 
             if not voisins:
-                print("Aucun voisin disponible.")
                 break
 
             dx_fin = arrivee_px[0] - cx

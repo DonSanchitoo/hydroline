@@ -16,6 +16,7 @@ from qgis.PyQt.QtWidgets import QMessageBox, QInputDialog
 
 from ..threads.calcul_pentes_thread import CalculPentesThread
 from ..sscreen.sscreen_load import SplashScreenLoad
+from ..utils.error import afficher_message_epsg
 
 
 class BaseMapTool(QgsMapTool):
@@ -73,6 +74,7 @@ class BaseMapTool(QgsMapTool):
         self.canvas = canvas
         self.couche_raster = couche_raster
         self.data_loaded = False
+        self.crs_warning_displayed = False
 
         self.crs_canvas = self.canvas.mapSettings().destinationCrs()
         self.crs_raster = self.couche_raster.crs()
@@ -147,14 +149,12 @@ class BaseMapTool(QgsMapTool):
         self.inv_gt = gdal.InvGeoTransform(self.gt)
 
         if self.inv_gt is None:
-            print("Impossible de calculer la géotransformation inverse.")
             return
 
         bande_raster = self.dataset.GetRasterBand(1)
         self.tableau_raster = bande_raster.ReadAsArray()
 
         if self.tableau_raster is None:
-            print("Impossible de lire les données du raster.")
             return
 
         self.raster_lignes, self.raster_colonnes = self.tableau_raster.shape
@@ -173,17 +173,26 @@ class BaseMapTool(QgsMapTool):
         float or None
             Élévation à la position donnée, ou None si le point est en-dehors des limites du raster.
         """
-        if self.crs_raster != self.crs_canvas:
-            point = self.transformation_vers_raster.transform(point)
-        x = point.x()
-        y = point.y()
-        px, py = gdal.ApplyGeoTransform(self.inv_gt, x, y)
-        px = int(px)
-        py = int(py)
-        if 0 <= px < self.raster_colonnes and 0 <= py < self.raster_lignes:
-            elevation = self.tableau_raster[py, px]
-            return float(elevation)
-        else:
+        try:
+            if self.crs_raster != self.crs_canvas:
+                point = self.transformation_vers_raster.transform(point)
+            x = point.x()
+            y = point.y()
+            px, py = gdal.ApplyGeoTransform(self.inv_gt, x, y)
+            px = int(px)
+            py = int(py)
+            if 0 <= px < self.raster_colonnes and 0 <= py < self.raster_lignes:
+                elevation = self.tableau_raster[py, px]
+                return float(elevation)
+            else:
+                return None
+        except TypeError as e:
+            if not self.crs_warning_displayed:
+                QgsMessageLog.logMessage("Erreur de transformation des coordonnées. Le projet doit-être en epsg:2154",
+                                         level=Qgis.Critical)
+                afficher_message_epsg()
+                self.crs_warning_displayed = True
+            self.reinitialiser()
             return None
 
     def obtenir_elevation_aux_points_multiples(self, x_array, y_array):
