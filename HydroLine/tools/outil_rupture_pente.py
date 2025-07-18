@@ -33,7 +33,7 @@ from .base_map_tool import BaseMapTool
 from ..threads.calcul_pentes_thread import CalculPentesThread
 from ..utils.raster_utils import generer_ombrage_invisible
 from ..utils.undo_manager import UndoManager, AddPointsAction
-from ..utils.error import afficher_message_epsg
+from ..utils.error import afficher_message_epsg, afficher_changer_vers_mode_convexe
 
 
 class OutilRupturePente(BaseMapTool):
@@ -488,6 +488,7 @@ class OutilRupturePente(BaseMapTool):
 
         elevations = [p.z() for p in points]
         if self.mode == 'concave':
+            afficher_changer_vers_mode_convexe()
             elevation_minimale = min(elevations)
             points_critiques = [points[i] for i, elev in enumerate(elevations) if elev == elevation_minimale]
         else:
@@ -917,6 +918,7 @@ class OutilRupturePente(BaseMapTool):
             return None
 
         if self.mode == 'concave':
+            afficher_changer_vers_mode_convexe()
             pentes_utilisees = -self.pentes_locales_degres
         else:
             pentes_utilisees = self.pentes_locales_degres
