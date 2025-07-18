@@ -32,7 +32,7 @@ from .tools.fenetre_profil_elevation import FenetreProfilElevation
 from .tools.outil_rupture_pente import OutilRupturePente
 from .tools.outil_trace_crete import OutilTraceCrete
 from .tools.profil_graph_dock import ProfilGraphDock
-from .utils.raster_utils import filtre_moyen_raster, generer_ombrage, fusionner_et_arrondir_rasters
+from .utils.raster_utils import filtre_moyen_raster, generer_ombrage, fusionner_et_arrondir_rasters, filtre_median_raster, reprojeter_raster
 from .external.SIGPACK import Epoint
 
 
@@ -258,7 +258,7 @@ class HydroLine(QObject):
         self.barre_outils.addAction(self.action_mntvisu)
 
         self.menu_configuration = QMenu()
-        self.menu_configuration.setTitle("Configuration MNT")
+        self.menu_configuration.setTitle("Configuration")
 
         self.action_tracer_seuils = QAction(
             QIcon(os.path.join(chemin_icones, "icon_option1.png")),
@@ -285,7 +285,7 @@ class HydroLine(QObject):
 
         # menu à la barre d'outils
         self.bouton_menu = QToolButton()
-        self.bouton_menu.setText("Configuration MNT")
+        self.bouton_menu.setText("Configuration")
         self.bouton_menu.setMenu(self.menu_configuration)
         self.bouton_menu.setPopupMode(QToolButton.InstantPopup)
         self.action_bouton_menu = self.barre_outils.addWidget(self.bouton_menu)
@@ -871,11 +871,8 @@ class HydroLine(QObject):
     def preparation_mnt(self):
         """
         Affiche le MNT avec ombrage et style prédéfini, en gérant les couches raster et TIN.
-
-        Note
-        ----
-        Utilise les méthodes `filtre_moyen_raster` et `generer_ombrage` pour le filtrage
-        et l'ajout de l'ombrage au MNT.
+        Applique un filtre médian sur les rasters issus des TIN et un filtre moyen sur les rasters d'origine.
+        Assure la conversion vers EPSG:2154.
         """
         self.splash_screenLoad = SplashScreenLoad()
         self.splash_screenLoad.setParent(self.interface_qgis.mainWindow())
@@ -906,6 +903,7 @@ class HydroLine(QObject):
                 self.splash_screenLoad.close()
                 return
 
+        # Traitement des couches TIN
         for couche_tin in couches_tin:
             tin_path = couche_tin.publicSource()
             nom_couche = couche_tin.name()
@@ -929,10 +927,19 @@ class HydroLine(QObject):
                 self.splash_screenLoad.close()
                 return
 
-            couche_raster_filtre = filtre_moyen_raster(couche_raster, kernel_size=3)
+            # Reprojection du raster issu du TIN
+            couche_raster_reprojete = reprojeter_raster(couche_raster, code_epsg=code_epsg)
+            if couche_raster_reprojete is None:
+                QMessageBox.critical(None, "Erreur",
+                                     f"Échec de la reprojection du raster issu du TIN : {couche_tin.name()}")
+                self.splash_screenLoad.close()
+                return
+
+            # Application du filtre médian aux rasters reprojetés issus du TIN
+            couche_raster_filtre = filtre_median_raster(couche_raster_reprojete, kernel_size=5)
             if couche_raster_filtre is None:
                 QMessageBox.critical(None, "Erreur",
-                                     f"Échec de l'application du filtre moyen au raster : {couche_tin.name()}")
+                                     f"Échec de l'application du filtre médian au raster issu du TIN : {couche_tin.name()}")
                 self.splash_screenLoad.close()
                 return
 
@@ -943,7 +950,6 @@ class HydroLine(QObject):
             else:
                 QMessageBox.warning(None, "Avertissement", "Le fichier de style 'styleQGIS.qml' est introuvable.")
 
-            couche_raster_filtre.setCrs(crs_tin)
             QgsProject.instance().addMapLayer(couche_raster_filtre)
 
             couche_ombrage = generer_ombrage(couche_raster_filtre)
@@ -952,7 +958,6 @@ class HydroLine(QObject):
                 self.splash_screenLoad.close()
                 return
 
-            couche_ombrage.setCrs(crs_tin)
             QgsProject.instance().addMapLayer(couche_ombrage, False)
             racine = QgsProject.instance().layerTreeRoot()
             noeud_raster = racine.findLayer(couche_raster_filtre.id())
@@ -962,25 +967,37 @@ class HydroLine(QObject):
             layer_tree_view = self.interface_qgis.layerTreeView()
             layer_tree_view.refreshLayerSymbology(couche_raster_filtre.id())
 
+        # Traitement des couches raster d'origine
         if couches_raster:
-            crs = QgsCoordinateReferenceSystem(code_epsg)
-            for couche in couches_raster:
-                if couche.crs() != crs:
-                    couche.setCrs(crs)
-                    couche.triggerRepaint()
+            rasters_filtrés = []
 
-            if len(couches_raster) > 1:
-                couche_combinee = fusionner_et_arrondir_rasters(couches_raster, precision_decimales=1)
+            for couche in couches_raster:
+                # Reprojection de la couche raster
+                couche_reprojete = reprojeter_raster(couche, code_epsg=code_epsg)
+                if couche_reprojete is None:
+                    QMessageBox.critical(None, "Erreur", f"Échec de la reprojection pour la couche {couche.name()}.")
+                    continue
+
+                # Application du filtre moyen aux rasters reprojetés
+                couche_filtre = filtre_moyen_raster(couche_reprojete, kernel_size=3)
+                if couche_filtre is None:
+                    QMessageBox.critical(None, "Erreur",
+                                         f"Échec de l'application du filtre moyen au raster : {couche.name()}")
+                    continue
+                rasters_filtrés.append(couche_filtre)
+
+            if len(rasters_filtrés) > 1:
+                couche_combinee = fusionner_et_arrondir_rasters(rasters_filtrés, precision_decimales=1)
                 if not couche_combinee.isValid():
                     QMessageBox.critical(None, "Erreur", "Échec de la création du raster combiné.")
                     self.splash_screenLoad.close()
                     return
             else:
-                couche_combinee = couches_raster[0]
+                couche_combinee = rasters_filtrés[0]
 
             couche_combinee_filtre = filtre_moyen_raster(couche_combinee, kernel_size=3)
             if couche_combinee_filtre is None:
-                QMessageBox.critical(None, "Erreur", "Échec de l'application du filtre moyen au raster.")
+                QMessageBox.critical(None, "Erreur", "Échec de l'application du filtre moyen au raster combiné.")
                 self.splash_screenLoad.close()
                 return
 
