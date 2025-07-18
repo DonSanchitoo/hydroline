@@ -2,6 +2,18 @@
 
 import numpy as np
 from PyQt5.QtCore import QThread, pyqtSignal
+from qgis.PyQt.QtWidgets import QAction, QMessageBox
+
+try :
+    import dask
+except ImportError:
+    QMessageBox.warning(
+        None,
+        "HydroLine warning",
+        ("Pour utiliser pleinement HydroLine, l'installation \n"
+        "de dask est indispensable. Touche windows -> Osgeo4w shell > pip install dask \n"
+         " > relancer QGIS")
+    )
 
 class CalculPentesThread(QThread):
     """
@@ -51,7 +63,6 @@ class CalculPentesThread(QThread):
         le résultat une fois le calcul terminé.
         """
         from ..external.dask import array as da
-
         try:
             dask_array = da.from_array(self.hillshade_array, chunks=(1000, 1000))  # Ajustez les chunks si nécessaire
 
@@ -62,4 +73,5 @@ class CalculPentesThread(QThread):
 
             self.result_ready.emit(pentes_locales_degres)
         except Exception as e:
-            print(f"Erreur lors du calcul des pentes : {e}")
+            print("erreur pente")
+
