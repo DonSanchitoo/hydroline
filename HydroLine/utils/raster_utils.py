@@ -317,3 +317,53 @@ def reprojeter_raster(couche_raster, code_epsg=2154):
     output = processing.run("gdal:warpreproject", params)
     couche_reprojete = QgsRasterLayer(output['OUTPUT'], f"{couche_raster.name()}_reprojected")
     return couche_reprojete if couche_reprojete.isValid() else None
+
+
+def convertir_tin_en_raster(couche_tin, crs_target, pixel_size=1.0, feedback=None):
+    """
+    Convertit une couche TIN en raster.
+
+    Parameters
+    ----------
+    couche_tin : QgsMapLayer
+        La couche TIN à convertir.
+    crs_target : str
+        Le CRS cible (format string, par exemple "EPSG:2154").
+    pixel_size : float, optional
+        La taille des pixels pour le raster, par défaut 1.0.
+    feedback : QgsProcessingFeedback, optional
+        Un objet de feedback pour suivre le traitement.
+
+    Returns
+    -------
+    QgsRasterLayer or None
+        La couche raster résultante ou None si le traitement échoue.
+    """
+    temp_dir = tempfile.gettempdir()
+    nom_couche = couche_tin.name()
+    output_path = os.path.join(temp_dir, f"{nom_couche}_raster.tif")
+
+    parametres_meshrasterize = {
+        'INPUT': couche_tin.source(),
+        'DATASET_GROUPS': [0],
+        'DATASET_TIME': {'type': 'static'},
+        'EXTENT': None,  # Utiliser l'étendue par défaut
+        'PIXEL_SIZE': pixel_size,
+        'CRS_OUTPUT': crs_target,
+        'OUTPUT': output_path
+    }
+
+    try:
+        resultat_rasterize = processing.run("native:meshrasterize", parametres_meshrasterize, feedback=feedback)
+    except Exception as e:
+        print(f"Erreur lors de la rasterisation du TIN : {e}")
+        return None
+
+    couche_raster = QgsRasterLayer(resultat_rasterize['OUTPUT'], f"{nom_couche}_raster")
+
+    if not couche_raster.isValid():
+        return None
+
+    QgsProject.instance().addMapLayer(couche_raster, False)
+
+    return couche_raster
