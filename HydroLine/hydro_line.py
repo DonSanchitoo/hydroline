@@ -33,7 +33,15 @@ from .tools.fenetre_profil_elevation import FenetreProfilElevation
 from .tools.outil_rupture_pente import OutilRupturePente
 from .tools.outil_trace_crete import OutilTraceCrete
 from .tools.profil_graph_dock import ProfilGraphDock
-from .utils.raster_utils import filtre_moyen_raster, generer_ombrage, fusionner_et_arrondir_rasters, filtre_median_raster, reprojeter_raster
+
+from .utils.raster_utils import (
+    filtre_moyen_raster,
+    filtre_median_raster,
+    generer_ombrage,
+    fusionner_et_arrondir_rasters,
+    reprojeter_raster,
+    convertir_tin_en_raster
+)
 from .external.SIGPACK import Epoint
 from .logs.logs_config import setup_logging
 
@@ -874,9 +882,9 @@ class HydroLine(QObject):
 
     def preparation_mnt(self):
         """
-        Affiche le MNT avec ombrage et style prédéfini, en gérant les couches raster et TIN.
-        Applique un filtre médian sur les rasters issus des TIN et un filtre moyen sur les rasters d'origine.
-        Assure la conversion vers EPSG:2154.
+        Affiche le MNT avec ombrage et style prédéfini, en gérant les couches raster et un unique TIN.
+        Permet la sélection multiple de rasters ou un seul TIN, les convertit si nécessaire,
+        les fusionne, et applique les traitements requis.
         """
         self.splash_screenLoad = SplashScreenLoad()
         self.splash_screenLoad.setParent(self.interface_qgis.mainWindow())
@@ -895,139 +903,130 @@ class HydroLine(QObject):
         retour = QgsProcessingFeedback()
 
         couches_raster = []
-        couches_tin = []
+        couche_tin = None
 
+        # Séparer les rasters et un éventuel TIN
         for couche in couches_selectionnees:
-            if couche.type() == QgsMapLayer.RasterLayer:
+            if isinstance(couche, QgsRasterLayer):
                 couches_raster.append(couche)
             elif couche.type() == QgsMapLayer.MeshLayer:
-                couches_tin.append(couche)
+                if couche_tin is not None:
+                    QMessageBox.warning(None, "Avertissement", "Veuillez sélectionner un seul TIN.")
+                    self.splash_screenLoad.close()
+                    return
+                couche_tin = couche
             else:
                 QMessageBox.warning(None, "Avertissement", f"Type de couche non supporté : {couche.name()}")
                 self.splash_screenLoad.close()
                 return
 
-        # Traitement des couches TIN
-        for couche_tin in couches_tin:
-            tin_path = couche_tin.publicSource()
-            nom_couche = couche_tin.name()
-            crs_tin = couche_tin.crs()
+        rasters_convertis = []
 
-            parametres_meshrasterize = {
-                'INPUT': tin_path,
-                'DATASET_GROUPS': [0],
-                'DATASET_TIME': {'type': 'static'},
-                'EXTENT': None,
-                'PIXEL_SIZE': 1.0,
-                'CRS_OUTPUT': crs_tin,
-                'OUTPUT': 'TEMPORARY_OUTPUT'
-            }
-
-            resultat_rasterize = processing.run("native:meshrasterize", parametres_meshrasterize, feedback=retour)
-            couche_raster = QgsRasterLayer(resultat_rasterize['OUTPUT'], f"{nom_couche}_raster")
-
-            if not couche_raster.isValid():
-                QMessageBox.critical(None, "Erreur", f"Échec de la conversion du TIN en raster : {couche_tin.name()}")
+        # Traitement du TIN s'il est sélectionné
+        if couche_tin:
+            raster_converti = convertir_tin_en_raster(
+                couche_tin,
+                crs_target=f"EPSG:{code_epsg}",
+                pixel_size=1.0,
+                feedback=retour
+            )
+            if raster_converti is None:
+                QMessageBox.critical(None, "Erreur", f"Échec de la conversion du TIN : {couche_tin.name()}")
                 self.splash_screenLoad.close()
                 return
 
-            # Reprojection du raster issu du TIN
-            couche_raster_reprojete = reprojeter_raster(couche_raster, code_epsg=code_epsg)
-            if couche_raster_reprojete is None:
+            # Application du filtre médian au raster converti
+            raster_filtre_median = filtre_median_raster(raster_converti, kernel_size=5)
+            if raster_filtre_median is None:
                 QMessageBox.critical(None, "Erreur",
-                                     f"Échec de la reprojection du raster issu du TIN : {couche_tin.name()}")
+                                     f"Échec de l'application du filtre médian au raster converti : {couche_tin.name()}")
                 self.splash_screenLoad.close()
                 return
 
-            # Application du filtre médian aux rasters reprojetés issus du TIN
-            couche_raster_filtre = filtre_median_raster(couche_raster_reprojete, kernel_size=5)
-            if couche_raster_filtre is None:
-                QMessageBox.critical(None, "Erreur",
-                                     f"Échec de l'application du filtre médian au raster issu du TIN : {couche_tin.name()}")
-                self.splash_screenLoad.close()
-                return
+            rasters_convertis.append(raster_filtre_median)
 
-            chemin_style = os.path.join(self.chemin_plugin, 'styleQGIS.qml')
-            if os.path.exists(chemin_style):
-                couche_raster_filtre.loadNamedStyle(chemin_style)
-                couche_raster_filtre.triggerRepaint()
-            else:
-                QMessageBox.warning(None, "Avertissement", "Le fichier de style 'styleQGIS.qml' est introuvable.")
-
-            QgsProject.instance().addMapLayer(couche_raster_filtre)
-
-            couche_ombrage = generer_ombrage(couche_raster_filtre)
-            if not couche_ombrage.isValid():
-                QMessageBox.critical(None, "Erreur", f"Échec de la création de l'ombrage pour {nom_couche}.")
-                self.splash_screenLoad.close()
-                return
-
-            QgsProject.instance().addMapLayer(couche_ombrage, False)
-            racine = QgsProject.instance().layerTreeRoot()
-            noeud_raster = racine.findLayer(couche_raster_filtre.id())
-            racine.insertLayer(racine.children().index(noeud_raster) + 1, couche_ombrage)
-
+            # Supprimer la couche TIN originale pour éviter les confusions
             QgsProject.instance().removeMapLayer(couche_tin.id())
-            layer_tree_view = self.interface_qgis.layerTreeView()
-            layer_tree_view.refreshLayerSymbology(couche_raster_filtre.id())
 
         # Traitement des couches raster d'origine
-        if couches_raster:
-            rasters_filtrés = []
+        rasters_filtrés = []
 
-            for couche in couches_raster:
-                # Reprojection de la couche raster
-                couche_reprojete = reprojeter_raster(couche, code_epsg=code_epsg)
-                if couche_reprojete is None:
-                    QMessageBox.critical(None, "Erreur", f"Échec de la reprojection pour la couche {couche.name()}.")
-                    continue
+        for couche in couches_raster:
+            # Reprojection de la couche raster
+            couche_reprojete = reprojeter_raster(couche, code_epsg=code_epsg)
+            if couche_reprojete is None:
+                QMessageBox.critical(None, "Erreur", f"Échec de la reprojection pour la couche {couche.name()}.")
+                continue
 
-                # Application du filtre moyen aux rasters reprojetés
-                couche_filtre = filtre_moyen_raster(couche_reprojete, kernel_size=3)
-                if couche_filtre is None:
-                    QMessageBox.critical(None, "Erreur",
-                                         f"Échec de l'application du filtre moyen au raster : {couche.name()}")
-                    continue
-                rasters_filtrés.append(couche_filtre)
+            # Application du filtre moyen aux rasters reprojetés
+            couche_filtre = filtre_moyen_raster(couche_reprojete, kernel_size=3)
+            if couche_filtre is None:
+                QMessageBox.critical(None, "Erreur",
+                                     f"Échec de l'application du filtre moyen au raster : {couche.name()}")
+                continue
 
-            if len(rasters_filtrés) > 1:
-                couche_combinee = fusionner_et_arrondir_rasters(rasters_filtrés, precision_decimales=1)
-                if not couche_combinee.isValid():
-                    QMessageBox.critical(None, "Erreur", "Échec de la création du raster combiné.")
-                    self.splash_screenLoad.close()
-                    return
-            else:
-                couche_combinee = rasters_filtrés[0]
+            rasters_filtrés.append(couche_filtre)
 
+        # Ajouter les rasters convertis des TIN
+        rasters_filtrés.extend(rasters_convertis)
+
+        # Fusionner les rasters filtrés si plusieurs sont présents
+        if len(rasters_filtrés) > 1:
+            couche_combinee = fusionner_et_arrondir_rasters(rasters_filtrés, precision_decimales=1)
+            if couche_combinee is None:
+                QMessageBox.critical(None, "Erreur", "Échec de la création du raster combiné.")
+                self.splash_screenLoad.close()
+                return
+        elif len(rasters_filtrés) == 1:
+            couche_combinee = rasters_filtrés[0]
+        else:
+            QMessageBox.warning(None, "Avertissement", "Aucune couche raster valide à traiter.")
+            self.splash_screenLoad.close()
+            return
+
+        # Appliquer à nouveau le filtre moyen si plusieurs rasters étaient fusionnés
+        if len(rasters_filtrés) > 1:
             couche_combinee_filtre = filtre_moyen_raster(couche_combinee, kernel_size=3)
             if couche_combinee_filtre is None:
                 QMessageBox.critical(None, "Erreur", "Échec de l'application du filtre moyen au raster combiné.")
                 self.splash_screenLoad.close()
                 return
+        else:
+            couche_combinee_filtre = couche_combinee
 
-            couche_ombrage = generer_ombrage(couche_combinee_filtre)
-            if not couche_ombrage.isValid():
-                QMessageBox.critical(None, "Erreur", "Échec de la création de l'ombrage.")
-                self.splash_screenLoad.close()
-                return
+        # Générer l'ombrage pour le raster combiné filtré
+        couche_ombrage = generer_ombrage(couche_combinee_filtre)
+        if not couche_ombrage.isValid():
+            QMessageBox.critical(None, "Erreur", "Échec de la création de l'ombrage.")
+            self.splash_screenLoad.close()
+            return
 
-            chemin_style = os.path.join(self.chemin_plugin, 'styleQGIS.qml')
-            if os.path.exists(chemin_style):
-                couche_combinee_filtre.loadNamedStyle(chemin_style)
-                couche_combinee_filtre.triggerRepaint()
-            else:
-                QMessageBox.warning(None, "Avertissement", "Le fichier de style 'styleQGIS.qml' est introuvable.")
+        # Appliquer le style si disponible
+        chemin_style = os.path.join(self.chemin_plugin, 'styleQGIS.qml')
+        if os.path.exists(chemin_style):
+            couche_combinee_filtre.loadNamedStyle(chemin_style)
+            couche_combinee_filtre.triggerRepaint()
+        else:
+            QMessageBox.warning(None, "Avertissement", "Le fichier de style 'styleQGIS.qml' est introuvable.")
 
-            QgsProject.instance().addMapLayer(couche_combinee_filtre)
-            QgsProject.instance().addMapLayer(couche_ombrage, False)
-            racine = QgsProject.instance().layerTreeRoot()
-            noeud_raster = racine.findLayer(couche_combinee_filtre.id())
-            racine.insertLayer(racine.children().index(noeud_raster) + 1, couche_ombrage)
+        QgsProject.instance().addMapLayer(couche_combinee_filtre)
+        QgsProject.instance().addMapLayer(couche_ombrage, False)
+        racine = QgsProject.instance().layerTreeRoot()
+        noeud_raster = racine.findLayer(couche_combinee_filtre.id())
+        racine.insertLayer(racine.children().index(noeud_raster) + 1, couche_ombrage)
 
-            if len(couches_raster) > 1 or couches_raster[0] != couche_combinee_filtre:
-                for couche in couches_raster:
-                    QgsProject.instance().removeMapLayer(couche.id())
-        logging.info("Fonction préparation MNT : succès")
+        # Supprimer les rasters originaux si plusieurs rasters ont été fusionnés
+        if len(rasters_filtrés) > 1:
+            for couche in couches_raster:
+                QgsProject.instance().removeMapLayer(couche.id())
+
+        # Afficher un message informatif après le traitement
+        QMessageBox.information(
+            None,
+            "Astuce",
+            "Parfois le raster combiné peut apparaître incorrectement.\n"
+            "Clic droit sur la couche -> Propriétés -> Cliquez sur 'Appliquer' en bas à droite."
+        )
         self.splash_screenLoad.close()
 
     def changer_mode_rupture(self, index):
