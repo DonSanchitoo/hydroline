@@ -27,7 +27,7 @@ class ChoixCouchesDialogPourTrace(QDialog):
 
         layout = QVBoxLayout()
 
-        self.label_mnt = QLabel("Choisir le MNT de travail :")
+        self.label_mnt = QLabel("Choisir le MNT de travail (Choisir la couche d'ombrage pour les ruptures de pentes :")
         self.combo_mnt = QComboBox()
         self.populate_mnt_layers()
         layout.addWidget(self.label_mnt)
