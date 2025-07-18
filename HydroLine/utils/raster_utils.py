@@ -90,6 +90,9 @@ def filtre_moyen_raster(couche_raster_entree, kernel_size=3):
     return output_raster_layer
 
 
+import os
+import tempfile
+
 def generer_ombrage(couche_raster_entree):
     """
     Génère un ombrage à partir de la couche raster d'entrée.
@@ -105,6 +108,10 @@ def generer_ombrage(couche_raster_entree):
         La couche raster d'ombrage ou None si le traitement échoue.
     """
 
+    temp_dir = tempfile.gettempdir()  # Utilisation du répertoire temporaire
+    ombrage_filename = f"{os.path.splitext(os.path.basename(couche_raster_entree.source()))[0]}_ombrage.tif"
+    output_path = os.path.join(temp_dir, ombrage_filename)
+
     params = {
         'INPUT': couche_raster_entree.source(),
         'BAND': 1,
@@ -116,11 +123,16 @@ def generer_ombrage(couche_raster_entree):
         'ZEVENBERGEN': False,
         'MULTIDIRECTIONAL': False,
         'COMBINED': False,
-        'OUTPUT': 'TEMPORARY_OUTPUT'
+        'OUTPUT': output_path
     }
     output = processing.run("gdal:hillshade", params)
     couche_ombrage = QgsRasterLayer(output['OUTPUT'], 'Ombrage_HydroLine')
-    return couche_ombrage if couche_ombrage.isValid() else None
+
+    if not couche_ombrage.isValid():
+        return None
+
+    return couche_ombrage
+
 
 
 def fusionner_et_arrondir_rasters(couches_raster, precision_decimales=1):
@@ -203,3 +215,105 @@ def generer_ombrage_invisible(couche_raster_entree):
 
     # Ne pas ajouter la couche au projet
     return couche_ombrage if couche_ombrage.isValid() else None
+
+# utils/raster_utils.py
+
+from scipy.ndimage import median_filter  # Assurez-vous que SciPy est installé
+
+def filtre_median_raster(couche_raster_entree, kernel_size=5):
+    """
+    Applique un filtre médian à la couche raster d'entrée pour lisser les valeurs et éliminer les artefacts.
+
+    Parameters
+    ----------
+    couche_raster_entree : QgsRasterLayer
+        La couche raster d'entrée à filtrer.
+    kernel_size : int, optional
+        La taille du noyau pour le filtre médian, par défaut 5.
+
+    Returns
+    -------
+    QgsRasterLayer or None
+        La couche raster filtrée ou None si le traitement échoue.
+    """
+    input_path = couche_raster_entree.source()
+    input_dataset = gdal.Open(input_path, gdal.GA_ReadOnly)
+    if input_dataset is None:
+        return None
+    input_band = input_dataset.GetRasterBand(1)
+
+    input_array = input_band.ReadAsArray()
+    if input_array is None:
+        return None
+
+    try:
+        output_array = median_filter(input_array, size=kernel_size)
+    except Exception as e:
+        print(f"Erreur lors de l'application du filtre médian : {e}")
+        return None
+
+    temp_dir = tempfile.gettempdir()
+    output_path = os.path.join(temp_dir, 'filtered_median_raster.tif')
+
+    driver = gdal.GetDriverByName('GTiff')
+    output_dataset = driver.Create(
+        output_path,
+        input_dataset.RasterXSize,
+        input_dataset.RasterYSize,
+        1,
+        gdal.GDT_Float32
+    )
+    if output_dataset is None:
+        return None
+
+    output_dataset.SetGeoTransform(input_dataset.GetGeoTransform())
+    output_dataset.SetProjection(input_dataset.GetProjection())
+
+    output_band = output_dataset.GetRasterBand(1)
+    output_band.WriteArray(output_array)
+    output_band.FlushCache()
+
+    input_dataset = None
+    output_dataset = None
+
+    output_raster_layer = QgsRasterLayer(output_path, 'MNT_HydroLine')
+
+    if not output_raster_layer.isValid():
+        return None
+
+    return output_raster_layer
+
+
+def reprojeter_raster(couche_raster, code_epsg=2154):
+    """
+    Reprojette la couche raster vers le système de coordonnées spécifié.
+
+    Parameters
+    ----------
+    couche_raster : QgsRasterLayer
+        La couche raster à reprojeter.
+    code_epsg : int, optional
+        Le code EPSG vers lequel reprojeter, par défaut EPSG:2154.
+
+    Returns
+    -------
+    QgsRasterLayer or None
+        La couche raster reprojetée ou None si le traitement échoue.
+    """
+    crs = f"EPSG:{code_epsg}"
+    temp_dir = tempfile.gettempdir()
+    output_path = os.path.join(temp_dir,
+                               f"{os.path.splitext(os.path.basename(couche_raster.source()))[0]}_reprojected.tif")
+
+    params = {
+        'INPUT': couche_raster.source(),
+        'TARGET_CRS': crs,
+        'RESAMPLING': 0,
+        'NODATA': None,
+        'DATA_TYPE': 0,
+        'OUTPUT': output_path
+    }
+
+    output = processing.run("gdal:warpreproject", params)
+    couche_reprojete = QgsRasterLayer(output['OUTPUT'], f"{couche_raster.name()}_reprojected")
+    return couche_reprojete if couche_reprojete.isValid() else None
