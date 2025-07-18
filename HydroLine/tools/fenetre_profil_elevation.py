@@ -6,6 +6,8 @@ from PyQt5.QtWidgets import QDockWidget, QWidget, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 import matplotlib.pyplot as plt
 
+from qgis.core import QgsMessageLog, Qgis
+
 
 
 class FenetreProfilElevation(QDockWidget):
@@ -59,6 +61,14 @@ class FenetreProfilElevation(QDockWidget):
         widget.setLayout(layout)
         self.setWidget(widget)
 
+    def custom_print(*args):
+        if sys.stdout:
+            text = " ".join(map(str, args)) + "\n"
+            sys.stdout.write(text)
+        else:
+            text = " ".join(map(str, args))
+            QgsMessageLog.logMessage(text, level=Qgis.Info)
+
     def reinitialiser(self):
         """
         Réinitialise le graphique 3D.
@@ -91,23 +101,28 @@ class FenetreProfilElevation(QDockWidget):
         event : matplotlib.backend_bases.MouseEvent
             Événement de mouvement de la souris contenant les coordonnées de l'événement.
         """
-        if event.inaxes == self.ax:
-            x_mouse = event.xdata
-            y_mouse = event.ydata
-            if x_mouse is not None and y_mouse is not None:
-                # Obtenir l'élévation correspondante
-                Z_grid = self.Z_grid
-                X_grid = self.X_grid
-                Y_grid = self.Y_grid
-
-                # Trouver les indices les plus proches dans la grille
-                idx = (np.abs(X_grid[0] - x_mouse)).argmin()
-                idy = (np.abs(Y_grid[:, 0] - y_mouse)).argmin()
-
-                elevation = Z_grid[idy, idx]
-
-                # Afficher l'altitude
-                self.parent().statusBar().showMessage(f"Altitude : {elevation:.2f} m")
+        try:
+            if event.inaxes == self.ax:
+                x_mouse = event.xdata
+                y_mouse = event.ydata
+                if x_mouse is not None and y_mouse is not None:
+                    # Assurez-vous que Z_grid est défini
+                    if hasattr(self, 'Z_grid'):
+                        # Exécuter la logique
+                        idx = np.abs(self.X_grid[0] - x_mouse).argmin()
+                        idy = np.abs(self.Y_grid[:, 0] - y_mouse).argmin()
+                        elevation = self.Z_grid[idy, idx]
+                        self.parent().statusBar().showMessage(f"Altitude : {elevation:.2f} m")
+                    else:
+                        raise RuntimeError(
+                            "Z_grid n'est pas initialisé - assurez-vous que mettre_a_jour_profil() est appelé.")
+        except AttributeError as e:
+            import traceback
+            logging.error(f"Erreur d'attribut : {traceback.format_exc()}")
+            QMessageBox.critical(self, "Erreur EPSG", "Une erreur inattendue est survenue dans on_mouse_move. Relancer outil")
+        except RuntimeError as e:
+            logging.error(f"Erreur personnalisée : {str(e)}")
+            QMessageBox.critical(self, "Erreur EPSG", "veuillez vérifier Z_grid. Relancer l'outil")
 
     def mettre_a_jour_profil(self, x_coords, y_coords, elevations, longueur_segment):
         """
