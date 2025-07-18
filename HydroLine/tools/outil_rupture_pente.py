@@ -488,7 +488,6 @@ class OutilRupturePente(BaseMapTool):
 
         elevations = [p.z() for p in points]
         if self.mode == 'concave':
-            afficher_changer_vers_mode_convexe()
             elevation_minimale = min(elevations)
             points_critiques = [points[i] for i, elev in enumerate(elevations) if elev == elevation_minimale]
         else:
@@ -918,7 +917,6 @@ class OutilRupturePente(BaseMapTool):
             return None
 
         if self.mode == 'concave':
-            afficher_changer_vers_mode_convexe()
             pentes_utilisees = -self.pentes_locales_degres
         else:
             pentes_utilisees = self.pentes_locales_degres
