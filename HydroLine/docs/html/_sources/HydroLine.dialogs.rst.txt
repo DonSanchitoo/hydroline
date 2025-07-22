@@ -1,0 +1,37 @@
+HydroLine.dialogs package
+=========================
+
+Submodules
+----------
+
+HydroLine.dialogs.choix\_couches\_dialog module
+-----------------------------------------------
+
+.. automodule:: HydroLine.dialogs.choix_couches_dialog
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+HydroLine.dialogs.parametres\_dialog module
+-------------------------------------------
+
+.. automodule:: HydroLine.dialogs.parametres_dialog
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+HydroLine.dialogs.slider\_dialog module
+---------------------------------------
+
+.. automodule:: HydroLine.dialogs.slider_dialog
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: HydroLine.dialogs
+   :members:
+   :undoc-members:
+   :show-inheritance:

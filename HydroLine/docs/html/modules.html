@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>HydroLine &#8212; Documentation HydroLine 1.0</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=61cd365c" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=7a28dfa3"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=bf059b8c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" />
+    <link rel="next" title="HydroLine package" href="HydroLine.html" />
+    <link rel="prev" title="Welcome to HydroLine’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="hydroline">
+<h1>HydroLine<a class="headerlink" href="#hydroline" title="Lien vers cette rubrique">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="HydroLine.html">HydroLine package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.dialogs.html">HydroLine.dialogs package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#module-HydroLine.dialogs.choix_couches_dialog">HydroLine.dialogs.choix_couches_dialog module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#module-HydroLine.dialogs.parametres_dialog">HydroLine.dialogs.parametres_dialog module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#module-HydroLine.dialogs.slider_dialog">HydroLine.dialogs.slider_dialog module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#module-HydroLine.dialogs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.docs.html">HydroLine.docs package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.docs.html#module-HydroLine.docs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.icon.html">HydroLine.icon package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.icon.html#module-HydroLine.icon">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.sscreen.html">HydroLine.sscreen package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#module-HydroLine.sscreen.sscreen">HydroLine.sscreen.sscreen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#module-HydroLine.sscreen.sscreen_load">HydroLine.sscreen.sscreen_load module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#module-HydroLine.sscreen">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.threads.html">HydroLine.threads package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#module-HydroLine.threads.calcul_pentes_thread">HydroLine.threads.calcul_pentes_thread module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#module-HydroLine.threads.raster_loading_thread">HydroLine.threads.raster_loading_thread module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#module-HydroLine.threads">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.tools.html">HydroLine.tools package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools.base_map_tool">HydroLine.tools.base_map_tool module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools.fenetre_profil_elevation">HydroLine.tools.fenetre_profil_elevation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools.outil_points_bas">HydroLine.tools.outil_points_bas module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools.outil_rupture_pente">HydroLine.tools.outil_rupture_pente module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools.outil_trace_crete">HydroLine.tools.outil_trace_crete module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#hydroline-tools-profil-graph-dock-module">HydroLine.tools.profil_graph_dock module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools.prolongement">HydroLine.tools.prolongement module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.utils.html">HydroLine.utils package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#module-HydroLine.utils.plot_utils">HydroLine.utils.plot_utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#module-HydroLine.utils.raster_utils">HydroLine.utils.raster_utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#module-HydroLine.utils.undo_manager">HydroLine.utils.undo_manager module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#module-HydroLine.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.html#hydroline-hydro-line-module">HydroLine.hydro_line module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.html#hydroline-hydro-line-dialog-module">HydroLine.hydro_line_dialog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.html#module-HydroLine.resources">HydroLine.resources module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.html#HydroLine.resources.qCleanupResources"><code class="docutils literal notranslate"><span class="pre">qCleanupResources()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.html#HydroLine.resources.qInitResources"><code class="docutils literal notranslate"><span class="pre">qInitResources()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.html#module-HydroLine">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="HydroLine.dialogs.html">HydroLine.dialogs package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.dialogs.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.dialogs.html#module-HydroLine.dialogs.choix_couches_dialog">HydroLine.dialogs.choix_couches_dialog module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace"><code class="docutils literal notranslate"><span class="pre">ChoixCouchesDialogPourTrace</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.get_selected_mnt_layer"><code class="docutils literal notranslate"><span class="pre">ChoixCouchesDialogPourTrace.get_selected_mnt_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.get_selected_polyline_layer"><code class="docutils literal notranslate"><span class="pre">ChoixCouchesDialogPourTrace.get_selected_polyline_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.is_new_layer_checked"><code class="docutils literal notranslate"><span class="pre">ChoixCouchesDialogPourTrace.is_new_layer_checked()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.on_polyline_selection_changed"><code class="docutils literal notranslate"><span class="pre">ChoixCouchesDialogPourTrace.on_polyline_selection_changed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.populate_mnt_layers"><code class="docutils literal notranslate"><span class="pre">ChoixCouchesDialogPourTrace.populate_mnt_layers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.populate_polyline_layers"><code class="docutils literal notranslate"><span class="pre">ChoixCouchesDialogPourTrace.populate_polyline_layers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.update_checkbox_state"><code class="docutils literal notranslate"><span class="pre">ChoixCouchesDialogPourTrace.update_checkbox_state()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement"><code class="docutils literal notranslate"><span class="pre">DialogueSelectionCouchesPourProlongement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement.combobox_mnt"><code class="docutils literal notranslate"><span class="pre">DialogueSelectionCouchesPourProlongement.combobox_mnt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement.combobox_points_bathy"><code class="docutils literal notranslate"><span class="pre">DialogueSelectionCouchesPourProlongement.combobox_points_bathy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement.combobox_profils_traces"><code class="docutils literal notranslate"><span class="pre">DialogueSelectionCouchesPourProlongement.combobox_profils_traces</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement.combobox_emprise"><code class="docutils literal notranslate"><span class="pre">DialogueSelectionCouchesPourProlongement.combobox_emprise</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint"><code class="docutils literal notranslate"><span class="pre">DialogueSelectionEpoint</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint.combo_points"><code class="docutils literal notranslate"><span class="pre">DialogueSelectionEpoint.combo_points</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint.button_box"><code class="docutils literal notranslate"><span class="pre">DialogueSelectionEpoint.button_box</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint.get_selected_points_layer"><code class="docutils literal notranslate"><span class="pre">DialogueSelectionEpoint.get_selected_points_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint.get_alpha_value"><code class="docutils literal notranslate"><span class="pre">DialogueSelectionEpoint.get_alpha_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#id0"><code class="docutils literal notranslate"><span class="pre">DialogueSelectionEpoint.get_alpha_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#id1"><code class="docutils literal notranslate"><span class="pre">DialogueSelectionEpoint.get_selected_points_layer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.dialogs.html#module-HydroLine.dialogs.parametres_dialog">HydroLine.dialogs.parametres_dialog module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.parametres_dialog.ParametresDialog"><code class="docutils literal notranslate"><span class="pre">ParametresDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.parametres_dialog.ParametresDialog.images"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.images</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.parametres_dialog.ParametresDialog.current_image_index"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.current_image_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.parametres_dialog.ParametresDialog.timer"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.timer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.parametres_dialog.ParametresDialog.open_pdf"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.open_pdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.parametres_dialog.ParametresDialog.update_image"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.update_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.parametres_dialog.ParametresDialog.next_image"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.next_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.parametres_dialog.ParametresDialog.setup_infolabel"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.setup_infolabel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.parametres_dialog.ParametresDialog.set_values"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.set_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.parametres_dialog.ParametresDialog.get_selected_mode"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.get_selected_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.parametres_dialog.ParametresDialog.is_graphique_3d_checked"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.is_graphique_3d_checked()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.parametres_dialog.ParametresDialog.mode_changed"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.mode_changed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.parametres_dialog.ParametresDialog.get_field_settings"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.get_field_settings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#id2"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.get_field_settings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#id3"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.get_selected_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#id4"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.is_graphique_3d_checked()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#id5"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.mode_changed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#id6"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.next_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#id7"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.open_pdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#id8"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.set_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#id9"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.setup_infolabel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#id10"><code class="docutils literal notranslate"><span class="pre">ParametresDialog.update_image()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.dialogs.html#module-HydroLine.dialogs.slider_dialog">HydroLine.dialogs.slider_dialog module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.slider_dialog.SliderDialog"><code class="docutils literal notranslate"><span class="pre">SliderDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.slider_dialog.SliderDialog.step"><code class="docutils literal notranslate"><span class="pre">SliderDialog.step</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.slider_dialog.SliderDialog.slider"><code class="docutils literal notranslate"><span class="pre">SliderDialog.slider</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.slider_dialog.SliderDialog.label"><code class="docutils literal notranslate"><span class="pre">SliderDialog.label</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.slider_dialog.SliderDialog.ok_button"><code class="docutils literal notranslate"><span class="pre">SliderDialog.ok_button</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.slider_dialog.SliderDialog.update_label"><code class="docutils literal notranslate"><span class="pre">SliderDialog.update_label()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#HydroLine.dialogs.slider_dialog.SliderDialog.get_value"><code class="docutils literal notranslate"><span class="pre">SliderDialog.get_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#id11"><code class="docutils literal notranslate"><span class="pre">SliderDialog.get_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.dialogs.html#id12"><code class="docutils literal notranslate"><span class="pre">SliderDialog.update_label()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.dialogs.html#module-HydroLine.dialogs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="HydroLine.docs.html">HydroLine.docs package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.docs.html#module-HydroLine.docs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="HydroLine.icon.html">HydroLine.icon package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.icon.html#module-HydroLine.icon">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="HydroLine.sscreen.html">HydroLine.sscreen package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.sscreen.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.sscreen.html#module-HydroLine.sscreen.sscreen">HydroLine.sscreen.sscreen module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen.SplashScreen"><code class="docutils literal notranslate"><span class="pre">SplashScreen</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen.SplashScreen.finished"><code class="docutils literal notranslate"><span class="pre">SplashScreen.finished</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen.SplashScreen.current_index"><code class="docutils literal notranslate"><span class="pre">SplashScreen.current_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen.SplashScreen.text_index"><code class="docutils literal notranslate"><span class="pre">SplashScreen.text_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen.SplashScreen.logos"><code class="docutils literal notranslate"><span class="pre">SplashScreen.logos</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen.SplashScreen.dynamic_texts"><code class="docutils literal notranslate"><span class="pre">SplashScreen.dynamic_texts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen.SplashScreen.opacity_effect1"><code class="docutils literal notranslate"><span class="pre">SplashScreen.opacity_effect1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen.SplashScreen.opacity_effect2"><code class="docutils literal notranslate"><span class="pre">SplashScreen.opacity_effect2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen.SplashScreen.text_opacity_effect"><code class="docutils literal notranslate"><span class="pre">SplashScreen.text_opacity_effect</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen.SplashScreen.show_next_logo"><code class="docutils literal notranslate"><span class="pre">SplashScreen.show_next_logo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen.SplashScreen.__init__"><code class="docutils literal notranslate"><span class="pre">SplashScreen.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#id0"><code class="docutils literal notranslate"><span class="pre">SplashScreen.show_next_logo()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.sscreen.html#module-HydroLine.sscreen.sscreen_load">HydroLine.sscreen.sscreen_load module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen_load.SplashScreenLoad"><code class="docutils literal notranslate"><span class="pre">SplashScreenLoad</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen_load.SplashScreenLoad.background_label"><code class="docutils literal notranslate"><span class="pre">SplashScreenLoad.background_label</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen_load.SplashScreenLoad.moving_label"><code class="docutils literal notranslate"><span class="pre">SplashScreenLoad.moving_label</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen_load.SplashScreenLoad.version_label"><code class="docutils literal notranslate"><span class="pre">SplashScreenLoad.version_label</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen_load.SplashScreenLoad.opacity_effect"><code class="docutils literal notranslate"><span class="pre">SplashScreenLoad.opacity_effect</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen_load.SplashScreenLoad.anim_group"><code class="docutils literal notranslate"><span class="pre">SplashScreenLoad.anim_group</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen_load.SplashScreenLoad.start_animation"><code class="docutils literal notranslate"><span class="pre">SplashScreenLoad.start_animation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#HydroLine.sscreen.sscreen_load.SplashScreenLoad.__init__"><code class="docutils literal notranslate"><span class="pre">SplashScreenLoad.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.sscreen.html#id1"><code class="docutils literal notranslate"><span class="pre">SplashScreenLoad.start_animation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.sscreen.html#module-HydroLine.sscreen">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="HydroLine.threads.html">HydroLine.threads package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.threads.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.threads.html#module-HydroLine.threads.calcul_pentes_thread">HydroLine.threads.calcul_pentes_thread module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.threads.html#HydroLine.threads.calcul_pentes_thread.CalculPentesThread"><code class="docutils literal notranslate"><span class="pre">CalculPentesThread</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#HydroLine.threads.calcul_pentes_thread.CalculPentesThread.hillshade_array"><code class="docutils literal notranslate"><span class="pre">CalculPentesThread.hillshade_array</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#HydroLine.threads.calcul_pentes_thread.CalculPentesThread.gt"><code class="docutils literal notranslate"><span class="pre">CalculPentesThread.gt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#HydroLine.threads.calcul_pentes_thread.CalculPentesThread.result_ready"><code class="docutils literal notranslate"><span class="pre">CalculPentesThread.result_ready</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#HydroLine.threads.calcul_pentes_thread.CalculPentesThread.run"><code class="docutils literal notranslate"><span class="pre">CalculPentesThread.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#HydroLine.threads.calcul_pentes_thread.CalculPentesThread.__init__"><code class="docutils literal notranslate"><span class="pre">CalculPentesThread.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#id0"><code class="docutils literal notranslate"><span class="pre">CalculPentesThread.result_ready</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#id3"><code class="docutils literal notranslate"><span class="pre">CalculPentesThread.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.threads.html#module-HydroLine.threads.raster_loading_thread">HydroLine.threads.raster_loading_thread module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.threads.html#HydroLine.threads.raster_loading_thread.RasterLoadingThread"><code class="docutils literal notranslate"><span class="pre">RasterLoadingThread</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#HydroLine.threads.raster_loading_thread.RasterLoadingThread.couche_raster"><code class="docutils literal notranslate"><span class="pre">RasterLoadingThread.couche_raster</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#HydroLine.threads.raster_loading_thread.RasterLoadingThread.raster_loaded"><code class="docutils literal notranslate"><span class="pre">RasterLoadingThread.raster_loaded</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#HydroLine.threads.raster_loading_thread.RasterLoadingThread.run"><code class="docutils literal notranslate"><span class="pre">RasterLoadingThread.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#HydroLine.threads.raster_loading_thread.RasterLoadingThread.__init__"><code class="docutils literal notranslate"><span class="pre">RasterLoadingThread.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#id4"><code class="docutils literal notranslate"><span class="pre">RasterLoadingThread.raster_loaded</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.threads.html#id7"><code class="docutils literal notranslate"><span class="pre">RasterLoadingThread.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.threads.html#module-HydroLine.threads">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="HydroLine.tools.html">HydroLine.tools package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.tools.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools.base_map_tool">HydroLine.tools.base_map_tool module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool"><code class="docutils literal notranslate"><span class="pre">BaseMapTool</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.canvas"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.canvas</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.couche_raster"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.couche_raster</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.data_loaded"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.data_loaded</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.crs_canvas"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.crs_canvas</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.crs_raster"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.crs_raster</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.transformation_vers_raster"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.transformation_vers_raster</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.transformation_depuis_raster"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.transformation_depuis_raster</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.on_pentes_calculees_error"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.on_pentes_calculees_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.on_raster_loaded"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.on_raster_loaded()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.charger_donnees_raster"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.charger_donnees_raster()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.obtenir_elevation_au_point_unique"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.obtenir_elevation_au_point_unique()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.obtenir_elevation_aux_points_multiples"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.obtenir_elevation_aux_points_multiples()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.nettoyer_ressources"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.nettoyer_ressources()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.__init__"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id0"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.charger_donnees_raster()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.base_map_tool.BaseMapTool.nettoyer_ressources_1"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.nettoyer_ressources_1()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id1"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.obtenir_elevation_au_point_unique()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id2"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.obtenir_elevation_aux_points_multiples()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id3"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.on_pentes_calculees_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id4"><code class="docutils literal notranslate"><span class="pre">BaseMapTool.on_raster_loaded()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools.fenetre_profil_elevation">HydroLine.tools.fenetre_profil_elevation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation"><code class="docutils literal notranslate"><span class="pre">FenetreProfilElevation</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.figure"><code class="docutils literal notranslate"><span class="pre">FenetreProfilElevation.figure</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.ax"><code class="docutils literal notranslate"><span class="pre">FenetreProfilElevation.ax</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.canvas"><code class="docutils literal notranslate"><span class="pre">FenetreProfilElevation.canvas</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.reinitialiser"><code class="docutils literal notranslate"><span class="pre">FenetreProfilElevation.reinitialiser()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.definir_outil"><code class="docutils literal notranslate"><span class="pre">FenetreProfilElevation.definir_outil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.on_mouse_move"><code class="docutils literal notranslate"><span class="pre">FenetreProfilElevation.on_mouse_move()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.mettre_a_jour_profil"><code class="docutils literal notranslate"><span class="pre">FenetreProfilElevation.mettre_a_jour_profil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.__init__"><code class="docutils literal notranslate"><span class="pre">FenetreProfilElevation.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id5"><code class="docutils literal notranslate"><span class="pre">FenetreProfilElevation.definir_outil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id6"><code class="docutils literal notranslate"><span class="pre">FenetreProfilElevation.mettre_a_jour_profil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id7"><code class="docutils literal notranslate"><span class="pre">FenetreProfilElevation.on_mouse_move()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id8"><code class="docutils literal notranslate"><span class="pre">FenetreProfilElevation.reinitialiser()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools.outil_points_bas">HydroLine.tools.outil_points_bas module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_points_bas.select_next_pixel_bas"><code class="docutils literal notranslate"><span class="pre">select_next_pixel_bas()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools.outil_rupture_pente">HydroLine.tools.outil_rupture_pente module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.canvas"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.canvas</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.couche_raster"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.couche_raster</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.mode"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.simplification_activee"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.simplification_activee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.tolerance_simplification"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.tolerance_simplification</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.calcul_termine"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.calcul_termine</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.undo_manager"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.undo_manager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.liste_points"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.liste_points</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.bande_dynamique"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.bande_dynamique</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.bande_confirmee"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.bande_confirmee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.mode_trace_libre"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.mode_trace_libre</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.points_trace_libre"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.points_trace_libre</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.bande_trace_libre"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.bande_trace_libre</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.on_pentes_calculees"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.on_pentes_calculees()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.activate"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.activate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.deactivate"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.deactivate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.eventFilter"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.eventFilter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.undo_last_action"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.undo_last_action()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.remove_last_point"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.remove_last_point()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_couche_vectorielle"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.definir_couche_vectorielle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.confirmer_polyligne"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.confirmer_polyligne()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_simplification"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.definir_simplification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_mode_trace_libre"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.definir_mode_trace_libre()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.charger_donnees_mnt"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.charger_donnees_mnt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.charger_donnees_hillshade"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.charger_donnees_hillshade()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_fenetre_profil"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.definir_fenetre_profil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.mettre_a_jour_bande_dynamique"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.mettre_a_jour_bande_dynamique()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.simplifier_geometrie"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.simplifier_geometrie()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.obtenir_pente_au_point"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.obtenir_pente_au_point()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.douglas_peucker_avec_critiques"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.douglas_peucker_avec_critiques()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.distance_perpendiculaire"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.distance_perpendiculaire()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.mettre_a_jour_profil"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.mettre_a_jour_profil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.distance_euclidienne"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.distance_euclidienne()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.obtenir_elevation_au_point"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.obtenir_elevation_au_point()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.charger_donnees_raster"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.charger_donnees_raster()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.calculer_chemin_rupture_pente"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.calculer_chemin_rupture_pente()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.reinitialiser"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.reinitialiser()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.charger_nouveau_mnt"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.charger_nouveau_mnt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.nettoyer_ressources"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.nettoyer_ressources()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.__init__"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id9"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.activate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id10"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.calculer_chemin_rupture_pente()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.canvasMoveEvent"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.canvasMoveEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.canvasPressEvent"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.canvasPressEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id11"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.charger_donnees_hillshade()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id12"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.charger_donnees_raster()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id13"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.confirmer_polyligne()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id14"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.deactivate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id15"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.definir_couche_vectorielle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id16"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.definir_fenetre_profil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_mode"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.definir_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id17"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.definir_mode_trace_libre()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id18"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.definir_simplification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id19"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.distance_euclidienne()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id20"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.distance_perpendiculaire()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id21"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.douglas_peucker_avec_critiques()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id22"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.eventFilter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id23"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.mettre_a_jour_bande_dynamique()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id24"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.mettre_a_jour_profil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_rupture_pente.OutilRupturePente.mode_trace_libre_changed"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.mode_trace_libre_changed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id27"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.nettoyer_ressources()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id28"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.obtenir_elevation_au_point()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id29"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.obtenir_pente_au_point()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id30"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.on_pentes_calculees()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id31"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.reinitialiser()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id32"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.remove_last_point()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id33"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.simplifier_geometrie()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id34"><code class="docutils literal notranslate"><span class="pre">OutilRupturePente.undo_last_action()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools.outil_trace_crete">HydroLine.tools.outil_trace_crete module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.canvas"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.canvas</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.couche_raster"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.couche_raster</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.id_counter"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.id_counter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.data_loaded"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.data_loaded</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.points_bas_active"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.points_bas_active</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.select_next_pixel_func"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.select_next_pixel_func</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.undo_manager"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.undo_manager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.liste_points"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.liste_points</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.chemin_dynamique"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.chemin_dynamique</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.polyligne_confirmee"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.polyligne_confirmee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.mode_trace_libre"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.mode_trace_libre</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.points_trace_libre"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.points_trace_libre</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.fenetre_profil"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.fenetre_profil</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.simplification_activee"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.simplification_activee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.tolerance_simplification"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.tolerance_simplification</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.mode"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.distance_seuil"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.distance_seuil</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.dernier_point_deplacement"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.dernier_point_deplacement</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.activate"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.activate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.deactivate"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.deactivate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.eventFilter"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.eventFilter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.keyPressEvent"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.keyPressEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.on_raster_loaded"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.on_raster_loaded()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.set_points_bas"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.set_points_bas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.obtenir_elevation_aux_points_multiples"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.obtenir_elevation_aux_points_multiples()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_couche_vectorielle"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.definir_couche_vectorielle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.confirmer_polyligne"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.confirmer_polyligne()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_fenetre_profil"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.definir_fenetre_profil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_mode"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.definir_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_simplification"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.definir_simplification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.mettre_a_jour_bande_dynamique"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.mettre_a_jour_bande_dynamique()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_mode_trace_libre"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.definir_mode_trace_libre()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.lisser_chemin"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.lisser_chemin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.undo_last_action"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.undo_last_action()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.remove_last_point"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.remove_last_point()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.canvasPressEvent"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.canvasPressEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.canvasMoveEvent"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.canvasMoveEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id35"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.keyPressEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.mettre_a_jour_profil"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.mettre_a_jour_profil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.obtenir_elevation_au_point"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.obtenir_elevation_au_point()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.select_next_pixel_points_hauts"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.select_next_pixel_points_hauts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.calculer_chemin_extreme"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.calculer_chemin_extreme()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.resoudre_egalite"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.resoudre_egalite()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.reinitialiser"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.reinitialiser()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.simplifier_geometrie"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.simplifier_geometrie()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.douglas_peucker_avec_critiques"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.douglas_peucker_avec_critiques()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.distance_perpendiculaire"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.distance_perpendiculaire()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.distance_euclidienne"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.distance_euclidienne()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.obtenir_elevation_aux_points"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.obtenir_elevation_aux_points()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id36"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.mettre_a_jour_profil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.__init__"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id37"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.activate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id38"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.calculer_chemin_extreme()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id39"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.canvasMoveEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id40"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.canvasPressEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id41"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.confirmer_polyligne()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id42"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.deactivate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id43"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.definir_couche_vectorielle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id44"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.definir_fenetre_profil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id45"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.definir_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id46"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.definir_mode_trace_libre()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id47"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.definir_simplification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id48"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.distance_euclidienne()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id49"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.distance_perpendiculaire()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id50"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.douglas_peucker_avec_critiques()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id51"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.eventFilter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id52"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.keyPressEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id53"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.mettre_a_jour_bande_dynamique()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id54"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.mettre_a_jour_profil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.mettre_a_jour_profil_segment"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.mettre_a_jour_profil_segment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.outil_trace_crete.OutilTraceCrete.mode_trace_libre_changed"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.mode_trace_libre_changed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id57"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.obtenir_elevation_au_point()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id58"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.obtenir_elevation_aux_points()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id59"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.obtenir_elevation_aux_points_multiples()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id60"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.on_raster_loaded()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id61"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.reinitialiser()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id62"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.remove_last_point()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id63"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.resoudre_egalite()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id64"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.select_next_pixel_points_hauts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id65"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.set_points_bas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id66"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.simplifier_geometrie()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id67"><code class="docutils literal notranslate"><span class="pre">OutilTraceCrete.undo_last_action()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.tools.html#hydroline-tools-profil-graph-dock-module">HydroLine.tools.profil_graph_dock module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools.prolongement">HydroLine.tools.prolongement module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.couche_mnt"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.couche_mnt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.couche_points"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.couche_points</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.couche_lignes"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.couche_lignes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.couche_emprise"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.couche_emprise</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.executer"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.executer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.afficher_dialogue_selection_couches"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.afficher_dialogue_selection_couches()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.initialiser_couches"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.initialiser_couches()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.creer_nouvelle_couche"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.creer_nouvelle_couche()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.ajouter_points_existants"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.ajouter_points_existants()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.parcourir_lignes_profil"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.parcourir_lignes_profil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.traiter_ligne"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.traiter_ligne()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.extraire_sous_ligne"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.extraire_sous_ligne()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.traiter_segment_raster"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.traiter_segment_raster()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.traiter_segment_tin"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.traiter_segment_tin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.obtenir_z_tin"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.obtenir_z_tin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.ajuster_densite"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.ajuster_densite()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.attribuer_objectid_aux_nouveaux_points"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.attribuer_objectid_aux_nouveaux_points()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.ajouter_points_a_la_couche"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.ajouter_points_a_la_couche()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.finaliser"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.finaliser()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.ProlongementDesProfils.__init__"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id68"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.afficher_dialogue_selection_couches()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id69"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.ajouter_points_a_la_couche()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id70"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.ajouter_points_existants()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id71"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.ajuster_densite()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id72"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.attribuer_objectid_aux_nouveaux_points()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id73"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.creer_nouvelle_couche()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id74"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.executer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id75"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.extraire_sous_ligne()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id76"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.finaliser()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id77"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.initialiser_couches()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id78"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.obtenir_z_tin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id79"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.parcourir_lignes_profil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id80"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.traiter_ligne()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id81"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.traiter_segment_raster()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.tools.html#id82"><code class="docutils literal notranslate"><span class="pre">ProlongementDesProfils.traiter_segment_tin()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.tools.html#HydroLine.tools.prolongement.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.tools.html#module-HydroLine.tools">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="HydroLine.utils.html">HydroLine.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.utils.html#module-HydroLine.utils.plot_utils">HydroLine.utils.plot_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.utils.html#module-HydroLine.utils.raster_utils">HydroLine.utils.raster_utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.raster_utils.filtre_moyen_raster"><code class="docutils literal notranslate"><span class="pre">filtre_moyen_raster()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.raster_utils.fusionner_et_arrondir_rasters"><code class="docutils literal notranslate"><span class="pre">fusionner_et_arrondir_rasters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.raster_utils.generer_ombrage"><code class="docutils literal notranslate"><span class="pre">generer_ombrage()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.raster_utils.generer_ombrage_invisible"><code class="docutils literal notranslate"><span class="pre">generer_ombrage_invisible()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.utils.html#module-HydroLine.utils.undo_manager">HydroLine.utils.undo_manager module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.AddPointsAction"><code class="docutils literal notranslate"><span class="pre">AddPointsAction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.AddPointsAction.outil"><code class="docutils literal notranslate"><span class="pre">AddPointsAction.outil</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.AddPointsAction.points"><code class="docutils literal notranslate"><span class="pre">AddPointsAction.points</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.AddPointsAction.mode"><code class="docutils literal notranslate"><span class="pre">AddPointsAction.mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.AddPointsAction.undo"><code class="docutils literal notranslate"><span class="pre">AddPointsAction.undo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.AddPointsAction.__init__"><code class="docutils literal notranslate"><span class="pre">AddPointsAction.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#id0"><code class="docutils literal notranslate"><span class="pre">AddPointsAction.undo()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.UndoManager"><code class="docutils literal notranslate"><span class="pre">UndoManager</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.UndoManager.undo_stack"><code class="docutils literal notranslate"><span class="pre">UndoManager.undo_stack</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.UndoManager.add_action"><code class="docutils literal notranslate"><span class="pre">UndoManager.add_action()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.UndoManager.can_undo"><code class="docutils literal notranslate"><span class="pre">UndoManager.can_undo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.UndoManager.undo"><code class="docutils literal notranslate"><span class="pre">UndoManager.undo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.UndoManager.__init__"><code class="docutils literal notranslate"><span class="pre">UndoManager.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#id1"><code class="docutils literal notranslate"><span class="pre">UndoManager.add_action()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#id2"><code class="docutils literal notranslate"><span class="pre">UndoManager.can_undo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="HydroLine.utils.html#id3"><code class="docutils literal notranslate"><span class="pre">UndoManager.undo()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.utils.html#module-HydroLine.utils">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="HydroLine.hydro_line.html">HydroLine.hydro_line module</a></li>
+</ul>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">HydroLine</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">HydroLine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.html">HydroLine package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.dialogs.html">HydroLine.dialogs package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.docs.html">HydroLine.docs package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.icon.html">HydroLine.icon package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.sscreen.html">HydroLine.sscreen package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.threads.html">HydroLine.threads package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.tools.html">HydroLine.tools package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.utils.html">HydroLine.utils package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.hydro_line.html">HydroLine.hydro_line module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="Chapitre précédent">Welcome to HydroLine’s documentation!</a></li>
+      <li>Next: <a href="HydroLine.html" title="Chapitre suivant">HydroLine package</a></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Sanchez Matteo, CNR.tm.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/modules.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

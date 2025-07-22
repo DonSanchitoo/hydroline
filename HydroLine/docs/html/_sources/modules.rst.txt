@@ -1,0 +1,33 @@
+HydroLine
+=========
+
+.. toctree::
+   :maxdepth: 4
+
+   HydroLine
+   HydroLine.dialogs
+   HydroLine.docs
+   HydroLine.external
+   HydroLine.icon
+   HydroLine.sscreen
+   HydroLine.threads
+   HydroLine.tools
+   HydroLine.utils
+   HydroLine.hydro_line
+   HydroLine.tools.base_map_tool
+   HydroLine.tools.fenetre_profil_elevation
+   HydroLine.tools.outil_points_bas
+   HydroLine.tools.outil_rupture_pente
+   HydroLine.tools.outil_trace_crete
+   HydroLine.tools.profil_graph_dock
+   HydroLine.tools.prolongement
+   HydroLine.utils.plot_utils
+   HydroLine.utils.raster_utils
+   HydroLine.utils.undo_manager
+   HydroLine.threads.calcul_pentes_thread
+   HydroLine.threads.raster_loading_thread
+   HydroLine.sscreen.sscreen
+   HydroLine.sscreen.sscreen_load
+   HydroLine.dialogs.choix_couches_dialog
+   HydroLine.dialogs.parametres_dialog
+   HydroLine.dialogs.slider_dialog

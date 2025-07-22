@@ -1,0 +1,10 @@
+HydroLine.icon package
+======================
+
+Module contents
+---------------
+
+.. automodule:: HydroLine.icon
+   :members:
+   :undoc-members:
+   :show-inheritance:

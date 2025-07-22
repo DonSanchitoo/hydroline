@@ -1,0 +1,52 @@
+HydroLine package
+=================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   HydroLine.dialogs
+   HydroLine.docs
+   HydroLine.external
+   HydroLine.icon
+   HydroLine.sscreen
+   HydroLine.threads
+   HydroLine.tools
+   HydroLine.utils
+
+Submodules
+----------
+
+HydroLine.hydro\_line module
+----------------------------
+
+.. automodule:: HydroLine.hydro_line
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+HydroLine.hydro\_line\_dialog module
+------------------------------------
+
+.. automodule:: HydroLine.hydro_line_dialog
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+HydroLine.resources module
+--------------------------
+
+.. automodule:: HydroLine.resources
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: HydroLine
+   :members:
+   :undoc-members:
+   :show-inheritance:

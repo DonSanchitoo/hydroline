@@ -1,0 +1,10 @@
+HydroLine.docs package
+======================
+
+Module contents
+---------------
+
+.. automodule:: HydroLine.docs
+   :members:
+   :undoc-members:
+   :show-inheritance:

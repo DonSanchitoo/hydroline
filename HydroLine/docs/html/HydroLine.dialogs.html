@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>HydroLine.dialogs package &#8212; Documentation HydroLine 1.0</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=61cd365c" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=7a28dfa3"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=bf059b8c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" />
+    <link rel="next" title="HydroLine.docs package" href="HydroLine.docs.html" />
+    <link rel="prev" title="HydroLine package" href="HydroLine.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="hydroline-dialogs-package">
+<h1>HydroLine.dialogs package<a class="headerlink" href="#hydroline-dialogs-package" title="Lien vers cette rubrique">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Lien vers cette rubrique">¶</a></h2>
+</section>
+<section id="module-HydroLine.dialogs.choix_couches_dialog">
+<span id="hydroline-dialogs-choix-couches-dialog-module"></span><h2>HydroLine.dialogs.choix_couches_dialog module<a class="headerlink" href="#module-HydroLine.dialogs.choix_couches_dialog" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">HydroLine.dialogs.choix_couches_dialog.</span></span><span class="sig-name descname"><span class="pre">ChoixCouchesDialogPourTrace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></p>
+<p>Dialog pour gérer l’affichage des différentes couches nécessaires aux outils du plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>QWidget</em><em>, </em><em>optional</em>) – Widget parent, par défaut None</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.get_selected_mnt_layer">
+<span class="sig-name descname"><span class="pre">get_selected_mnt_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.get_selected_mnt_layer" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Retourne la couche MNT sélectionnée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Couche de modèle numérique de terrain actuellement sélectionnée.</p>
+</dd>
+<dt class="field-even">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-even"><p>QgsMapLayer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.get_selected_polyline_layer">
+<span class="sig-name descname"><span class="pre">get_selected_polyline_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.get_selected_polyline_layer" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Retourne la couche de polyligne sélectionnée ou None si aucune n’est sélectionnée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Couche de polyligne actuellement sélectionnée, ou None si aucune n’est sélectionnée.</p>
+</dd>
+<dt class="field-even">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-even"><p>QgsMapLayer or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.is_new_layer_checked">
+<span class="sig-name descname"><span class="pre">is_new_layer_checked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.is_new_layer_checked" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Indique si la case “Nouvelle couche de travail” est cochée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True si la case est cochée, False sinon.</p>
+</dd>
+<dt class="field-even">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.on_polyline_selection_changed">
+<span class="sig-name descname"><span class="pre">on_polyline_selection_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.on_polyline_selection_changed" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active ou désactive la checkbox en fonction de la sélection courante de la couche de polyligne.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – Index de la couche de polyligne sélectionnée.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.populate_mnt_layers">
+<span class="sig-name descname"><span class="pre">populate_mnt_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.populate_mnt_layers" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Remplit la comboBox avec les couches raster disponibles dans le projet.</p>
+<p>Cette méthode parcourt les couches du projet et ajoute les couches de type raster
+à la comboBox pour la sélection du MNT.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.populate_polyline_layers">
+<span class="sig-name descname"><span class="pre">populate_polyline_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.populate_polyline_layers" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Remplit la comboBox avec les couches de polyligne disponibles dans le projet.</p>
+<p>Cette méthode ajoute les couches de type vecteur avec une géométrie de type polyligne
+à la comboBox pour la sélection de la couche de polyligne.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.update_checkbox_state">
+<span class="sig-name descname"><span class="pre">update_checkbox_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.ChoixCouchesDialogPourTrace.update_checkbox_state" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour l’état de la checkbox en fonction de la sélection initiale de la couche de polyligne.</p>
+<p>Cette méthode vérifie la sélection actuelle et ajuste l’état de la checkbox en conséquence.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">HydroLine.dialogs.choix_couches_dialog.</span></span><span class="sig-name descname"><span class="pre">DialogueSelectionCouchesPourProlongement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></p>
+<p>Boîte de dialogue permettant à l’utilisateur de sélectionner les couches nécessaires au traitement.</p>
+<p>Cette classe gère la sélection des couches raster pour le MNT ou TIN, des points bathymétriques,
+des profils tracés, et facultativement, de la couche d’emprise.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement.combobox_mnt">
+<span class="sig-name descname"><span class="pre">combobox_mnt</span></span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement.combobox_mnt" title="Lien vers cette définition">¶</a></dt>
+<dd><p>ComboBox pour la sélection du raster MNT ou TIN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QComboBox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement.combobox_points_bathy">
+<span class="sig-name descname"><span class="pre">combobox_points_bathy</span></span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement.combobox_points_bathy" title="Lien vers cette définition">¶</a></dt>
+<dd><p>ComboBox pour la sélection de la couche de points bathymétriques.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QComboBox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement.combobox_profils_traces">
+<span class="sig-name descname"><span class="pre">combobox_profils_traces</span></span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement.combobox_profils_traces" title="Lien vers cette définition">¶</a></dt>
+<dd><p>ComboBox pour la sélection de la couche de profils tracés.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QComboBox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement.combobox_emprise">
+<span class="sig-name descname"><span class="pre">combobox_emprise</span></span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionCouchesPourProlongement.combobox_emprise" title="Lien vers cette définition">¶</a></dt>
+<dd><p>ComboBox pour la sélection facultative de la couche d’emprise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QComboBox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">\*</span> <span class="pre">No</span> <span class="pre">additional</span></span></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">HydroLine.dialogs.choix_couches_dialog.</span></span><span class="sig-name descname"><span class="pre">DialogueSelectionEpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></p>
+<p>Boîte de dialogue permettant à l’utilisateur de sélectionner les couches de points et le paramètre alpha.</p>
+<p>Cette classe gère la sélection de la couche de points et la saisie de la valeur du paramètre alpha.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint.combo_points">
+<span class="sig-name descname"><span class="pre">combo_points</span></span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint.combo_points" title="Lien vers cette définition">¶</a></dt>
+<dd><p>ComboBox pour la sélection de la couche de points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QComboBox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint.button_box">
+<span class="sig-name descname"><span class="pre">button_box</span></span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint.button_box" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Boutons pour accepter ou annuler la sélection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QDialogButtonBox</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint.get_selected_points_layer">
+<span class="sig-name descname"><span class="pre">get_selected_points_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint.get_selected_points_layer" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Retourne la couche de points actuellement sélectionnée.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint.get_alpha_value">
+<span class="sig-name descname"><span class="pre">get_alpha_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.choix_couches_dialog.DialogueSelectionEpoint.get_alpha_value" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Demande à l’utilisateur de saisir un paramètre alpha et retourne la valeur saisie.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">get_alpha_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Demande à l’utilisateur de saisir le paramètre alpha et retourne la valeur saisie.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Valeur du paramètre alpha saisie par l’utilisateur.
+Retourne None si l’utilisateur annule la saisie.</p>
+</dd>
+<dt class="field-even">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-even"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">get_selected_points_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Retourne la couche de points sélectionnée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Couche de points actuellement sélectionnée par l’utilisateur.</p>
+</dd>
+<dt class="field-even">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-even"><p>QgsMapLayer</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-HydroLine.dialogs.parametres_dialog">
+<span id="hydroline-dialogs-parametres-dialog-module"></span><h2>HydroLine.dialogs.parametres_dialog module<a class="headerlink" href="#module-HydroLine.dialogs.parametres_dialog" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="HydroLine.dialogs.parametres_dialog.ParametresDialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">HydroLine.dialogs.parametres_dialog.</span></span><span class="sig-name descname"><span class="pre">ParametresDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.parametres_dialog.ParametresDialog" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></p>
+<p>Permet de gérer l’affichage et la gestion de la boîte de dialogue des paramètres pour l’ensemble du plugin.</p>
+<p>Cette classe initialise l’interface utilisateur, charge les ressources depuis les fichiers, et gère les
+actions utilisateur pour ajuster les paramètres du plugin.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.dialogs.parametres_dialog.ParametresDialog.images">
+<span class="sig-name descname"><span class="pre">images</span></span><a class="headerlink" href="#HydroLine.dialogs.parametres_dialog.ParametresDialog.images" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Liste des noms d’image affichés dans la boîte de dialogue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.dialogs.parametres_dialog.ParametresDialog.current_image_index">
+<span class="sig-name descname"><span class="pre">current_image_index</span></span><a class="headerlink" href="#HydroLine.dialogs.parametres_dialog.ParametresDialog.current_image_index" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Index actuel de l’image affichée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.dialogs.parametres_dialog.ParametresDialog.timer">
+<span class="sig-name descname"><span class="pre">timer</span></span><a class="headerlink" href="#HydroLine.dialogs.parametres_dialog.ParametresDialog.timer" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Timer pour changer périodiquement l’image affichée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QTimer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.parametres_dialog.ParametresDialog.open_pdf">
+<span class="sig-name descname"><span class="pre">open_pdf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.parametres_dialog.ParametresDialog.open_pdf" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Ouvre le fichier PDF d’aide utilisateur.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.parametres_dialog.ParametresDialog.update_image">
+<span class="sig-name descname"><span class="pre">update_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.parametres_dialog.ParametresDialog.update_image" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour l’affichage de l’image en fonction de l’index actuel.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.parametres_dialog.ParametresDialog.next_image">
+<span class="sig-name descname"><span class="pre">next_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.parametres_dialog.ParametresDialog.next_image" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Passe à l’image suivante dans la liste des images.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.parametres_dialog.ParametresDialog.setup_infolabel">
+<span class="sig-name descname"><span class="pre">setup_infolabel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.parametres_dialog.ParametresDialog.setup_infolabel" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Initialise l’affichage de l’image d’information.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.parametres_dialog.ParametresDialog.set_values">
+<span class="sig-name descname"><span class="pre">set_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_seuil</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graphique_3d_checked</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_settings</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.parametres_dialog.ParametresDialog.set_values" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit les valeurs des paramètres dans l’interface.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.parametres_dialog.ParametresDialog.get_selected_mode">
+<span class="sig-name descname"><span class="pre">get_selected_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.parametres_dialog.ParametresDialog.get_selected_mode" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Retourne le mode sélectionné par l’utilisateur.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.parametres_dialog.ParametresDialog.is_graphique_3d_checked">
+<span class="sig-name descname"><span class="pre">is_graphique_3d_checked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.parametres_dialog.ParametresDialog.is_graphique_3d_checked" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Indique si le graphique 3D est activé.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.parametres_dialog.ParametresDialog.mode_changed">
+<span class="sig-name descname"><span class="pre">mode_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.parametres_dialog.ParametresDialog.mode_changed" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour l’état du mode tracé en fonction de l’index sélectionné.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.parametres_dialog.ParametresDialog.get_field_settings">
+<span class="sig-name descname"><span class="pre">get_field_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.parametres_dialog.ParametresDialog.get_field_settings" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Retourne les paramètres de champ définis par l’utilisateur.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">get_field_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Retourne les paramètres de champ définis par l’utilisateur.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Un dictionnaire contenant les états des paramètres de champ avec des valeurs booléennes.</p>
+</dd>
+<dt class="field-even">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">get_selected_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id3" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Retourne le mode sélectionné par l’utilisateur.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1 pour “Mode Automatique”, 2 pour “Mode Manuel”.</p>
+</dd>
+<dt class="field-even">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">is_graphique_3d_checked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id4" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Indique si le graphique 3D est activé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True si le graphique 3D est coché, False sinon.</p>
+</dd>
+<dt class="field-even">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">mode_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour l’état du mode tracé en fonction de l’index sélectionné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – Index du mode sélectionné, 0 pour Automatique, 1 pour Manuel.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">next_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id6" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Passe à l’image suivante dans la liste des images à afficher.</p>
+<p>Cette méthode met à jour l’index de l’image et appelle <cite>update_image</cite> pour refléter le changement d’image.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">open_pdf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id7" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Ouvre le fichier PDF d’aide utilisateur.</p>
+<p>Cette méthode utilise le service de bureau pour ouvrir le fichier PDF local avec des informations d’aide.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">set_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_seuil</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graphique_3d_checked</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_settings</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id8" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit les valeurs des paramètres de l’interface en fonction des données fournies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> (<em>int</em>) – Mode de sélection, 1 pour Automatique, 2 pour Manuel.</p></li>
+<li><p><strong>distance_seuil</strong> (<em>float</em>) – Distance seuil pour le traitement.</p></li>
+<li><p><strong>graphique_3d_checked</strong> (<em>bool</em>) – Indicateur pour activer ou désactiver le graphique 3D.</p></li>
+<li><p><strong>field_settings</strong> (<em>dict</em>) – Dictionnaire contenant les paramètres des champs avec des valeurs booléennes.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">setup_infolabel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id9" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Initialise l’affichage de l’image d’information.</p>
+<p>Cette méthode charge l’image d’information depuis le dossier <cite>docs</cite> et l’affiche dans le label <cite>Infolabel</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">update_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id10" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour l’affichage de l’image dans le label approprié.</p>
+<p>Charge l’image suivante de la liste et la redimensionne pour l’afficher correctement dans le label <cite>logoLabel</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-HydroLine.dialogs.slider_dialog">
+<span id="hydroline-dialogs-slider-dialog-module"></span><h2>HydroLine.dialogs.slider_dialog module<a class="headerlink" href="#module-HydroLine.dialogs.slider_dialog" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="HydroLine.dialogs.slider_dialog.SliderDialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">HydroLine.dialogs.slider_dialog.</span></span><span class="sig-name descname"><span class="pre">SliderDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.slider_dialog.SliderDialog" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></p>
+<p>Boîte de dialogue pour gérer les sliders, notamment pour la tolérance de simplification.</p>
+<p>Cette classe crée une interface utilisateur avec un slider permettant de sélectionner une valeur
+de tolérance de simplification dans une plage spécifiée.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.dialogs.slider_dialog.SliderDialog.step">
+<span class="sig-name descname"><span class="pre">step</span></span><a class="headerlink" href="#HydroLine.dialogs.slider_dialog.SliderDialog.step" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Intervalle fixe du slider, en unités entières.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.dialogs.slider_dialog.SliderDialog.slider">
+<span class="sig-name descname"><span class="pre">slider</span></span><a class="headerlink" href="#HydroLine.dialogs.slider_dialog.SliderDialog.slider" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Slider pour la sélection de la tolérance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QSlider</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.dialogs.slider_dialog.SliderDialog.label">
+<span class="sig-name descname"><span class="pre">label</span></span><a class="headerlink" href="#HydroLine.dialogs.slider_dialog.SliderDialog.label" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Étiquette affichant la valeur actuelle du slider.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QLabel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.dialogs.slider_dialog.SliderDialog.ok_button">
+<span class="sig-name descname"><span class="pre">ok_button</span></span><a class="headerlink" href="#HydroLine.dialogs.slider_dialog.SliderDialog.ok_button" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bouton pour confirmer la sélection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QPushButton</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.slider_dialog.SliderDialog.update_label">
+<span class="sig-name descname"><span class="pre">update_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.slider_dialog.SliderDialog.update_label" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour l’étiquette affichée en fonction de la valeur du slider.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.dialogs.slider_dialog.SliderDialog.get_value">
+<span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.dialogs.slider_dialog.SliderDialog.get_value" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Retourne la valeur actuelle du slider.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id11" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Retourne la valeur actuelle du slider.</p>
+<p>Convertit la valeur entière du curseur en un nombre float</p>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Valeur de tolérance sélectionnée, convertie en nombre flottant.</p>
+</dd>
+<dt class="field-even">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id12">
+<span class="sig-name descname"><span class="pre">update_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id12" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour l’étiquette affichée en fonction de la valeur du slider.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>int</em>) – Valeur actuelle du slider en unités entières.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-HydroLine.dialogs">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-HydroLine.dialogs" title="Lien vers cette rubrique">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">HydroLine</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">HydroLine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.html">HydroLine package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">HydroLine.dialogs package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.docs.html">HydroLine.docs package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.icon.html">HydroLine.icon package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.sscreen.html">HydroLine.sscreen package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.threads.html">HydroLine.threads package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.tools.html">HydroLine.tools package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.utils.html">HydroLine.utils package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.hydro_line.html">HydroLine.hydro_line module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">HydroLine</a><ul>
+  <li><a href="HydroLine.html">HydroLine package</a><ul>
+      <li>Previous: <a href="HydroLine.html" title="Chapitre précédent">HydroLine package</a></li>
+      <li>Next: <a href="HydroLine.docs.html" title="Chapitre suivant">HydroLine.docs package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Sanchez Matteo, CNR.tm.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/HydroLine.dialogs.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

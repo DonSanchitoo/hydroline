@@ -1,0 +1,2364 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>HydroLine.tools package &#8212; Documentation HydroLine 1.0</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=61cd365c" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=7a28dfa3"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=bf059b8c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" />
+    <link rel="next" title="HydroLine.utils package" href="HydroLine.utils.html" />
+    <link rel="prev" title="HydroLine.threads package" href="HydroLine.threads.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="hydroline-tools-package">
+<h1>HydroLine.tools package<a class="headerlink" href="#hydroline-tools-package" title="Lien vers cette rubrique">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Lien vers cette rubrique">¶</a></h2>
+</section>
+<section id="module-HydroLine.tools.base_map_tool">
+<span id="hydroline-tools-base-map-tool-module"></span><h2>HydroLine.tools.base_map_tool module<a class="headerlink" href="#module-HydroLine.tools.base_map_tool" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">HydroLine.tools.base_map_tool.</span></span><span class="sig-name descname"><span class="pre">BaseMapTool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">QgsMapTool</span></code></p>
+<p>Classe de base pour les outils de carte nécessitant la gestion des données raster (MNT).</p>
+<p>Cette classe gère le chargement du raster en arrière-plan, les transformations de coordonnées,
+et fournit des méthodes utilitaires pour accéder aux données du raster.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.canvas">
+<span class="sig-name descname"><span class="pre">canvas</span></span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.canvas" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Le canevas de la carte.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsMapCanvas</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.couche_raster">
+<span class="sig-name descname"><span class="pre">couche_raster</span></span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.couche_raster" title="Lien vers cette définition">¶</a></dt>
+<dd><p>La couche raster (MNT).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsRasterLayer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.data_loaded">
+<span class="sig-name descname"><span class="pre">data_loaded</span></span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.data_loaded" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Indicateur si les données de raster ont été chargées avec succès.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.crs_canvas">
+<span class="sig-name descname"><span class="pre">crs_canvas</span></span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.crs_canvas" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Système de coordonnées du canevas de la carte.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsCoordinateReferenceSystem</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.crs_raster">
+<span class="sig-name descname"><span class="pre">crs_raster</span></span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.crs_raster" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Système de coordonnées du raster.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsCoordinateReferenceSystem</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.transformation_vers_raster">
+<span class="sig-name descname"><span class="pre">transformation_vers_raster</span></span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.transformation_vers_raster" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Transformation de coordonnées du canevas vers le raster.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsCoordinateTransform</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.transformation_depuis_raster">
+<span class="sig-name descname"><span class="pre">transformation_depuis_raster</span></span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.transformation_depuis_raster" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Transformation de coordonnées du raster vers le canevas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsCoordinateTransform</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.on_pentes_calculees_error">
+<span class="sig-name descname"><span class="pre">on_pentes_calculees_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.on_pentes_calculees_error" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Traite les erreurs liées aux calculs de pentes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.on_raster_loaded">
+<span class="sig-name descname"><span class="pre">on_raster_loaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tableau_raster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inv_gt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raster_lignes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raster_colonnes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.on_raster_loaded" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Callback exécuté lorsque le chargement du raster est terminé.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.charger_donnees_raster">
+<span class="sig-name descname"><span class="pre">charger_donnees_raster</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.charger_donnees_raster" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Charge les données raster en mémoire pour un accès rapide.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.obtenir_elevation_au_point_unique">
+<span class="sig-name descname"><span class="pre">obtenir_elevation_au_point_unique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.obtenir_elevation_au_point_unique" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient l’élévation du raster au point donné.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.obtenir_elevation_aux_points_multiples">
+<span class="sig-name descname"><span class="pre">obtenir_elevation_aux_points_multiples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.obtenir_elevation_aux_points_multiples" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient les élévations du raster pour des arrays de coordonnées x et y.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.nettoyer_ressources">
+<span class="sig-name descname"><span class="pre">nettoyer_ressources</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.nettoyer_ressources" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Nettoyage des ressources et réinitialisation de l’outil.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">couche_raster</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.__init__" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Initialise l’outil de carte avec les attributs nécessaires pour gérer les données raster.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>canvas</strong> (<em>QgsMapCanvas</em>) – Le canevas de la carte.</p></li>
+<li><p><strong>couche_raster</strong> (<em>QgsRasterLayer</em>) – La couche raster (MNT).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">charger_donnees_raster</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Charge les données raster en mémoire pour un accès rapide.</p>
+<p>Cette méthode utilise GDAL pour ouvrir et lire les données du raster, et pour obtenir
+la géotransformation et ses dimensions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.base_map_tool.BaseMapTool.nettoyer_ressources_1">
+<span class="sig-name descname"><span class="pre">nettoyer_ressources_1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.base_map_tool.BaseMapTool.nettoyer_ressources_1" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Nettoyages des ressources et réinitialisation de l’outil.</p>
+<p>Cette méthode libère les ressources associées au dataset GDAL et aux grands tableaux NumPy
+pour réduire la consommation de mémoire.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">obtenir_elevation_au_point_unique</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient l’élévation du raster au point donné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>point</strong> (<em>QgsPointXY</em>) – Point pour lequel obtenir l’élévation.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Élévation à la position donnée, ou None si le point est en-dehors des limites du raster.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">obtenir_elevation_aux_points_multiples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient les élévations du raster pour des arrays de coordonnées x et y.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_array</strong> (<em>np.ndarray</em>) – Tableau des coordonnées x des points.</p></li>
+<li><p><strong>y_array</strong> (<em>np.ndarray</em>) – Tableau des coordonnées y des points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Élévations au niveau des positions données en utilisant le tableau de raster.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">on_pentes_calculees_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id3" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Traite les erreurs liées aux calculs de pentes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>error_message</strong> (<em>str</em>) – Message d’erreur à afficher dans une boîte de dialogue.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">on_raster_loaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tableau_raster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inv_gt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raster_lignes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raster_colonnes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Exécute le traitement final après le chargement du raster.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tableau_raster</strong> (<em>np.ndarray</em>) – Tableau contenant les données du raster.</p></li>
+<li><p><strong>gt</strong> (<em>tuple</em>) – Géotransformation associée au raster.</p></li>
+<li><p><strong>inv_gt</strong> (<em>tuple</em>) – Inverse de la géotransformation associée au raster.</p></li>
+<li><p><strong>raster_lignes</strong> (<em>int</em>) – Nombre de lignes dans le raster.</p></li>
+<li><p><strong>raster_colonnes</strong> (<em>int</em>) – Nombre de colonnes dans le raster.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-HydroLine.tools.fenetre_profil_elevation">
+<span id="hydroline-tools-fenetre-profil-elevation-module"></span><h2>HydroLine.tools.fenetre_profil_elevation module<a class="headerlink" href="#module-HydroLine.tools.fenetre_profil_elevation" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">HydroLine.tools.fenetre_profil_elevation.</span></span><span class="sig-name descname"><span class="pre">FenetreProfilElevation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">QDockWidget</span></code></p>
+<p>Fenêtre pour afficher le profil d’élévation en 3D.</p>
+<p>Cette classe crée une fenêtre dockable pour visualiser un profil d’élévation en trois dimensions,
+en utilisant Matplotlib pour le rendu graphique.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.figure">
+<span class="sig-name descname"><span class="pre">figure</span></span><a class="headerlink" href="#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.figure" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Figure Matplotlib pour le rendu 3D.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.figure.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.ax">
+<span class="sig-name descname"><span class="pre">ax</span></span><a class="headerlink" href="#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.ax" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Subplot 3D pour le tracé du profil d’élévation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.axes._subplots.Axes3DSubplot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.canvas">
+<span class="sig-name descname"><span class="pre">canvas</span></span><a class="headerlink" href="#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.canvas" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Canvas contenant la figure Matplotlib.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FigureCanvasQTAgg</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.reinitialiser">
+<span class="sig-name descname"><span class="pre">reinitialiser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.reinitialiser" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Réinitialise le graphique 3D.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.definir_outil">
+<span class="sig-name descname"><span class="pre">definir_outil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outil</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.definir_outil" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit l’outil à utiliser pour obtenir les données d’élévation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.on_mouse_move">
+<span class="sig-name descname"><span class="pre">on_mouse_move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.on_mouse_move" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Traite les mouvements de la souris sur le graphique.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.mettre_a_jour_profil">
+<span class="sig-name descname"><span class="pre">mettre_a_jour_profil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longueur_segment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.mettre_a_jour_profil" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour le graphique 3D du profil d’élévation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation.__init__" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Initialise la fenêtre de profil d’élévation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>QWidget</em><em>, </em><em>optional</em>) – Widget parent, par défaut None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">definir_outil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outil</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit l’outil à utiliser pour obtenir les données d’élévation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>outil</strong> (<em>object</em>) – Instance de l’outil utilisé pour accéder aux élévations MNT.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">mettre_a_jour_profil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longueur_segment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id6" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour le graphique 3D du profil d’élévation.</p>
+<p>Affiche les données d’élévation avec ou sans projection en fonction des coordonnées
+x, y, et des élévations fournit, et s’ajuste dynamiquement selon la longueur du segment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_coords</strong> (<em>np.ndarray</em>) – Coordonnées en x des points du segment dynamique.</p></li>
+<li><p><strong>y_coords</strong> (<em>np.ndarray</em>) – Coordonnées en y des points du segment dynamique.</p></li>
+<li><p><strong>elevations</strong> (<em>np.ndarray</em>) – Élévations des points du segment dynamique.</p></li>
+<li><p><strong>longueur_segment</strong> (<em>float</em>) – Longueur du segment dynamique pour ajuster la résolution.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">on_mouse_move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id7" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Traite les mouvements de la souris sur le graphique.</p>
+<p>Quand la souris bouge sur le graphique, cette méthode affiche l’altitude correspondante
+dans la barre de statut du parent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>matplotlib.backend_bases.MouseEvent</em>) – Événement de mouvement de la souris contenant les coordonnées de l’événement.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">reinitialiser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id8" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Réinitialise le graphique 3D.</p>
+<p>Cette méthode efface le contenu actuel du graphique et le redessine ensuite.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-HydroLine.tools.outil_points_bas">
+<span id="hydroline-tools-outil-points-bas-module"></span><h2>HydroLine.tools.outil_points_bas module<a class="headerlink" href="#module-HydroLine.tools.outil_points_bas" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_points_bas.select_next_pixel_bas">
+<span class="sig-prename descclassname"><span class="pre">HydroLine.tools.outil_points_bas.</span></span><span class="sig-name descname"><span class="pre">select_next_pixel_bas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">courant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidats_voisins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevation_courante</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrivee_px</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resoudre_egalite</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_points_bas.select_next_pixel_bas" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Sélectionne le prochain pixel en suivant les points bas parmi les candidats voisins.</p>
+<p>Cette fonction évalue les pixels voisins d’un pixel courant pour déterminer
+le prochain pixel dans le chemin en fonction des élévations et la destination souhaitée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>courant</strong> (<em>tuple</em>) – Coordonnées (cx, cy) du pixel courant.</p></li>
+<li><p><strong>candidats_voisins</strong> (<em>list</em><em> of </em><em>dict</em>) – Liste des voisins candidats avec leurs informations, incluant “elevation”.</p></li>
+<li><p><strong>elevation_courante</strong> (<em>float</em>) – Élévation du pixel courant.</p></li>
+<li><p><strong>arrivee_px</strong> (<em>tuple</em>) – Coordonnées (cx, cy) du pixel d’arrivée désigné.</p></li>
+<li><p><strong>resoudre_egalite</strong> (<em>function</em>) – Fonction pour départager les candidats en cas d’égalité d’élévations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Coordonnées (cx, cy) du prochain pixel à sélectionner.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-HydroLine.tools.outil_rupture_pente">
+<span id="hydroline-tools-outil-rupture-pente-module"></span><h2>HydroLine.tools.outil_rupture_pente module<a class="headerlink" href="#module-HydroLine.tools.outil_rupture_pente" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">HydroLine.tools.outil_rupture_pente.</span></span><span class="sig-name descname"><span class="pre">OutilRupturePente</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <a class="reference internal" href="#HydroLine.tools.base_map_tool.BaseMapTool" title="HydroLine.tools.base_map_tool.BaseMapTool"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMapTool</span></code></a></p>
+<p>Outil de dessin de rupture de pente (concave ou convexe) avec assistance dynamique sur MNT.</p>
+<p>Cette classe gère le traçage de lignes dynamisées selon les ruptures de pentes sur un Modèle Numérique de Terrain,
+et inclut des fonctionnalités pour simplifier et confirmer les polylignes.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.canvas">
+<span class="sig-name descname"><span class="pre">canvas</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.canvas" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Le canevas de la carte.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsMapCanvas</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.couche_raster">
+<span class="sig-name descname"><span class="pre">couche_raster</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.couche_raster" title="Lien vers cette définition">¶</a></dt>
+<dd><p>La couche raster MNT utilisée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsRasterLayer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.mode">
+<span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.mode" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Le mode de rupture de pente (“concave” ou “convexe”), par défaut “convexe”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.simplification_activee">
+<span class="sig-name descname"><span class="pre">simplification_activee</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.simplification_activee" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Indicateur de simplification du tracé, par défaut False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.tolerance_simplification">
+<span class="sig-name descname"><span class="pre">tolerance_simplification</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.tolerance_simplification" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Tolérance utilisée pour la simplification, par défaut 2.0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.calcul_termine">
+<span class="sig-name descname"><span class="pre">calcul_termine</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.calcul_termine" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Indicateur que le calcul des pentes est terminé, par défaut False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.undo_manager">
+<span class="sig-name descname"><span class="pre">undo_manager</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.undo_manager" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gestionnaire des actions pour annulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.UndoManager" title="HydroLine.utils.undo_manager.UndoManager">UndoManager</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.liste_points">
+<span class="sig-name descname"><span class="pre">liste_points</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.liste_points" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Liste des points de la polyligne tracée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of QgsPoint</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.bande_dynamique">
+<span class="sig-name descname"><span class="pre">bande_dynamique</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.bande_dynamique" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bande élastique pour la ligne dynamique avec tracé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsRubberBand</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.bande_confirmee">
+<span class="sig-name descname"><span class="pre">bande_confirmee</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.bande_confirmee" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bande élastique pour la polyligne confirmée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsRubberBand</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.mode_trace_libre">
+<span class="sig-name descname"><span class="pre">mode_trace_libre</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.mode_trace_libre" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Indicateur du mode tracé libre, par défaut False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.points_trace_libre">
+<span class="sig-name descname"><span class="pre">points_trace_libre</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.points_trace_libre" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Liste des points tracés en mode libre.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of QgsPoint</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.bande_trace_libre">
+<span class="sig-name descname"><span class="pre">bande_trace_libre</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.bande_trace_libre" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bande élastique pour le tracé libre.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsRubberBand</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.on_pentes_calculees">
+<span class="sig-name descname"><span class="pre">on_pentes_calculees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pentes_locales_degres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.on_pentes_calculees" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Appelé lorsque le calcul des pentes est terminé.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.activate">
+<span class="sig-name descname"><span class="pre">activate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.activate" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active l’outil en installant le filtre d’événement.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.deactivate">
+<span class="sig-name descname"><span class="pre">deactivate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.deactivate" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Désactive l’outil en supprimant le filtre d’événement.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.eventFilter">
+<span class="sig-name descname"><span class="pre">eventFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.eventFilter" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Contrôle les événements claviers pour certaines actions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.undo_last_action">
+<span class="sig-name descname"><span class="pre">undo_last_action</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.undo_last_action" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Annule la dernière action enregistrée.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.remove_last_point">
+<span class="sig-name descname"><span class="pre">remove_last_point</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.remove_last_point" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Supprime le dernier point confirmé.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_couche_vectorielle">
+<span class="sig-name descname"><span class="pre">definir_couche_vectorielle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">couche_vectorielle</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_couche_vectorielle" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Assigne la couche vectorielle où stocker les polylignes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.confirmer_polyligne">
+<span class="sig-name descname"><span class="pre">confirmer_polyligne</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.confirmer_polyligne" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Confirme la polyligne actuelle et l’ajoute à la couche vectorielle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_simplification">
+<span class="sig-name descname"><span class="pre">definir_simplification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">activee</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_simplification" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active ou désactive la simplification du tracé.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_mode_trace_libre">
+<span class="sig-name descname"><span class="pre">definir_mode_trace_libre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracelibre</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_mode_trace_libre" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active ou désactive le mode de tracé libre.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.charger_donnees_mnt">
+<span class="sig-name descname"><span class="pre">charger_donnees_mnt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.charger_donnees_mnt" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Charge les données du MNT en mémoire pour un accès rapide.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.charger_donnees_hillshade">
+<span class="sig-name descname"><span class="pre">charger_donnees_hillshade</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.charger_donnees_hillshade" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Charge les données de l’ombrage en mémoire pour un accès rapide.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_fenetre_profil">
+<span class="sig-name descname"><span class="pre">definir_fenetre_profil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fenetre</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_fenetre_profil" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Assigne la fenêtre du profil d’élévation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.mettre_a_jour_bande_dynamique">
+<span class="sig-name descname"><span class="pre">mettre_a_jour_bande_dynamique</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.mettre_a_jour_bande_dynamique" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour la bande élastique dynamique en appliquant ou non la simplification.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.simplifier_geometrie">
+<span class="sig-name descname"><span class="pre">simplifier_geometrie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometrie</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.simplifier_geometrie" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Simplifie la géométrie en préservant les points critiques.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.obtenir_pente_au_point">
+<span class="sig-name descname"><span class="pre">obtenir_pente_au_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.obtenir_pente_au_point" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient la pente locale au point donné.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.douglas_peucker_avec_critiques">
+<span class="sig-name descname"><span class="pre">douglas_peucker_avec_critiques</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_critiques</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.douglas_peucker_avec_critiques" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Simplifie une polyligne en conservant les points critiques.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.distance_perpendiculaire">
+<span class="sig-name descname"><span class="pre">distance_perpendiculaire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.distance_perpendiculaire" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule la distance perpendiculaire du point à la ligne début-fin en 2D.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.mettre_a_jour_profil">
+<span class="sig-name descname"><span class="pre">mettre_a_jour_profil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometrie</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.mettre_a_jour_profil" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour le profil d’élévation avec le segment dynamique.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.distance_euclidienne">
+<span class="sig-name descname"><span class="pre">distance_euclidienne</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.distance_euclidienne" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule la distance euclidienne entre deux points en 2D.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.obtenir_elevation_au_point">
+<span class="sig-name descname"><span class="pre">obtenir_elevation_au_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.obtenir_elevation_au_point" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient l’élévation du raster au point donné.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.charger_donnees_raster">
+<span class="sig-name descname"><span class="pre">charger_donnees_raster</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.charger_donnees_raster" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Charge les données raster en mémoire pour un accès rapide.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.calculer_chemin_rupture_pente">
+<span class="sig-name descname"><span class="pre">calculer_chemin_rupture_pente</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_depart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_arrivee</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.calculer_chemin_rupture_pente" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule le chemin de rupture de pente entre deux points.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.reinitialiser">
+<span class="sig-name descname"><span class="pre">reinitialiser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.reinitialiser" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Réinitialise l’outil pour un nouveau tracé.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.charger_nouveau_mnt">
+<span class="sig-name descname"><span class="pre">charger_nouveau_mnt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">couche_raster</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.charger_nouveau_mnt" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Change le MNT actif pour l’analyse et configure les ressources nécessaires.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.nettoyer_ressources">
+<span class="sig-name descname"><span class="pre">nettoyer_ressources</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.nettoyer_ressources" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Nettoyage des ressources et réinitialisation de l’outil.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">couche_raster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'convexe'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.__init__" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Initialise l’outil de tracé de rupture de pente.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>canvas</strong> (<em>QgsMapCanvas</em>) – Le canevas de la carte.</p></li>
+<li><p><strong>couche_raster</strong> (<em>QgsRasterLayer</em>) – La couche raster MNT utilisée.</p></li>
+<li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – Le mode de rupture de pente (“concave” ou “convexe”), par défaut “convexe”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">activate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id9" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active l’outil en installant le filtre d’événement.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">calculer_chemin_rupture_pente</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_depart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_arrivee</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id10" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule le chemin de rupture de pente entre deux points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point_depart</strong> (<em>QgsPoint</em>) – Point de départ du chemin.</p></li>
+<li><p><strong>point_arrivee</strong> (<em>QgsPoint</em>) – Point d’arrivée du chemin.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Géométrie du chemin de rupture de pente en 3D, ou None si échec.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsGeometry or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.canvasMoveEvent">
+<span class="sig-name descname"><span class="pre">canvasMoveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.canvasMoveEvent" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gère l’événement de déplacement de la souris sur le canevas.</p>
+<p>Cette méthode met à jour le tracé dynamique et libre sur le canevas lorsque la souris est déplacée,
+et calcule le chemin de rupture de pente le plus optimal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>QMouseEvent</em>) – Événement de déplacement de la souris contenant les informations de position.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.canvasPressEvent">
+<span class="sig-name descname"><span class="pre">canvasPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.canvasPressEvent" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gère l’événement de pression de la souris sur le canevas.</p>
+<p>Cette méthode traite les clics de souris pour ajouter des points à la polyligne, gérer le mode tracé libre,
+et confirmer les segments dynamiques de rupture de pente. Utilise une gestion d’annulation pour les points ajoutés.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>QMouseEvent</em>) – Événement de presse de la souris contenant les informations de position.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">charger_donnees_hillshade</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id11" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Charge les données de l’ombrage en mémoire pour un accès rapide.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id12">
+<span class="sig-name descname"><span class="pre">charger_donnees_raster</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id12" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Charge les données raster en mémoire pour un accès rapide.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id13">
+<span class="sig-name descname"><span class="pre">confirmer_polyligne</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id13" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Confirme la polyligne actuelle et l’ajoute à la couche vectorielle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id14">
+<span class="sig-name descname"><span class="pre">deactivate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id14" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Désactive l’outil en supprimant le filtre d’événement.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id15">
+<span class="sig-name descname"><span class="pre">definir_couche_vectorielle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">couche_vectorielle</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id15" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Assigne la couche vectorielle où stocker les polylignes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>couche_vectorielle</strong> (<em>QgsVectorLayer</em>) – La couche vectorielle pour stocker les tracés.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id16">
+<span class="sig-name descname"><span class="pre">definir_fenetre_profil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fenetre</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id16" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Assigne la fenêtre du profil d’élévation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fenetre</strong> (<em>QWidget</em>) – La fenêtre du profil d’élévation à associer à l’outil.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_mode">
+<span class="sig-name descname"><span class="pre">definir_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.definir_mode" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit le mode de fonctionnement de l’outil.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id17">
+<span class="sig-name descname"><span class="pre">definir_mode_trace_libre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracelibre</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id17" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active ou désactive le mode de tracé libre.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tracelibre</strong> (<em>bool</em>) – True pour activer le mode tracé libre, False pour le désactiver.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id18">
+<span class="sig-name descname"><span class="pre">definir_simplification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">activee</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id18" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active ou désactive la simplification du tracé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>activee</strong> (<em>bool</em>) – True pour activer la simplification, False pour la désactiver.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id19">
+<span class="sig-name descname"><span class="pre">distance_euclidienne</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id19" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule la distance euclidienne entre deux points en 2D.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p1</strong> (<em>QgsPoint</em>) – Premier point pour le calcul.</p></li>
+<li><p><strong>p2</strong> (<em>QgsPoint</em>) – Deuxième point pour le calcul.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Distance euclidienne entre les deux points.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id20">
+<span class="sig-name descname"><span class="pre">distance_perpendiculaire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id20" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule la distance perpendiculaire du point à la ligne début-fin en 2D.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point</strong> (<em>QgsPoint</em>) – Point pour lequel calculer la distance.</p></li>
+<li><p><strong>debut</strong> (<em>QgsPoint</em>) – Début de la ligne de référence.</p></li>
+<li><p><strong>fin</strong> (<em>QgsPoint</em>) – Fin de la ligne de référence.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Distance perpendiculaire du point à la ligne de référence.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id21">
+<span class="sig-name descname"><span class="pre">douglas_peucker_avec_critiques</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_critiques</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id21" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Simplifie une polyligne en conservant les points critiques.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>list</em><em> of </em><em>QgsPoint</em>) – Points de la polyligne à simplifier.</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – Tolérance pour la simplification.</p></li>
+<li><p><strong>points_critiques</strong> (<em>list</em><em> of </em><em>QgsPoint</em>) – Points critiques à conserver lors de la simplification.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Points de la polyligne simplifiée.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of QgsPoint</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id22">
+<span class="sig-name descname"><span class="pre">eventFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id22" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Contrôle les événements claviers pour certaines actions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>QObject</em>) – Objet qui génère l’événement.</p></li>
+<li><p><strong>event</strong> (<em>QEvent</em>) – Événement pour lequel le filtrage est effectué.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>True si l’événement est traité, False sinon.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id23">
+<span class="sig-name descname"><span class="pre">mettre_a_jour_bande_dynamique</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id23" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour la bande élastique dynamique en appliquant ou non la simplification.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id24">
+<span class="sig-name descname"><span class="pre">mettre_a_jour_profil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometrie</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id24" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour le profil d’élévation avec le segment dynamique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>geometrie</strong> (<em>QgsGeometry</em>) – Géométrie du segment dynamique pour le profil d’élévation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_rupture_pente.OutilRupturePente.mode_trace_libre_changed">
+<span class="sig-name descname"><span class="pre">mode_trace_libre_changed</span></span><a class="headerlink" href="#HydroLine.tools.outil_rupture_pente.OutilRupturePente.mode_trace_libre_changed" title="Lien vers cette définition">¶</a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id25"><span class="problematic" id="id26">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id27">
+<span class="sig-name descname"><span class="pre">nettoyer_ressources</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id27" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Nettoyage des ressources et réinitialisation de l’outil.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id28">
+<span class="sig-name descname"><span class="pre">obtenir_elevation_au_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id28" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient l’élévation du raster au point donné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>point</strong> (<em>QgsPoint</em>) – Point pour lequel obtenir l’élévation.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Élévation au point donné, ou None si en dehors des limites.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id29">
+<span class="sig-name descname"><span class="pre">obtenir_pente_au_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id29" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient la pente locale au point donné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>point</strong> (<em>QgsPoint</em>) – Point pour lequel obtenir la pente.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pente locale en degrés au point donné, ou None si non disponible.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id30">
+<span class="sig-name descname"><span class="pre">on_pentes_calculees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pentes_locales_degres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id30" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Appelé lorsque le calcul des pentes est terminé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pentes_locales_degres</strong> (<em>np.ndarray</em>) – Tableau des pentes calculées en degrés.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id31">
+<span class="sig-name descname"><span class="pre">reinitialiser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id31" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Réinitialise l’outil pour un nouveau tracé.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id32">
+<span class="sig-name descname"><span class="pre">remove_last_point</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id32" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Supprime le dernier point confirmé.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id33">
+<span class="sig-name descname"><span class="pre">simplifier_geometrie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometrie</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id33" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Simplifie la géométrie en préservant les points critiques.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>geometrie</strong> (<em>QgsGeometry</em>) – Géométrie à simplifier.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Géométrie simplifiée conservant les points critiques.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsGeometry</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id34">
+<span class="sig-name descname"><span class="pre">undo_last_action</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id34" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Annule la dernière action enregistrée.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-HydroLine.tools.outil_trace_crete">
+<span id="hydroline-tools-outil-trace-crete-module"></span><h2>HydroLine.tools.outil_trace_crete module<a class="headerlink" href="#module-HydroLine.tools.outil_trace_crete" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">HydroLine.tools.outil_trace_crete.</span></span><span class="sig-name descname"><span class="pre">OutilTraceCrete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <a class="reference internal" href="#HydroLine.tools.base_map_tool.BaseMapTool" title="HydroLine.tools.base_map_tool.BaseMapTool"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMapTool</span></code></a></p>
+<p>Outil de dessin de ligne de crête avec assistance dynamique sur MNT.</p>
+<p>Cette classe permet d’interagir avec le Modèle Numérique de Terrain pour tracer des lignes de crête
+en utilisant des calculs dynamiques basés sur l’altitude des pixels.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.canvas">
+<span class="sig-name descname"><span class="pre">canvas</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.canvas" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Le canevas de la carte.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsMapCanvas</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.couche_raster">
+<span class="sig-name descname"><span class="pre">couche_raster</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.couche_raster" title="Lien vers cette définition">¶</a></dt>
+<dd><p>La couche raster contenant le MNT.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsRasterLayer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.id_counter">
+<span class="sig-name descname"><span class="pre">id_counter</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.id_counter" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Compteur utilisé pour assigner des identifiants aux polylignes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.data_loaded">
+<span class="sig-name descname"><span class="pre">data_loaded</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.data_loaded" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Indicateur montrant si les données du raster ont été chargées avec succès.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.points_bas_active">
+<span class="sig-name descname"><span class="pre">points_bas_active</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.points_bas_active" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Indicateur du mode de tracé utilisant les points bas, par défaut False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.select_next_pixel_func">
+<span class="sig-name descname"><span class="pre">select_next_pixel_func</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.select_next_pixel_func" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Fonction utilisée pour sélectionner le prochain pixel pendant le tracé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.undo_manager">
+<span class="sig-name descname"><span class="pre">undo_manager</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.undo_manager" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gestionnaire d’annulation des actions réalisées sur le tracé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="HydroLine.utils.html#HydroLine.utils.undo_manager.UndoManager" title="HydroLine.utils.undo_manager.UndoManager">UndoManager</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.liste_points">
+<span class="sig-name descname"><span class="pre">liste_points</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.liste_points" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Liste des points actuellement tracés.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of QgsPoint</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.chemin_dynamique">
+<span class="sig-name descname"><span class="pre">chemin_dynamique</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.chemin_dynamique" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Géométrie représentative du chemin dynamique en cours de tracé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsGeometry or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.polyligne_confirmee">
+<span class="sig-name descname"><span class="pre">polyligne_confirmee</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.polyligne_confirmee" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Géométrie de la polyligne confirmée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsGeometry or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.mode_trace_libre">
+<span class="sig-name descname"><span class="pre">mode_trace_libre</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.mode_trace_libre" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Indicateur pour le mode de tracé libre, par défaut False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.points_trace_libre">
+<span class="sig-name descname"><span class="pre">points_trace_libre</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.points_trace_libre" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Liste de points tracés en mode libre.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of QgsPoint</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.fenetre_profil">
+<span class="sig-name descname"><span class="pre">fenetre_profil</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.fenetre_profil" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Fenêtre contenant le graphique de profil d’altitude.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation" title="HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation">FenetreProfilElevation</a> or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.simplification_activee">
+<span class="sig-name descname"><span class="pre">simplification_activee</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.simplification_activee" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Indicateur si la simplification est activée, par défaut False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.tolerance_simplification">
+<span class="sig-name descname"><span class="pre">tolerance_simplification</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.tolerance_simplification" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Tolérance utilisée pour la simplification du tracé, par défaut 2.0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.mode">
+<span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.mode" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Mode de tracé indiquant la stratégie, par défaut 1 (automatique).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.distance_seuil">
+<span class="sig-name descname"><span class="pre">distance_seuil</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.distance_seuil" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Distance seuil utilisée pour les calculs, par défaut 10 mètres.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.dernier_point_deplacement">
+<span class="sig-name descname"><span class="pre">dernier_point_deplacement</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.dernier_point_deplacement" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Dernier point ayant servi à un calcul lié aux déplacements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsPoint or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.activate">
+<span class="sig-name descname"><span class="pre">activate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.activate" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active l’outil en installant le filtre d’événement.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.deactivate">
+<span class="sig-name descname"><span class="pre">deactivate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.deactivate" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Désactive l’outil en supprimant le filtre d’événement.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.eventFilter">
+<span class="sig-name descname"><span class="pre">eventFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.eventFilter" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gère les événements filtrés pour les actions clavier.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.keyPressEvent">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.keyPressEvent" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gère les touches du clavier pour les actions spécifiques.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.on_raster_loaded">
+<span class="sig-name descname"><span class="pre">on_raster_loaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tableau_raster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inv_gt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raster_lignes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raster_colonnes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.on_raster_loaded" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Callback exécuté lorsque le chargement du raster est terminé.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.set_points_bas">
+<span class="sig-name descname"><span class="pre">set_points_bas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.set_points_bas" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active ou désactive le mode Points Bas.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.obtenir_elevation_aux_points_multiples">
+<span class="sig-name descname"><span class="pre">obtenir_elevation_aux_points_multiples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.obtenir_elevation_aux_points_multiples" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient les élévations du raster aux coordonnées données.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_couche_vectorielle">
+<span class="sig-name descname"><span class="pre">definir_couche_vectorielle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">couche_vectorielle</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_couche_vectorielle" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit la couche vectorielle où enregistrer les polylignes tracées.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.confirmer_polyligne">
+<span class="sig-name descname"><span class="pre">confirmer_polyligne</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.confirmer_polyligne" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Confirme la polyligne actuelle et l’ajoute à la couche vectorielle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_fenetre_profil">
+<span class="sig-name descname"><span class="pre">definir_fenetre_profil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fenetre</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_fenetre_profil" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Assigne la fenêtre du profil d’élévation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_mode">
+<span class="sig-name descname"><span class="pre">definir_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_seuil</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_mode" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit le mode de fonctionnement de l’outil et la distance seuil.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_simplification">
+<span class="sig-name descname"><span class="pre">definir_simplification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">activee</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_simplification" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active ou désactive la simplification du tracé.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.mettre_a_jour_bande_dynamique">
+<span class="sig-name descname"><span class="pre">mettre_a_jour_bande_dynamique</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.mettre_a_jour_bande_dynamique" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour la bande élastique dynamique en tenant compte de la simplification.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_mode_trace_libre">
+<span class="sig-name descname"><span class="pre">definir_mode_trace_libre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracelibre</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.definir_mode_trace_libre" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active ou désactive le mode de tracé libre.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.lisser_chemin">
+<span class="sig-name descname"><span class="pre">lisser_chemin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensite</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.lisser_chemin" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Applique un lissage aux points du chemin, selon une intensité.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.undo_last_action">
+<span class="sig-name descname"><span class="pre">undo_last_action</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.undo_last_action" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Annule la dernière action réalisée.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.remove_last_point">
+<span class="sig-name descname"><span class="pre">remove_last_point</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.remove_last_point" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Retire le dernier point ajouté à la polyligne.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.canvasPressEvent">
+<span class="sig-name descname"><span class="pre">canvasPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.canvasPressEvent" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gère les événements de clic de souris sur le canevas.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.canvasMoveEvent">
+<span class="sig-name descname"><span class="pre">canvasMoveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.canvasMoveEvent" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gère les événements de déplacement de la souris sur le canevas.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id35">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id35" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gère les actions lorsque des touches clavier sont pressées.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.mettre_a_jour_profil">
+<span class="sig-name descname"><span class="pre">mettre_a_jour_profil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distances</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_marqueur</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.mettre_a_jour_profil" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour le graphique du profil d’élévation en 3D basé sur les données fournies.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.obtenir_elevation_au_point">
+<span class="sig-name descname"><span class="pre">obtenir_elevation_au_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.obtenir_elevation_au_point" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient l’élévation du raster au point donné.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.select_next_pixel_points_hauts">
+<span class="sig-name descname"><span class="pre">select_next_pixel_points_hauts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">courant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidats_voisins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevation_courante</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrivee_px</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resoudre_egalite</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.select_next_pixel_points_hauts" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Sélectionne le prochain pixel en favorisant les points hauts.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.calculer_chemin_extreme">
+<span class="sig-name descname"><span class="pre">calculer_chemin_extreme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_depart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_arrivee</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.calculer_chemin_extreme" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule le chemin de plus haute ou plus basse altitude entre deux points.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.resoudre_egalite">
+<span class="sig-name descname"><span class="pre">resoudre_egalite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">candidats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrivee_px</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.resoudre_egalite" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Départage les candidats en cas d’égalité.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.reinitialiser">
+<span class="sig-name descname"><span class="pre">reinitialiser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.reinitialiser" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Réinitialise l’outil pour un nouveau tracé.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.simplifier_geometrie">
+<span class="sig-name descname"><span class="pre">simplifier_geometrie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometrie</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.simplifier_geometrie" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Simplifie la géométrie tout en conservant certains points critiques.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.douglas_peucker_avec_critiques">
+<span class="sig-name descname"><span class="pre">douglas_peucker_avec_critiques</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_critiques</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.douglas_peucker_avec_critiques" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Simplifie une polyligne en conservant des points critiques.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.distance_perpendiculaire">
+<span class="sig-name descname"><span class="pre">distance_perpendiculaire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.distance_perpendiculaire" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule la distance perpendiculaire du point à la ligne donnée.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.distance_euclidienne">
+<span class="sig-name descname"><span class="pre">distance_euclidienne</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.distance_euclidienne" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule la distance euclidienne entre deux points.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.obtenir_elevation_aux_points">
+<span class="sig-name descname"><span class="pre">obtenir_elevation_aux_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.obtenir_elevation_aux_points" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient les élévations du raster aux points spécifiés.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id36">
+<span class="sig-name descname"><span class="pre">mettre_a_jour_profil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometrie</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id36" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour le profil d’élévation avec le segment dynamique.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">couche_raster</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.__init__" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Initialise l’outil de tracé de crête.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>canvas</strong> (<em>QgsMapCanvas</em>) – Le canevas de la carte utilisé comme contexte pour le tracé.</p></li>
+<li><p><strong>couche_raster</strong> (<em>QgsRasterLayer</em>) – La couche raster contenant le MNT pour la référence d’altitude.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id37">
+<span class="sig-name descname"><span class="pre">activate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id37" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active l’outil de tracé.</p>
+<p>Met le focus sur le canevas de la carte et installe un filtre d’événement
+pour détecter les interactions clavier.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id38">
+<span class="sig-name descname"><span class="pre">calculer_chemin_extreme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_depart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_arrivee</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id38" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule le chemin de plus haute ou le plus bas altitude entre deux points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point_depart</strong> (<em>QgsPoint</em>) – Point de départ du chemin.</p></li>
+<li><p><strong>point_arrivee</strong> (<em>QgsPoint</em>) – Point d’arrivée du chemin.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Géométrie du chemin en 3D si calculé avec succès, ou None si échec ou en dehors des limites.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsGeometry or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id39">
+<span class="sig-name descname"><span class="pre">canvasMoveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id39" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gestion des mouvements de la souris sur le canevas.</p>
+<p>Met à jour le tracé libre ou calcule le chemin de plus haute altitude
+en fonction du mode activé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>QMouseEvent</em>) – Événement de déplacement de la souris.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id40">
+<span class="sig-name descname"><span class="pre">canvasPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id40" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gère les événements de clic de souris sur le canevas.</p>
+<p>Ajoute des points à la liste de la polyligne et gère le mode tracé libre.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>QMouseEvent</em>) – Événement du clic de la souris.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id41">
+<span class="sig-name descname"><span class="pre">confirmer_polyligne</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id41" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Confirme la polyligne actuelle et l’ajoute à la couche vectorielle.</p>
+<p>Convertit la polyligne en 3D si la simplification est activée,
+et enregistre ses attributs dans la couche vectorielle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id42">
+<span class="sig-name descname"><span class="pre">deactivate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id42" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Désactive l’outil de tracé.</p>
+<p>Supprime le filtre d’événement du canevas pour arrêter la détection
+des interactions clavier.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id43">
+<span class="sig-name descname"><span class="pre">definir_couche_vectorielle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">couche_vectorielle</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id43" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit la couche vectorielle où enregistrer les polylignes tracées.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>couche_vectorielle</strong> (<em>QgsVectorLayer</em>) – La couche vectorielle pour stocker les tracés.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id44">
+<span class="sig-name descname"><span class="pre">definir_fenetre_profil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fenetre</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id44" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Assigne la fenêtre du profil d’élévation à l’outil.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fenetre</strong> (<a class="reference internal" href="#HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation" title="HydroLine.tools.fenetre_profil_elevation.FenetreProfilElevation"><em>FenetreProfilElevation</em></a>) – Fenêtre pour afficher le profil d’élévation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id45">
+<span class="sig-name descname"><span class="pre">definir_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_seuil</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id45" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit le mode de fonctionnement de l’outil et réinitialise le point de mouvement si nécessaire.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> (<em>int</em>) – Mode opérationnel de l’outil (par exemple, automatique ou manuel).</p></li>
+<li><p><strong>distance_seuil</strong> (<em>float</em><em>, </em><em>optional</em>) – Distance seuil utilisée pour les calculs, par défaut None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id46">
+<span class="sig-name descname"><span class="pre">definir_mode_trace_libre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracelibre</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id46" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active ou désactive le mode de tracé libre.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tracelibre</strong> (<em>bool</em>) – True pour activer le mode tracé libre, False pour le désactiver.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Lorsque le mode tracé libre est activé, ajoute les points tracés librement à la liste
+principale à la sortie du mode.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id47">
+<span class="sig-name descname"><span class="pre">definir_simplification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">activee</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id47" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active ou désactive la simplification du tracé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>activee</strong> (<em>bool</em>) – True pour activer la simplification, False pour la désactiver.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id48">
+<span class="sig-name descname"><span class="pre">distance_euclidienne</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id48" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule la distance euclidienne entre deux points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p1</strong> (<em>QgsPoint</em>) – Premier point.</p></li>
+<li><p><strong>p2</strong> (<em>QgsPoint</em>) – Deuxième point.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Distance euclidienne entre les deux points.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id49">
+<span class="sig-name descname"><span class="pre">distance_perpendiculaire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id49" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Calcule la distance perpendiculaire du point à la ligne début-fin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point</strong> (<em>QgsPoint</em>) – Point pour lequel calculer la distance.</p></li>
+<li><p><strong>debut</strong> (<em>QgsPoint</em>) – Début de la ligne.</p></li>
+<li><p><strong>fin</strong> (<em>QgsPoint</em>) – Fin de la ligne.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Distance perpendiculaire entre le point et la ligne.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id50">
+<span class="sig-name descname"><span class="pre">douglas_peucker_avec_critiques</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_critiques</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id50" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Simplifie une polyligne en conservant des points critiques.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> (<em>list</em><em> of </em><em>QgsPoint</em>) – Points de la polyligne à simplifier.</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – Tolérance pour la simplification.</p></li>
+<li><p><strong>points_critiques</strong> (<em>list</em><em> of </em><em>QgsPoint</em>) – Points critiques à conserver.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Points de la polyligne simplifiée.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of QgsPoint</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id51">
+<span class="sig-name descname"><span class="pre">eventFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id51" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Filtre les événements du canevas pour déclencher des actions basées sur les touches clavier.</p>
+<p>Permet d’activer/désactiver le mode tracé libre, confirmer les polylignes
+et annuler la dernière action à travers des raccourcis clavier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>QObject</em>) – Objet qui génère l’événement.</p></li>
+<li><p><strong>event</strong> (<em>QEvent</em>) – Événement à filtrer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>True si l’événement est traité par le filtre, sinon False.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id52">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id52" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gère les événements de pression de touche pour le tracé libre.</p>
+<p>Active/désactive le mode tracé libre si la lettre “S” est pressée.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>QKeyEvent</em>) – Événement de pression de touche.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id53">
+<span class="sig-name descname"><span class="pre">mettre_a_jour_bande_dynamique</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id53" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour la bande élastique dynamique et applique la simplification si activée.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id54">
+<span class="sig-name descname"><span class="pre">mettre_a_jour_profil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distances</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_marqueur</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id54" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour le graphique 3D du profil d’élévation.</p>
+<p>Affiche les données d’élévation et ajuste les limites basées sur les coordonnées fournies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_coords</strong> (<em>np.ndarray</em>) – Coordonnées en x des points du tracé.</p></li>
+<li><p><strong>y_coords</strong> (<em>np.ndarray</em>) – Coordonnées en y des points du tracé.</p></li>
+<li><p><strong>distances</strong> (<em>np.ndarray</em>) – Distances cumulées le long du tracé.</p></li>
+<li><p><strong>elevations</strong> (<em>np.ndarray</em>) – Élévations des points le long du tracé.</p></li>
+<li><p><strong>index_marqueur</strong> (<em>int</em>) – Index du marqueur à mettre en évidence, s’il y a lieu.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.mettre_a_jour_profil_segment">
+<span class="sig-name descname"><span class="pre">mettre_a_jour_profil_segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometrie</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.mettre_a_jour_profil_segment" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Met à jour le profil d’élévation avec le segment dynamique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>geometrie</strong> (<em>QgsGeometry</em>) – Géométrie du segment dynamique du profil d’élévation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.outil_trace_crete.OutilTraceCrete.mode_trace_libre_changed">
+<span class="sig-name descname"><span class="pre">mode_trace_libre_changed</span></span><a class="headerlink" href="#HydroLine.tools.outil_trace_crete.OutilTraceCrete.mode_trace_libre_changed" title="Lien vers cette définition">¶</a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id55"><span class="problematic" id="id56">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id57">
+<span class="sig-name descname"><span class="pre">obtenir_elevation_au_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id57" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient l’élévation du raster au point donné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>point</strong> (<em>QgsPoint</em>) – Point pour lequel obtenir l’élévation.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Élévation au point donné en unités raster, ou None si en dehors des limites.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id58">
+<span class="sig-name descname"><span class="pre">obtenir_elevation_aux_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id58" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient les élévations du raster aux points donnés.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_array</strong> (<em>np.ndarray</em>) – Tableau des coordonnées x des points.</p></li>
+<li><p><strong>y_array</strong> (<em>np.ndarray</em>) – Tableau des coordonnées y des points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tableau d’élévations correspondant aux points donnés.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id59">
+<span class="sig-name descname"><span class="pre">obtenir_elevation_aux_points_multiples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id59" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient les élévations du raster aux points donnés en utilisant la transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_array</strong> (<em>np.ndarray</em>) – Tableau des coordonnées x des points.</p></li>
+<li><p><strong>y_array</strong> (<em>np.ndarray</em>) – Tableau des coordonnées y des points.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tableau des élévations correspondant aux coordonnées.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id60">
+<span class="sig-name descname"><span class="pre">on_raster_loaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tableau_raster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inv_gt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raster_lignes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raster_colonnes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id60" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Callback après le chargement du raster.</p>
+<p>Configure les données de raster et ferme l’écran de démarrage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tableau_raster</strong> (<em>np.ndarray</em>) – Tableau des données raster chargées.</p></li>
+<li><p><strong>gt</strong> (<em>tuple</em>) – Géotransformation du raster.</p></li>
+<li><p><strong>inv_gt</strong> (<em>tuple</em>) – Inverse de la géotransformation du raster.</p></li>
+<li><p><strong>raster_lignes</strong> (<em>int</em>) – Nombre de lignes dans le raster.</p></li>
+<li><p><strong>raster_colonnes</strong> (<em>int</em>) – Nombre de colonnes dans le raster.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id61">
+<span class="sig-name descname"><span class="pre">reinitialiser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id61" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Réinitialise l’outil pour un nouveau tracé.</p>
+<p>Efface les points, bandes élastiques, et réinitialise le profil d’élévation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id62">
+<span class="sig-name descname"><span class="pre">remove_last_point</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id62" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Supprime le dernier point ajouté à la liste de la polyligne.</p>
+<p class="rubric">Notes</p>
+<p>Met à jour la polyligne confirmée et réinitialise le chemin dynamique si nécessaire.
+Informe l’utilisateur si aucun point n’est disponible pour la suppression.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id63">
+<span class="sig-name descname"><span class="pre">resoudre_egalite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">candidats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrivee_px</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id63" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Départage les candidats en cas d’égalité de choix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>candidats</strong> (<em>list</em><em> of </em><em>dict</em>) – Liste des candidats avec leurs coordonnées.</p></li>
+<li><p><strong>arrivee_px</strong> (<em>tuple</em>) – Coordonnées du pixel d’arrivée.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Coordonnées du meilleur candidat choisi.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id64">
+<span class="sig-name descname"><span class="pre">select_next_pixel_points_hauts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">courant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidats_voisins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevation_courante</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrivee_px</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resoudre_egalite</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id64" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Sélectionne le prochain pixel en suivant les points hauts parmi les voisins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>courant</strong> (<em>tuple</em>) – Pixel courant avec ses coordonnées (x, y).</p></li>
+<li><p><strong>candidats_voisins</strong> (<em>list</em><em> of </em><em>dict</em>) – Liste des voisins candidats avec leurs informations.</p></li>
+<li><p><strong>elevation_courante</strong> (<em>float</em>) – Élévation du pixel courant.</p></li>
+<li><p><strong>arrivee_px</strong> (<em>tuple</em>) – Coordonnées du pixel d’arrivée.</p></li>
+<li><p><strong>resoudre_egalite</strong> (<em>function</em>) – Fonction pour départager les voisins en cas d’égalité.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Coordonnées du prochain pixel choisi.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id65">
+<span class="sig-name descname"><span class="pre">set_points_bas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id65" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Active ou désactive le mode Points Bas.</p>
+<p>Change la fonction de sélection de pixel en fonction du mode choisi.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>active</strong> (<em>bool</em>) – True pour activer le mode Points Bas, False pour le désactiver.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id66">
+<span class="sig-name descname"><span class="pre">simplifier_geometrie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometrie</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id66" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Simplifie la géométrie en préservant les points critiques d’altitude maximale.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>geometrie</strong> (<em>QgsGeometry</em>) – Géométrie à simplifier.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Géométrie simplifiée conservant les points critiques.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsGeometry</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id67">
+<span class="sig-name descname"><span class="pre">undo_last_action</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id67" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Annule la dernière action enregistrée.</p>
+<p class="rubric">Notes</p>
+<p>Si aucune action n’est disponible pour l’annulation, informe l’utilisateur.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="hydroline-tools-profil-graph-dock-module">
+<h2>HydroLine.tools.profil_graph_dock module<a class="headerlink" href="#hydroline-tools-profil-graph-dock-module" title="Lien vers cette rubrique">¶</a></h2>
+</section>
+<section id="module-HydroLine.tools.prolongement">
+<span id="hydroline-tools-prolongement-module"></span><h2>HydroLine.tools.prolongement module<a class="headerlink" href="#module-HydroLine.tools.prolongement" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">HydroLine.tools.prolongement.</span></span><span class="sig-name descname"><span class="pre">ProlongementDesProfils</span></span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Classe principale pour le traitement de prolongement des profils.
+Ce script permet de générer des points le long des profils en prolongeant les lignes existantes,
+en tenant compte de la pente du terrain pour ajuster l’espacement des points (pour MNT raster),</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.couche_mnt">
+<span class="sig-name descname"><span class="pre">couche_mnt</span></span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.couche_mnt" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Couche contenant le Modèle Numérique de Terrain (MNT) ou le maillage (TIN).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsRasterLayer or QgsMeshLayer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.couche_points">
+<span class="sig-name descname"><span class="pre">couche_points</span></span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.couche_points" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Couche contenant les points bathymétriques.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsVectorLayer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.couche_lignes">
+<span class="sig-name descname"><span class="pre">couche_lignes</span></span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.couche_lignes" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Couche contenant les profils tracés à prolonger.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsVectorLayer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.couche_emprise">
+<span class="sig-name descname"><span class="pre">couche_emprise</span></span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.couche_emprise" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Couche d’emprise facultative pour limiter l’analyse, par défaut None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsVectorLayer or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">...</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.executer">
+<span class="sig-name descname"><span class="pre">executer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.executer" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Lance le processus complet de prolongement des profils.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.afficher_dialogue_selection_couches">
+<span class="sig-name descname"><span class="pre">afficher_dialogue_selection_couches</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.afficher_dialogue_selection_couches" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Affiche la boîte de dialogue pour la sélection des couches pertinentes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.initialiser_couches">
+<span class="sig-name descname"><span class="pre">initialiser_couches</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.initialiser_couches" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Initialise les couches et les champs nécessaires pour le traitement.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.creer_nouvelle_couche">
+<span class="sig-name descname"><span class="pre">creer_nouvelle_couche</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.creer_nouvelle_couche" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Crée une nouvelle couche en mémoire pour les points prolongés.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.ajouter_points_existants">
+<span class="sig-name descname"><span class="pre">ajouter_points_existants</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.ajouter_points_existants" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Ajoute les points existants de la couche de points à la nouvelle couche.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.parcourir_lignes_profil">
+<span class="sig-name descname"><span class="pre">parcourir_lignes_profil</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.parcourir_lignes_profil" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Traite chaque profil de la couche de lignes pour générer de nouveaux points.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.traiter_ligne">
+<span class="sig-name descname"><span class="pre">traiter_ligne</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ligne</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.traiter_ligne" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Traite une ligne spécifique pour générer de nouveaux points.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.extraire_sous_ligne">
+<span class="sig-name descname"><span class="pre">extraire_sous_ligne</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_ligne</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_debut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_fin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.extraire_sous_ligne" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Extrait une partie de la ligne entre deux distances.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.traiter_segment_raster">
+<span class="sig-name descname"><span class="pre">traiter_segment_raster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_segment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.traiter_segment_raster" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Traite un segment pour générer des points le long de celui-ci selon la pente (MNT raster).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.traiter_segment_tin">
+<span class="sig-name descname"><span class="pre">traiter_segment_tin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_segment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.traiter_segment_tin" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Traite un segment pour générer des points aux intersections avec le maillage (TIN).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.obtenir_z_tin">
+<span class="sig-name descname"><span class="pre">obtenir_z_tin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_xy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.obtenir_z_tin" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient la valeur Z du TIN au point donné.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.ajuster_densite">
+<span class="sig-name descname"><span class="pre">ajuster_densite</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.ajuster_densite" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Ajuste la densité des points si certaines lignes dépassent le nombre maximal permis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.attribuer_objectid_aux_nouveaux_points">
+<span class="sig-name descname"><span class="pre">attribuer_objectid_aux_nouveaux_points</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.attribuer_objectid_aux_nouveaux_points" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Attribue des valeurs OBJECTID aux nouveaux points générés.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.ajouter_points_a_la_couche">
+<span class="sig-name descname"><span class="pre">ajouter_points_a_la_couche</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.ajouter_points_a_la_couche" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Ajoute les nouveaux points à la couche en mémoire.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.finaliser">
+<span class="sig-name descname"><span class="pre">finaliser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.finaliser" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Finalise le traitement en ajoutant la nouvelle couche au projet QGIS.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.ProlongementDesProfils.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.ProlongementDesProfils.__init__" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Initialise les attributs nécessaires pour le traitement.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id68">
+<span class="sig-name descname"><span class="pre">afficher_dialogue_selection_couches</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id68" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Affiche la boîte de dialogue pour la sélection des couches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Renvoie<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True si l’utilisateur a validé la sélection, False sinon.</p>
+</dd>
+<dt class="field-even">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id69">
+<span class="sig-name descname"><span class="pre">ajouter_points_a_la_couche</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id69" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Ajoute les nouveaux points à la couche en mémoire.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id70">
+<span class="sig-name descname"><span class="pre">ajouter_points_existants</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id70" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Ajoute les points existants de la couche de points à la nouvelle couche.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id71">
+<span class="sig-name descname"><span class="pre">ajuster_densite</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id71" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Ajuste la densité des points sur les lignes si certaines dépassent le nombre maximal permis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id72">
+<span class="sig-name descname"><span class="pre">attribuer_objectid_aux_nouveaux_points</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id72" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Assigne des valeurs OBJECTID aux nouveaux points générés.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id73">
+<span class="sig-name descname"><span class="pre">creer_nouvelle_couche</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id73" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Crée une nouvelle couche en mémoire pour stocker les points prolongés.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id74">
+<span class="sig-name descname"><span class="pre">executer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id74" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Lance le processus complet de prolongement des profils.</p>
+<p>Exécute la série de fonctions nécessaires pour prolonger les lignes de profil
+en ajoutant de nouveaux points calculés le long des segments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id75">
+<span class="sig-name descname"><span class="pre">extraire_sous_ligne</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_ligne</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_debut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_fin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id75" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Extrait une partie de la ligne entre deux distances données, conservant les valeurs Z.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>geom_ligne</strong> (<em>QgsGeometry</em>) – Géométrie de la ligne d’origine.</p></li>
+<li><p><strong>distance_debut</strong> (<em>float</em>) – Distance de début sur la ligne.</p></li>
+<li><p><strong>distance_fin</strong> (<em>float</em>) – Distance de fin sur la ligne.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>La sous-partie de la ligne ou None si échoue.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QgsGeometry or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id76">
+<span class="sig-name descname"><span class="pre">finaliser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id76" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Finalise le traitement en ajoutant la nouvelle couche au projet.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id77">
+<span class="sig-name descname"><span class="pre">initialiser_couches</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id77" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Initialise les couches et les champs nécessaires pour le traitement.</p>
+<p>Configure les indices des champs et vérifie la disponibilité des données.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id78">
+<span class="sig-name descname"><span class="pre">obtenir_z_tin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_xy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id78" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient la valeur Z du TIN au point donné.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>point_xy</strong> (<em>QgsPointXY</em>) – Le point pour lequel obtenir la valeur Z.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>La valeur Z ou None si non disponible.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id79">
+<span class="sig-name descname"><span class="pre">parcourir_lignes_profil</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id79" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Traite chaque profil de la couche de lignes pour générer de nouveaux points.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id80">
+<span class="sig-name descname"><span class="pre">traiter_ligne</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ligne</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id80" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Traite une ligne spécifique pour générer de nouveaux points le long des segments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ligne</strong> (<em>QgsFeature</em>) – La ligne de profil à traiter.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Liste de nouveaux points générés le long de la ligne.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of QgsFeature</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id81">
+<span class="sig-name descname"><span class="pre">traiter_segment_raster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_segment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id81" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Traite un segment pour générer des points basés sur la pente du MNT (raster).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>geom_segment</strong> (<em>QgsGeometry</em>) – Géométrie du segment à traiter.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Liste de nouveaux points générés pour le segment.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of QgsFeature</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id82">
+<span class="sig-name descname"><span class="pre">traiter_segment_tin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_segment</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id82" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Traite un segment pour générer des points aux intersections avec les arêtes du TIN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>geom_segment</strong> (<em>QgsGeometry</em>) – Géométrie du segment à traiter.</p>
+</dd>
+<dt class="field-even">Renvoie<span class="colon">:</span></dt>
+<dd class="field-even"><p>Liste de nouveaux points générés pour le segment.</p>
+</dd>
+<dt class="field-odd">Type renvoyé<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of QgsFeature</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="HydroLine.tools.prolongement.main">
+<span class="sig-prename descclassname"><span class="pre">HydroLine.tools.prolongement.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#HydroLine.tools.prolongement.main" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Point d’entrée du script.</p>
+</dd></dl>
+
+</section>
+<section id="module-HydroLine.tools">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-HydroLine.tools" title="Lien vers cette rubrique">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">HydroLine</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">HydroLine</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.html">HydroLine package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.dialogs.html">HydroLine.dialogs package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.docs.html">HydroLine.docs package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.icon.html">HydroLine.icon package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.sscreen.html">HydroLine.sscreen package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.threads.html">HydroLine.threads package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">HydroLine.tools package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.utils.html">HydroLine.utils package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HydroLine.hydro_line.html">HydroLine.hydro_line module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">HydroLine</a><ul>
+  <li><a href="HydroLine.html">HydroLine package</a><ul>
+      <li>Previous: <a href="HydroLine.threads.html" title="Chapitre précédent">HydroLine.threads package</a></li>
+      <li>Next: <a href="HydroLine.utils.html" title="Chapitre suivant">HydroLine.utils package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Recherche rapide</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Sanchez Matteo, CNR.tm.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/HydroLine.tools.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
