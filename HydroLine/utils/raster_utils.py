@@ -8,7 +8,7 @@ import tempfile
 import numpy as np
 import processing
 from osgeo import gdal
-from qgis._core import QgsRasterLayer
+from qgis._core import QgsRasterLayer, QgsProject
 
 
 def filtre_moyen_raster(couche_raster_entree, kernel_size=3):
