@@ -8,19 +8,21 @@ import logging
 import processing
 from qgis.PyQt.QtCore import Qt, QObject, QCoreApplication, QVariant
 from qgis.PyQt.QtGui import QIcon, QColor, QPainter
-from qgis.PyQt.QtWidgets import QAction, QMessageBox, QMenu, QToolButton, QApplication, QComboBox, QDialog, QCheckBox
+from qgis.PyQt.QtWidgets import QAction, QMessageBox, QMenu, QToolButton, QApplication, QComboBox, QDialog, QCheckBox, QInputDialog
 from qgis._core import QgsRasterLayer
 from qgis.core import (
     QgsProject,
     QgsProcessingFeedback,
     QgsField,
     QgsVectorLayer,
+    QgsMeshLayer,
     QgsFeature,
     QgsGeometry,
     QgsPoint,
     QgsCoordinateReferenceSystem,
     QgsMapLayer,
-    edit
+    edit,
+    QgsWkbTypes
 )
 
 from .dialogs.choix_couches_dialog import ChoixCouchesDialogPourTrace, DialogueSelectionEpoint
@@ -40,7 +42,8 @@ from .utils.raster_utils import (
     generer_ombrage,
     fusionner_et_arrondir_rasters,
     reprojeter_raster,
-    convertir_tin_en_raster
+    convertir_tin_en_raster,
+    convertir_points_en_tin
 )
 from .external.SIGPACK import Epoint
 from .logs.logs_config import setup_logging
@@ -882,8 +885,8 @@ class HydroLine(QObject):
 
     def preparation_mnt(self):
         """
-        Affiche le MNT avec ombrage et style prédéfini, en gérant les couches raster et un unique TIN.
-        Permet la sélection multiple de rasters ou un seul TIN, les convertit si nécessaire,
+        Affiche le MNT avec ombrage et style prédéfini, en gérant les couches raster, un unique TIN ou un shapefile de points.
+        Permet la sélection multiple de rasters ou un seul TIN/shapefile de points, les convertit si nécessaire,
         les fusionne, et applique les traitements requis.
         """
         self.splash_screenLoad = SplashScreenLoad()
@@ -903,26 +906,97 @@ class HydroLine(QObject):
         retour = QgsProcessingFeedback()
 
         couches_raster = []
-        couche_tin = None
+        couches_tin = []
+        couches_points = []
 
-        # Séparer les rasters et un éventuel TIN
+        # Séparer les rasters, TIN et points
         for couche in couches_selectionnees:
             if isinstance(couche, QgsRasterLayer):
                 couches_raster.append(couche)
-            elif couche.type() == QgsMapLayer.MeshLayer:
-                if couche_tin is not None:
-                    QMessageBox.warning(None, "Avertissement", "Veuillez sélectionner un seul TIN.")
-                    self.splash_screenLoad.close()
-                    return
-                couche_tin = couche
+            elif isinstance(couche, QgsMeshLayer):
+                couches_tin.append(couche)
+            elif isinstance(couche, QgsVectorLayer) and couche.geometryType() == QgsWkbTypes.PointGeometry:
+                couches_points.append(couche)
             else:
                 QMessageBox.warning(None, "Avertissement", f"Type de couche non supporté : {couche.name()}")
                 self.splash_screenLoad.close()
                 return
 
+        if len(couches_tin) + len(couches_points) > 1:
+            QMessageBox.warning(None, "Avertissement",
+                                "Veuillez sélectionner uniquement un TIN ou une seule couche de points.")
+            self.splash_screenLoad.close()
+            return
+
+        if len(couches_tin) > 1:
+            QMessageBox.warning(None, "Avertissement", "Veuillez sélectionner un seul TIN.")
+            self.splash_screenLoad.close()
+            return
+
+        if len(couches_points) > 1:
+            QMessageBox.warning(None, "Avertissement", "Veuillez sélectionner une seule couche de points.")
+            self.splash_screenLoad.close()
+            return
+
+        couche_tin = None
+
+        if couches_points:
+            couche_points = couches_points[0]
+
+            # Récupérer les champs numériques disponibles pour le Z
+            champs_numeriques = [
+                field.name() for field in couche_points.fields()
+                if field.type() in (QVariant.Double, QVariant.Int)
+            ]
+
+            if not champs_numeriques:
+                QMessageBox.critical(None, "Erreur",
+                                     f"Aucun champ numérique trouvé dans la couche de points : {couche_points.name()}")
+                self.splash_screenLoad.close()
+                return
+
+            # Demander à l'utilisateur de sélectionner le champ Z
+            selected_field, ok = QInputDialog.getItem(
+                None,
+                "Sélectionner le champ Z",
+                "Champ Z (valeur d'altitude) :",
+                champs_numeriques,
+                0,
+                False
+            )
+
+            if not ok:
+                QMessageBox.warning(None, "Avertissement", "Sélection du champ Z annulée.")
+                self.splash_screenLoad.close()
+                return
+
+            # Vérifier que le champ sélectionné est valide
+            if selected_field not in couche_points.fields().names():
+                QMessageBox.critical(None, "Erreur", "Le champ Z sélectionné est invalide.")
+                self.splash_screenLoad.close()
+                return
+
+            # Appeler la fonction de conversion des points en TIN depuis raster_utils avec le nom du champ
+            couche_tin = convertir_points_en_tin(
+                couche_points,
+                selected_field=selected_field,
+                crs_target=f"EPSG:{code_epsg}",
+                feedback=retour
+            )
+
+            if couche_tin is None:
+                QMessageBox.critical(None, "Erreur",
+                                     f"Échec de la création du TIN à partir de la couche de points : {couche_points.name()}")
+                self.splash_screenLoad.close()
+                return
+
+        # Si un TIN est directement sélectionné
+        elif couches_tin:
+            couche_tin = couches_tin[0]
+
+        # Traitement du TIN s'il est présent
         rasters_convertis = []
 
-        # Traitement du TIN s'il est sélectionné
         if couche_tin:
             raster_converti = convertir_tin_en_raster(
                 couche_tin,
@@ -945,8 +1019,9 @@ class HydroLine(QObject):
 
             rasters_convertis.append(raster_filtre_median)
 
-            # Supprimer la couche TIN originale pour éviter les confusions
-            QgsProject.instance().removeMapLayer(couche_tin.id())
+            # Supprimer la couche TIN originale si elle était directement sélectionnée
+            if couches_tin:
+                QgsProject.instance().removeMapLayer(couche_tin.id())
 
         # Traitement des couches raster d'origine
         rasters_filtrés = []
@@ -967,7 +1042,7 @@ class HydroLine(QObject):
 
             rasters_filtrés.append(couche_filtre)
 
-        # Ajouter les rasters convertis des TIN
+        # Ajouter les rasters convertis des TINs (générés à partir de points ou sélectionnés)
         rasters_filtrés.extend(rasters_convertis)
 
         # Fusionner les rasters filtrés si plusieurs sont présents
@@ -1009,6 +1084,7 @@ class HydroLine(QObject):
         else:
             QMessageBox.warning(None, "Avertissement", "Le fichier de style 'styleQGIS.qml' est introuvable.")
 
+        # Ajouter les couches au projet
         QgsProject.instance().addMapLayer(couche_combinee_filtre)
         QgsProject.instance().addMapLayer(couche_ombrage, False)
         racine = QgsProject.instance().layerTreeRoot()
@@ -1018,6 +1094,9 @@ class HydroLine(QObject):
         # Supprimer les rasters originaux si plusieurs rasters ont été fusionnés
         if len(rasters_filtrés) > 1:
             for couche in couches_raster:
+                QgsProject.instance().removeMapLayer(couche.id())
+            # Supprimer le raster converti du TIN s'il a été ajouté
+            for couche in rasters_convertis:
                 QgsProject.instance().removeMapLayer(couche.id())
 
         # Afficher un message informatif après le traitement

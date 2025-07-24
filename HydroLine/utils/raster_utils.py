@@ -8,8 +8,8 @@ import tempfile
 import numpy as np
 import processing
 from osgeo import gdal
-from qgis._core import QgsRasterLayer, QgsProject
-
+from qgis.core import QgsRasterLayer, QgsProject, QgsVectorLayer, QgsMeshLayer, QgsCoordinateReferenceSystem, QgsWkbTypes
+from scipy.ndimage import median_filter
 
 def filtre_moyen_raster(couche_raster_entree, kernel_size=3):
     """
@@ -218,7 +218,7 @@ def generer_ombrage_invisible(couche_raster_entree):
 
 # utils/raster_utils.py
 
-from scipy.ndimage import median_filter  # Assurez-vous que SciPy est installé
+
 
 def filtre_median_raster(couche_raster_entree, kernel_size=5):
     """
@@ -283,7 +283,6 @@ def filtre_median_raster(couche_raster_entree, kernel_size=5):
 
     return output_raster_layer
 
-
 def reprojeter_raster(couche_raster, code_epsg=2154):
     """
     Reprojette la couche raster vers le système de coordonnées spécifié.
@@ -317,7 +316,6 @@ def reprojeter_raster(couche_raster, code_epsg=2154):
     output = processing.run("gdal:warpreproject", params)
     couche_reprojete = QgsRasterLayer(output['OUTPUT'], f"{couche_raster.name()}_reprojected")
     return couche_reprojete if couche_reprojete.isValid() else None
-
 
 def convertir_tin_en_raster(couche_tin, crs_target, pixel_size=1.0, feedback=None):
     """
@@ -367,3 +365,64 @@ def convertir_tin_en_raster(couche_tin, crs_target, pixel_size=1.0, feedback=Non
     QgsProject.instance().addMapLayer(couche_raster, False)
 
     return couche_raster
+
+def convertir_points_en_tin(couche_points, selected_field, crs_target='EPSG:2154', feedback=None):
+    """
+    Convertit une couche de points en un maillage TIN.
+
+    Parameters
+    ----------
+    couche_points : QgsVectorLayer
+        La couche de points à convertir en TIN.
+    selected_field : str
+        Le nom du champ à utiliser pour les valeurs d'altitude.
+    crs_target : str, optional
+        Le CRS cible, par défaut 'EPSG:2154'.
+    feedback : QgsProcessingFeedback, optional
+        Un objet de feedback pour suivre le traitement.
+
+    Returns
+    -------
+    QgsMeshLayer or None
+        Le maillage TIN résultant ou None si le traitement échoue.
+    """
+
+    try:
+        # Obtenir l'index du champ selected_field
+        attribute_index = couche_points.fields().indexFromName(selected_field)
+        if attribute_index == -1:
+            raise ValueError(f"Le champ '{selected_field}' n'existe pas dans la couche '{couche_points.name()}'.")
+
+        parametres_tin = {
+            'SOURCE_DATA': [{
+                'source': couche_points.source(),
+                'type': 0,  # 0 pour couche vectorielle
+                'attributeIndex': attribute_index
+            }],
+            'MESH_FORMAT': 0,  # Format de sortie (0 pour '2DM')
+            'CRS_OUTPUT': QgsCoordinateReferenceSystem(crs_target),
+            'OUTPUT_MESH': 'TEMPORARY_OUTPUT'
+        }
+
+        resultat_tin = processing.run(
+            "native:tinmeshcreation",
+            parametres_tin,
+            feedback=feedback
+        )
+        output_path = resultat_tin['OUTPUT_MESH']
+
+        # Créer une couche MeshLayer à partir du fichier de sortie
+        couche_tin = QgsMeshLayer(output_path, f"{couche_points.name()}_TIN", "mdal")
+
+        if not couche_tin.isValid():
+            feedback.reportError("Le maillage TIN résultant est invalide.")
+            return None
+
+        # Ajouter le TIN au projet sans l'afficher
+        QgsProject.instance().addMapLayer(couche_tin, False)
+
+        return couche_tin
+
+    except Exception as e:
+        feedback.reportError(f"Erreur lors de la création du TIN : {e}")
+        return None

@@ -28,3 +28,9 @@ def afficher_changer_vers_mode_convexe():
         ("Le mode convexe est fiable. Le mode concave \n"
          "est en développement !")
     )
+
+def afficher_erreur_interpolation(message="Une erreur s'est produite lors de l'interpolation IDW."):
+    """
+    Affiche une boîte de message d'erreur pour l'interpolation.
+    """
+    QMessageBox.critical(None, "Erreur", message)
