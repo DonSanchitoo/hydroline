@@ -46,9 +46,6 @@ from .utils.raster_utils import (
     convertir_points_en_tin
 )
 from .external.SIGPACK import Epoint
-from .logs.logs_config import setup_logging
-
-setup_logging()
 
 class HydroLine(QObject):
     """
