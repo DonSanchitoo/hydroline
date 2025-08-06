@@ -5,15 +5,14 @@
 [general]
 name=HydroLine
 qgisMinimumVersion=3.0
-description=Plugin d'assistance au tracé de lignes caractéristiques sur MNT. Préparation des modélisations hydraulique 1D, 2/3D. : Prolongement de profil, visualisation de profil en travers, tracé de polylignes (talweg, points haut, rupture de pente)
-version=0.1
+description=Assistance au tracé de lignes caractéristiques sur MNT raster/TIN
+version=1.1
 author=Sanchez Matteo, CNR.tm (Compagnie Nationale du Rhône)
 email=sanchez.matteopro@gmail.com
 
-about=Assistance au tracé sur MNT
+about=Plugin d'assistance au tracé de lignes caractéristiques sur MNT. Préparation des modélisations hydraulique 1D et 2D/3D : prolongement de profil, visualisation de profil en travers, tracé de polylignes (talweg, points hauts, ruptures de pente, limites de lit...).
 
-tracker=http://bugs
-repository=http://repo
+repository=https://github.com/DonSanchitoo/hydroline
 # End of mandatory metadata
 
 # Recommended items:
