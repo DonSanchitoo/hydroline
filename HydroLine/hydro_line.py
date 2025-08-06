@@ -205,7 +205,11 @@ class HydroLine(QObject):
         chemin_icones = os.path.join(self.chemin_plugin, "icon")
 
         # Créer le menu "Hydroline"
-        self.menu_hydroline = QMenu("Hydroline", self.interface_qgis.mainWindow())
+        self.menu_hydroline = QMenu("HL", self.interface_qgis.mainWindow())
+
+        # Ajouter le logo au menu
+        logo_hydroline = QIcon(os.path.join(chemin_icones, "icon_hydroline.png"))
+        self.menu_hydroline.setIcon(logo_hydroline)
 
         self.action_settings = QAction(
             QIcon(os.path.join(chemin_icones, "icon_setting.png")),
